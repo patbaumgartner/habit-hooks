@@ -42,10 +42,22 @@ public final class FileScope {
      * @return the list of Java source files
      */
     public List<Path> allFiles() {
+        return allFiles(true);
+    }
+
+    /**
+     * Resolves all {@code .java} files under the project root (recursively).
+     *
+     * @param excludeTests when {@code true}, files under {@code src/test/} are
+     *                     excluded
+     * @return the list of Java source files
+     */
+    public List<Path> allFiles(boolean excludeTests) {
         try (Stream<Path> walk = Files.walk(workingDir)) {
             return walk
                     .filter(p -> p.toString().endsWith(JAVA_EXTENSION))
                     .filter(p -> !isInTarget(p))
+                    .filter(p -> !excludeTests || !isTestSource(p))
                     .toList();
         } catch (IOException e) {
             LOGGER.warn("Failed to walk project directory: {}", e.getMessage());
@@ -90,5 +102,10 @@ public final class FileScope {
     private static boolean isInTarget(Path path) {
         return path.toString().contains("/target/")
                 || path.toString().contains("\\target\\");
+    }
+
+    private static boolean isTestSource(Path path) {
+        return path.toString().contains("/src/test/")
+                || path.toString().contains("\\src\\test\\");
     }
 }

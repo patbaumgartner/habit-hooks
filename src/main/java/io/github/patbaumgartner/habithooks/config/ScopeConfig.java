@@ -37,4 +37,21 @@ public class ScopeConfig {
     public void setBranchBase(String branchBase) {
         this.branchBase = branchBase;
     }
+
+    /**
+     * When {@code true}, files under {@code src/test/} are excluded from analysis.
+     * Defaults to {@code true} — tests have different conventions.
+     */
+    @JsonProperty("excludeTests")
+    private boolean excludeTests = true;
+
+    /** Returns whether test sources should be excluded from analysis. */
+    public boolean isExcludeTests() {
+        return excludeTests;
+    }
+
+    /** Sets whether test sources should be excluded from analysis. */
+    public void setExcludeTests(boolean excludeTests) {
+        this.excludeTests = excludeTests;
+    }
 }

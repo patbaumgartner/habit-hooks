@@ -14,6 +14,7 @@ rules:
 scope:
   onlyChangedFiles: true
   branchBase: main
+  excludeTests: true
 
 analyzers:
   checkstyle:

@@ -23,48 +23,31 @@ import picocli.CommandLine.ScopeType;
 /**
  * Root CLI command for habit-hooks.
  *
- * <p>Running without sub-commands performs a full analysis and prints coaching output.
+ * <p>
+ * Running without sub-commands performs a full analysis and prints coaching
+ * output.
  */
-@Command(
-        name = "habit-hooks",
-        mixinStandardHelpOptions = true,
-        versionProvider = VersionProvider.class,
-        description = "Automated quality checks that nudge Java AI agents toward better habits.",
-        subcommands = {
-                InitCommand.class,
-                BaselineCommand.class
-        })
+@Command(name = "habit-hooks", mixinStandardHelpOptions = true, versionProvider = VersionProvider.class, description = "Automated quality checks that nudge Java AI agents toward better habits.", subcommands = {
+        InitCommand.class,
+        BaselineCommand.class
+})
 public final class HabitHooksCommand implements Callable<Integer> {
 
-    @Option(
-            names = {"--config"},
-            description = "Path to the habit-hooks config file",
-            scope = ScopeType.INHERIT)
+    @Option(names = { "--config" }, description = "Path to the habit-hooks config file", scope = ScopeType.INHERIT)
     private String configPath;
 
-    @Option(
-            names = {"--all"},
-            description = "Analyze all Java files (overrides scope.onlyChangedFiles)")
+    @Option(names = { "--all" }, description = "Analyze all Java files (overrides scope.onlyChangedFiles)")
     private boolean all;
 
-    @Option(
-            names = {"--last"},
-            description = "Analyze files changed in the last <n> commits",
-            paramLabel = "<n>")
+    @Option(names = { "--last" }, description = "Analyze files changed in the last <n> commits", paramLabel = "<n>")
     private Integer last;
 
-    @Option(
-            names = {"--branch"},
-            description = "Analyze files changed vs branch (default: scope.branchBase)",
-            paramLabel = "[name]",
-            arity = "0..1",
-            fallbackValue = "")
+    @Option(names = {
+            "--branch" }, description = "Analyze files changed vs branch (default: scope.branchBase)", paramLabel = "[name]", arity = "0..1", fallbackValue = "")
     private String branch;
 
-    @Option(
-            names = {"--since"},
-            description = "Analyze files changed since the given commit hash",
-            paramLabel = "<hash>")
+    @Option(names = {
+            "--since" }, description = "Analyze files changed since the given commit hash", paramLabel = "<hash>")
     private String since;
 
     @Override
@@ -118,19 +101,26 @@ public final class HabitHooksCommand implements Callable<Integer> {
 
     private List<Path> resolveScope(Path workingDir, HabitHooksConfig config) {
         FileScope scope = new FileScope(workingDir);
+        boolean excludeTests = config.getScope().isExcludeTests();
+        List<Path> files;
         if (all) {
-            return scope.allFiles();
-        }
-        if (last != null) {
-            return scope.changedInLastN(last);
-        }
-        if (branch != null) {
+            files = scope.allFiles(excludeTests);
+        } else if (last != null) {
+            files = scope.changedInLastN(last);
+        } else if (branch != null) {
             String base = branch.isBlank() ? config.getScope().getBranchBase() : branch;
-            return scope.changedSinceBranch(base);
+            files = scope.changedSinceBranch(base);
+        } else if (config.getScope().isOnlyChangedFiles()) {
+            files = scope.changedSinceBranch(config.getScope().getBranchBase());
+        } else {
+            files = scope.allFiles(excludeTests);
         }
-        if (config.getScope().isOnlyChangedFiles()) {
-            return scope.changedSinceBranch(config.getScope().getBranchBase());
+        if (excludeTests) {
+            files = files.stream()
+                    .filter(p -> !p.toString().contains("/src/test/")
+                            && !p.toString().contains("\\src\\test\\"))
+                    .toList();
         }
-        return scope.allFiles();
+        return files;
     }
 }
