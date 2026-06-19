@@ -1,0 +1,64 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Release version (e.g. 0.1.0)"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Build & Publish Release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: "21"
+          distribution: temurin
+          cache: maven
+
+      - name: Determine version
+        id: version
+        run: |
+          if [[ "${{ github.event_name }}" == "push" ]]; then
+            VERSION="${GITHUB_REF_NAME#v}"
+          else
+            VERSION="${{ github.event.inputs.version }}"
+          fi
+          echo "VERSION=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Set Maven version
+        run: |
+          ./mvnw --batch-mode versions:set -DnewVersion="${{ steps.version.outputs.VERSION }}"
+          ./mvnw --batch-mode versions:commit
+
+      - name: Build fat JAR
+        run: ./mvnw --batch-mode verify
+
+      - name: Rename artifacts
+        run: |
+          VERSION="${{ steps.version.outputs.VERSION }}"
+          mv target/habit-hooks-${VERSION}-launcher.jar target/habit-hooks-launcher.jar
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: "v${{ steps.version.outputs.VERSION }}"
+          name: "habit-hooks ${{ steps.version.outputs.VERSION }}"
+          generate_release_notes: true
+          files: |
+            target/habit-hooks-launcher.jar

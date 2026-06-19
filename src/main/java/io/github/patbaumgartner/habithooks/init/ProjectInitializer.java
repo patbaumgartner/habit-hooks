@@ -1,0 +1,112 @@
+package io.github.patbaumgartner.habithooks.init;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * Scaffolds habit-hooks configuration files in a new project.
+ *
+ * <p>Detects existing tool configurations, scaffolds missing ones, and writes
+ * {@code .habit-hooks.yaml}. When {@code taikai} is set it also writes an
+ * {@code ArchitectureTest.java} template.
+ */
+public final class ProjectInitializer {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProjectInitializer.class);
+    private static final String TEMPLATES_PREFIX =
+            "io/github/patbaumgartner/habithooks/templates/";
+
+    private final Path workingDir;
+    private final boolean dryRun;
+    private final boolean taikai;
+    private final PrintStream out;
+
+    /**
+     * Creates an initializer for the given project.
+     *
+     * @param workingDir the project root
+     * @param dryRun     when {@code true}, prints intended writes without touching disk
+     * @param taikai     when {@code true}, also scaffolds a Taikai architecture test
+     * @param out        the stream to print progress messages to
+     */
+    public ProjectInitializer(Path workingDir, boolean dryRun, boolean taikai, PrintStream out) {
+        this.workingDir = workingDir;
+        this.dryRun = dryRun;
+        this.taikai = taikai;
+        this.out = out;
+    }
+
+    /** Runs the initialization process. */
+    public void initialize() {
+        if (dryRun) {
+            out.println("[dry-run] The following files would be written:");
+        }
+        writeIfAbsent("checkstyle.xml",        "checkstyle.xml");
+        writeIfAbsent("pmd-ruleset.xml",        "pmd-ruleset.xml");
+        writeIfAbsent(".habit-hooks.yaml",      "habit-hooks-config.yaml");
+        writeIfAbsent(".habit-hooks-baseline.json", "baseline-empty.json");
+        if (taikai) {
+            scaffoldTaikaiTest();
+        }
+        if (!dryRun) {
+            out.println("✅ habit-hooks initialized. Run: java -jar habit-hooks.jar --all");
+        }
+    }
+
+    private void writeIfAbsent(String targetFile, String templateResource) {
+        Path target = workingDir.resolve(targetFile);
+        if (Files.exists(target)) {
+            out.printf("  skip  %s (already exists)%n", targetFile);
+            return;
+        }
+        Optional<String> content = loadTemplate(templateResource);
+        if (content.isEmpty()) {
+            LOGGER.warn("Template not found: {}", templateResource);
+            return;
+        }
+        if (dryRun) {
+            out.printf("  write %s%n", targetFile);
+            return;
+        }
+        writeFile(target, content.get());
+        out.printf("  wrote %s%n", targetFile);
+    }
+
+    private void scaffoldTaikaiTest() {
+        Path testDir = workingDir.resolve("src/test/java");
+        if (!Files.isDirectory(testDir)) {
+            out.printf("  skip  ArchitectureTest.java (no src/test/java found)%n");
+            return;
+        }
+        writeIfAbsent("src/test/java/ArchitectureTest.java", "ArchitectureTest.java");
+    }
+
+    private Optional<String> loadTemplate(String resource) {
+        String path = TEMPLATES_PREFIX + resource;
+        try (InputStream in = getClass().getClassLoader().getResourceAsStream(path)) {
+            if (in == null) {
+                return Optional.empty();
+            }
+            return Optional.of(new String(in.readAllBytes(), StandardCharsets.UTF_8));
+        } catch (IOException e) {
+            LOGGER.warn("Failed to load template {}: {}", path, e.getMessage());
+            return Optional.empty();
+        }
+    }
+
+    private void writeFile(Path target, String content) {
+        try {
+            Files.createDirectories(target.getParent());
+            Files.writeString(target, content, StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            LOGGER.error("Failed to write {}: {}", target, e.getMessage());
+        }
+    }
+}

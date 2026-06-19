@@ -1,0 +1,25 @@
+# .habit-hooks.yaml — self-dogfooding configuration
+#
+# habit-hooks runs against itself in CI using this config.
+# Run:  java -jar target/habit-hooks-*-launcher.jar --all
+
+prompts: ./prompts
+
+rules:
+  checkstyle:TodoComment:
+    disabled: true            # TODOs are tracked in GitHub Issues
+  pmd:SystemPrintln:
+    disabled: true            # CLI tools legitimately write to stdout
+
+scope:
+  onlyChangedFiles: true
+  branchBase: main
+
+analyzers:
+  checkstyle:
+    enabled: true
+    configFile: checkstyle.xml
+  pmd:
+    enabled: true
+    rulesets:
+      - pmd-ruleset.xml
