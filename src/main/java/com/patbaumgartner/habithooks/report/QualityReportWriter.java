@@ -15,8 +15,6 @@ public final class QualityReportWriter {
 
     private static final int MARKDOWN_FINDING_LIMIT = 50;
 
-    private static final int HTML_FINDING_LIMIT = 100;
-
     private static final ObjectMapper MAPPER = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
 
     /** Writes the report and returns the generated artifact path. */
@@ -32,7 +30,7 @@ public final class QualityReportWriter {
         Files.createDirectories(artifactDirectory(outputPath, format));
         switch (format) {
             case JSON -> MAPPER.writeValue(output.toFile(), report);
-            case HTML -> Files.writeString(output, html(report, previous), StandardCharsets.UTF_8);
+            case HTML -> Files.writeString(output, HtmlReportRenderer.render(report, previous), StandardCharsets.UTF_8);
             case SARIF -> MAPPER.writeValue(output.toFile(), SarifReportRenderer.render(report));
             case MARKDOWN -> Files.writeString(output, markdown(report, previous), StandardCharsets.UTF_8);
         }
@@ -103,41 +101,8 @@ public final class QualityReportWriter {
             .append('\n');
     }
 
-    private static String html(QualityReport report, Optional<TrendStore.Snapshot> previous) {
-        return "<!doctype html><html><head><meta charset=\"utf-8\"><title>habit-hooks report</title>"
-                + "<style>body{font-family:system-ui;margin:2rem;max-width:72rem}li{margin:.35rem 0}"
-                + "code{background:#eee;padding:.1rem .25rem}</style></head><body>" + htmlBody(report, previous)
-                + "</body></html>";
-    }
-
-    private static String htmlBody(QualityReport report, Optional<TrendStore.Snapshot> previous) {
-        StringBuilder body = new StringBuilder("<h1>habit-hooks local quality report</h1>");
-        body.append("<p>Findings: ")
-            .append(report.totalFindings())
-            .append(". Gate: ")
-            .append(report.failing() ? "failing" : "passing")
-            .append(".</p>")
-            .append(TrendRenderer.html(report, previous))
-            .append("<ul>");
-        report.findings()
-            .stream()
-            .limit(HTML_FINDING_LIMIT)
-            .forEach(finding -> body.append("<li><code>")
-                .append(escape(finding.ruleId()))
-                .append("</code> ")
-                .append(escape(location(finding)))
-                .append(" - ")
-                .append(escape(finding.message()))
-                .append("</li>"));
-        return body.append("</ul>").toString();
-    }
-
     private static String location(ReportFinding finding) {
         return finding.line() > 0 ? finding.file() + ":" + finding.line() : finding.file();
-    }
-
-    private static String escape(String value) {
-        return value.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
     }
 
 }

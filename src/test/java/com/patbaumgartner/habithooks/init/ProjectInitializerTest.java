@@ -74,6 +74,11 @@ class ProjectInitializerTest {
         assertThat(output.text()).contains("Taikai tests require the com.enofex:taikai test dependency");
         assertThat(Files.exists(tempDir.resolve("src/test/java/ArchitectureTest.java"))).isTrue();
         assertThat(architectureTest).contains("\tprivate static final String NAMESPACE");
+        assertThat(architectureTest).contains("private static Customizer<SpringConfigurer> springBootRules()",
+                ".noAutowiredFields()", ".transactional(transactionalRules())",
+                "private static Customizer<TestConfigurer> testRules()",
+                ".methodsShouldContainAssertionsOrVerifications()", "org.slf4j.Logger");
+        assertThat(architectureTest).doesNotContain("com.enofex.taikai.java.logging");
         assertThat(architectureTest).contains("// change this").doesNotContain("←");
     }
 

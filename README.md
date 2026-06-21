@@ -440,26 +440,31 @@ absent, the test class does not exist, or a generated Taikai test is present but
 the build does not declare the Taikai dependency. Run `habit-hooks doctor` after
 copying snippets to confirm the analyzer is ready.
 
-`habit-hooks init --taikai` scaffolds a `ArchitectureTest.java`:
+`habit-hooks init --taikai` scaffolds a strict Spring Boot starter
+`ArchitectureTest.java`. The template follows Taikai's Java, logging, test, and
+Spring rule groups and intentionally enables more checks than every application
+will want. Remove or relax the generated rules that do not fit your architecture.
 
 ```java
 @Test
 void shouldFulfillArchitectureConstraints() {
     Taikai.builder()
-        .namespace("com.example")
-        .java(java -> java
-            .noUsageOfDeprecatedAPIs()
-            .methodsShouldNotDeclareGenericExceptions()
-            .imports(imports -> imports.shouldHaveNoCycles()))
-        .spring(spring -> spring
-            .noAutowiredFields()
-            .controllers(c -> c.shouldBeAnnotatedWithRestController())
-            .services(s -> s.namesShouldEndWithService())
-            .repositories(r -> r.namesShouldEndWithRepository()))
+        .namespace(NAMESPACE)
+        .java(javaRules())
+        .logging(loggingRules())
+        .spring(springBootRules())
+        .test(testRules())
         .build()
         .checkAll();
 }
 ```
+
+The generated Spring Boot rules check constructor-injection habits, application
+class placement, configuration properties, configuration/controller/service/
+repository naming and annotations, dependency direction between web/service/data
+layers, transaction boundaries, logger conventions, JUnit conventions, import
+cycles, public fields, deprecated APIs, generic exceptions, method parameters,
+utility classes, serialVersionUID fields, and naming conventions.
 
 Add the dependency manually, or generate reference snippets with
 `habit-hooks init --maven-snippets`:

@@ -9,6 +9,18 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+## [0.1.10] - 2026-06-21
+
+### Added
+
+- Spring Petclinic analyzer playbook documenting full native dogfood setup, artifact generation, and analyzer feedback collection
+- Polished self-contained HTML quality reports with summary metrics, trend panels, breakdown bars, and severity-styled finding cards
+
+### Changed
+
+- Generated Taikai architecture tests now use a broader Spring Boot starter profile with Java, logging, Spring, transaction, and JUnit rule groups
+- HTML report rendering is split into focused helpers for layout, findings, and escaping while preserving Markdown, JSON, and SARIF output behavior
+
 ## [0.1.9] - 2026-06-21
 
 ### Fixed
@@ -134,7 +146,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - `--config <path>` relative paths now resolve from the current working directory
 - Documentation refresh across README, ARCHITECTURE, AGENTS, and CLAUDE for concise defaults-first guidance
 
-[Unreleased]: https://github.com/patbaumgartner/habbit-hooks/compare/v0.1.9...HEAD
+[Unreleased]: https://github.com/patbaumgartner/habbit-hooks/compare/v0.1.10...HEAD
+[0.1.10]: https://github.com/patbaumgartner/habbit-hooks/releases/tag/v0.1.10
 [0.1.9]: https://github.com/patbaumgartner/habbit-hooks/releases/tag/v0.1.9
 [0.1.8]: https://github.com/patbaumgartner/habbit-hooks/releases/tag/v0.1.8
 [0.1.7]: https://github.com/patbaumgartner/habbit-hooks/releases/tag/v0.1.7

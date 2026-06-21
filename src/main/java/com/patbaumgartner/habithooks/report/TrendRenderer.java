@@ -24,19 +24,19 @@ final class TrendRenderer {
 
     static String html(QualityReport report, Optional<TrendStore.Snapshot> previous) {
         if (previous.isEmpty()) {
-            return "<section><h2>Trend</h2><p>No previous local report snapshot.</p></section>";
+            return "<section class=\"panel\"><h2>Trend</h2><p>No previous local report snapshot.</p></section>";
         }
-        StringBuilder output = new StringBuilder("<section><h2>Trend</h2>");
+        StringBuilder output = new StringBuilder("<section class=\"panel\"><h2>Trend</h2>");
         TrendStore.Snapshot snapshot = previous.get();
         output.append("<p>Findings: ")
-            .append(escape(formatDelta(report.totalFindings() - snapshot.totalFindings())))
+            .append(HtmlEscaper.escape(formatDelta(report.totalFindings() - snapshot.totalFindings())))
             .append(" since ")
-            .append(escape(snapshot.generatedAt()))
+            .append(HtmlEscaper.escape(snapshot.generatedAt()))
             .append(".</p><ul>");
         dimensions(report, snapshot).forEach(dimension -> output.append("<li>")
-            .append(escape(dimension))
+            .append(HtmlEscaper.escape(dimension))
             .append(": ")
-            .append(escape(formatDelta(delta(dimension, report.byDimension(), snapshot.byDimension()))))
+            .append(HtmlEscaper.escape(formatDelta(delta(dimension, report.byDimension(), snapshot.byDimension()))))
             .append("</li>"));
         return output.append("</ul></section>").toString();
     }
@@ -77,10 +77,6 @@ final class TrendRenderer {
 
     private static String formatDelta(long delta) {
         return delta > 0 ? "+" + delta : Long.toString(delta);
-    }
-
-    private static String escape(String value) {
-        return value.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
     }
 
 }

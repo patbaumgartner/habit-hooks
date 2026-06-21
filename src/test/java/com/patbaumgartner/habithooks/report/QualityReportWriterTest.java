@@ -39,7 +39,8 @@ class QualityReportWriterTest {
         Path sarif = new QualityReportWriter().write(report, tempDir, "sarif");
 
         assertThat(Files.readString(json)).contains("pmd:GodClass");
-        assertThat(Files.readString(html)).contains("habit-hooks local quality report");
+        assertThat(Files.readString(html)).contains("Local quality report", "class=\"summary\"",
+                "class=\"finding low\"", "By dimension", "By tool");
         assertThat(Files.readString(sarif)).contains("\"version\"", "Big.java", "\"rules\"",
                 "\"id\" : \"pmd:GodClass\"");
     }

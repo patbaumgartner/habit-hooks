@@ -2,15 +2,27 @@
 // Add this class to your test sources.
 // Dependency: com.enofex:taikai (add to pom.xml test scope)
 //
-// Customize the namespace and rules to match your project structure.
+// Customize the namespace and remove rules that do not fit your application.
 
 import com.enofex.taikai.Taikai;
+import com.enofex.taikai.configures.Customizer;
+import com.enofex.taikai.java.JavaConfigurer;
+import com.enofex.taikai.logging.LoggingConfigurer;
+import com.enofex.taikai.spring.ConfigurationsConfigurer;
+import com.enofex.taikai.spring.ControllersConfigurer;
+import com.enofex.taikai.spring.PropertiesConfigurer;
+import com.enofex.taikai.spring.RepositoriesConfigurer;
+import com.enofex.taikai.spring.ServicesConfigurer;
+import com.enofex.taikai.spring.SpringConfigurer;
+import com.enofex.taikai.spring.TransactionalConfigurer;
+import com.enofex.taikai.test.TestConfigurer;
+import java.util.List;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
 
-import java.util.logging.Logger;
-
-import static com.enofex.taikai.java.logging.LoggingConfiguration.LoggerField.PRIVATE;
-import static com.enofex.taikai.java.logging.LoggingConfiguration.LoggerField.FINAL;
+import static com.tngtech.archunit.core.domain.JavaModifier.FINAL;
+import static com.tngtech.archunit.core.domain.JavaModifier.PRIVATE;
+import static com.tngtech.archunit.core.domain.JavaModifier.STATIC;
 
 /**
  * Architecture tests powered by Taikai + ArchUnit.
@@ -20,7 +32,8 @@ import static com.enofex.taikai.java.logging.LoggingConfiguration.LoggerField.FI
  * production codebase. Failures are reported like any other failing test.
  *
  * <p>
- * Edit the namespace and rules below to match your project.
+ * The generated rules are intentionally strict for a typical Spring Boot service.
+ * Delete the rules that do not match your application's architecture.
  */
 class ArchitectureTest {
 
@@ -31,19 +44,96 @@ class ArchitectureTest {
 	void shouldFulfillArchitectureConstraints() {
 		Taikai.builder()
 			.namespace(NAMESPACE)
-			.java(java -> java.noUsageOfDeprecatedAPIs()
-				.methodsShouldNotDeclareGenericExceptions()
-				.utilityClassesShouldBeFinalAndHavePrivateConstructor()
-				.imports(imports -> imports.shouldHaveNoCycles().shouldNotImport("..internal.."))
-				.naming(naming -> naming.classesShouldNotMatch(".*Impl")
-					.constantsShouldFollowConventions()
-					.interfacesShouldNotHavePrefixI()))
-			.logging(logging -> logging.loggersShouldFollowConventions(Logger.class, "LOGGER",
-					java.util.List.of(PRIVATE, FINAL)))
-			.test(test -> test.junit(
-					junit -> junit.classesShouldNotBeAnnotatedWithDisabled().methodsShouldNotBeAnnotatedWithDisabled()))
+			.java(javaRules())
+			.logging(loggingRules())
+			.spring(springBootRules())
+			.test(testRules())
 			.build()
 			.checkAll();
+	}
+
+	private static Customizer<JavaConfigurer> javaRules() {
+		return java -> java.noUsageOfDeprecatedAPIs()
+			.noUsageOfSystemOutOrErr()
+			.fieldsShouldNotBePublic()
+			.methodsShouldNotDeclareGenericExceptions()
+			.methodsShouldNotExceedMaxParameters(5)
+			.classesShouldImplementHashCodeAndEquals()
+			.utilityClassesShouldBeFinalAndHavePrivateConstructor()
+			.finalClassesShouldNotHaveProtectedMembers()
+			.serialVersionUIDFieldsShouldBeStaticFinalLong()
+			.imports(imports -> imports.shouldHaveNoCycles().shouldNotImport("..internal.."))
+			.naming(naming -> naming.packagesShouldMatchDefault()
+				.classesShouldNotMatch(".*Impl")
+				.methodsShouldMatch("[a-z][a-zA-Z0-9]*")
+				.constantsShouldFollowConventions()
+				.enumConstantsShouldFollowConventions()
+				.booleanMethodsShouldStartWith()
+				.interfacesShouldNotHavePrefixI());
+	}
+
+	private static Customizer<LoggingConfigurer> loggingRules() {
+		return logging -> logging.loggersShouldFollowConventions(Logger.class, "LOGGER", List.of(PRIVATE, STATIC,
+				FINAL));
+	}
+
+	private static Customizer<SpringConfigurer> springBootRules() {
+		return spring -> spring.noAutowiredFields()
+			.boot(boot -> boot.applicationClassShouldResideInPackage(NAMESPACE))
+			.properties(propertiesRules())
+			.configurations(configurationRules())
+			.controllers(controllerRules())
+			.services(serviceRules())
+			.repositories(repositoryRules())
+			.transactional(transactionalRules());
+	}
+
+	private static Customizer<PropertiesConfigurer> propertiesRules() {
+		return properties -> properties.namesShouldEndWithProperties()
+			.shouldBeAnnotatedWithConfigurationProperties()
+			.shouldBeAnnotatedWithValidated()
+			.shouldBeRecords();
+	}
+
+	private static Customizer<ConfigurationsConfigurer> configurationRules() {
+		return configurations -> configurations.namesShouldEndWithConfiguration();
+	}
+
+	private static Customizer<ControllersConfigurer> controllerRules() {
+		return controllers -> controllers.namesShouldEndWithController()
+			.shouldBeAnnotatedWithController()
+			.shouldBeAnnotatedWithValidated()
+			.shouldNotDependOnOtherControllers()
+			.shouldBePackagePrivate();
+	}
+
+	private static Customizer<ServicesConfigurer> serviceRules() {
+		return services -> services.namesShouldEndWithService()
+			.shouldBeAnnotatedWithService()
+			.shouldNotDependOnControllers()
+			.shouldNotDependOnOtherServices();
+	}
+
+	private static Customizer<RepositoriesConfigurer> repositoryRules() {
+		return repositories -> repositories.namesShouldEndWithRepository()
+			.shouldBeAnnotatedWithRepository()
+			.shouldNotDependOnControllers()
+			.shouldNotDependOnServices();
+	}
+
+	private static Customizer<TransactionalConfigurer> transactionalRules() {
+		return transactional -> transactional.methodsShouldBePublic().shouldNotBeUsedInControllers();
+	}
+
+	private static Customizer<TestConfigurer> testRules() {
+		return test -> test.junit(junit -> junit.classesShouldEndWithTest()
+			.classesShouldBePackagePrivate(".*Test")
+			.classesShouldNotBeAnnotatedWithDisabled()
+			.methodsShouldBePackagePrivate()
+			.methodsShouldNotBeAnnotatedWithDisabled()
+			.methodsShouldBeAnnotatedWithDisplayName()
+			.methodsShouldNotDeclareExceptions()
+			.methodsShouldContainAssertionsOrVerifications());
 	}
 
 }
