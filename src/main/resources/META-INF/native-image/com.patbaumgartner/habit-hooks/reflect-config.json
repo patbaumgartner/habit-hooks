@@ -142,5 +142,86 @@
   {
     "name": "net.sourceforge.pmd.lang.java.rule.performance.UseStringBufferForStringAppendsRule",
     "allDeclaredConstructors": true
+  },
+  {
+    "name": "[Z"
+  },
+  {
+    "name": "[B"
+  },
+  {
+    "name": "[C"
+  },
+  {
+    "name": "[D"
+  },
+  {
+    "name": "[F"
+  },
+  {
+    "name": "[I"
+  },
+  {
+    "name": "[J"
+  },
+  {
+    "name": "[S"
+  },
+  {
+    "name": "[Ljava.lang.Boolean;"
+  },
+  {
+    "name": "[Ljava.lang.Byte;"
+  },
+  {
+    "name": "[Ljava.lang.Character;"
+  },
+  {
+    "name": "[Ljava.lang.Double;"
+  },
+  {
+    "name": "[Ljava.lang.Float;"
+  },
+  {
+    "name": "[Ljava.lang.Integer;"
+  },
+  {
+    "name": "[Ljava.lang.Long;"
+  },
+  {
+    "name": "[Ljava.lang.Short;"
+  },
+  {
+    "name": "[Ljava.lang.String;"
+  },
+  {
+    "name": "[Ljava.lang.Class;"
+  },
+  {
+    "name": "[Ljava.math.BigDecimal;"
+  },
+  {
+    "name": "[Ljava.math.BigInteger;"
+  },
+  {
+    "name": "[Ljava.util.Date;"
+  },
+  {
+    "name": "[Ljava.util.Calendar;"
+  },
+  {
+    "name": "[Ljava.io.File;"
+  },
+  {
+    "name": "[Ljava.sql.Date;"
+  },
+  {
+    "name": "[Ljava.sql.Time;"
+  },
+  {
+    "name": "[Ljava.sql.Timestamp;"
+  },
+  {
+    "name": "[Ljava.net.URL;"
   }
 ]

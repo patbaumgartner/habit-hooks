@@ -9,6 +9,12 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+## [0.1.6] - 2026-06-21
+
+### Fixed
+
+- Native Checkstyle analysis now registers Apache BeanUtils array converter targets required while configuring checks
+
 ## [0.1.5] - 2026-06-21
 
 ### Fixed
@@ -107,7 +113,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - `--config <path>` relative paths now resolve from the current working directory
 - Documentation refresh across README, ARCHITECTURE, AGENTS, and CLAUDE for concise defaults-first guidance
 
-[Unreleased]: https://github.com/patbaumgartner/habbit-hooks/compare/v0.1.5...HEAD
+[Unreleased]: https://github.com/patbaumgartner/habbit-hooks/compare/v0.1.6...HEAD
+[0.1.6]: https://github.com/patbaumgartner/habbit-hooks/releases/tag/v0.1.6
 [0.1.5]: https://github.com/patbaumgartner/habbit-hooks/releases/tag/v0.1.5
 [0.1.4]: https://github.com/patbaumgartner/habbit-hooks/releases/tag/v0.1.4
 [0.1.3]: https://github.com/patbaumgartner/habbit-hooks/releases/tag/v0.1.3

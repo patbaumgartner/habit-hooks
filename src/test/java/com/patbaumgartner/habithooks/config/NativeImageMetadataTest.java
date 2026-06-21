@@ -65,6 +65,18 @@ class NativeImageMetadataTest {
                 "net.sourceforge.pmd.lang.java.rule.performance.UseStringBufferForStringAppendsRule");
     }
 
+    @Test
+    void registersBeanUtilsArrayConvertersForCheckstyleNativeReflection() throws Exception {
+        String metadata = Files.readString(REFLECT_CONFIG);
+
+        assertThat(metadata).contains("[Z", "[B", "[C", "[D", "[F", "[I", "[J", "[S", "[Ljava.lang.Boolean;",
+                "[Ljava.lang.Byte;", "[Ljava.lang.Character;", "[Ljava.lang.Double;", "[Ljava.lang.Float;",
+                "[Ljava.lang.Integer;", "[Ljava.lang.Long;", "[Ljava.lang.Short;", "[Ljava.lang.String;",
+                "[Ljava.lang.Class;", "[Ljava.math.BigDecimal;", "[Ljava.math.BigInteger;", "[Ljava.util.Date;",
+                "[Ljava.util.Calendar;", "[Ljava.io.File;", "[Ljava.sql.Date;", "[Ljava.sql.Time;",
+                "[Ljava.sql.Timestamp;", "[Ljava.net.URL;");
+    }
+
     private static List<Class<?>> jacksonTypes() {
         return List.of(HabitHooksConfig.class, ScopeConfig.class, AnalyzerConfig.class, RuleConfig.class,
                 BaselineDocument.class, BaselineDocument.BaselineEntry.class, AnalysisResult.class, Violation.class,
