@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
  */
 public final class SelfUpdater {
 
-    private static final String REPO = "patbaumgartner/habbit-hooks";
+    private static final String REPO = "patbaumgartner/habit-hooks";
 
     private static final String API_LATEST = "https://api.github.com/repos/" + REPO + "/releases/latest";
 
@@ -85,13 +85,21 @@ public final class SelfUpdater {
     private int install(String tag, String latestVersion) {
         Optional<Path> artifact = this.target.artifact();
         if (artifact.isEmpty()) {
-            this.out.println("Cannot locate the installed habit-hooks artifact to update.");
-            return 1;
+            return missingArtifact();
         }
         String url = DOWNLOAD_BASE + tag + "/" + this.target.assetName();
         this.out.printf("Updating habit-hooks %s -> %s ...%n", this.currentVersion, latestVersion);
+        return replaceAndReport(latestVersion, url, artifact.get());
+    }
+
+    private int missingArtifact() {
+        this.out.println("Cannot locate the installed habit-hooks artifact to update.");
+        return 1;
+    }
+
+    private int replaceAndReport(String latestVersion, String url, Path artifact) {
         try {
-            replaceArtifact(url, artifact.get());
+            replaceArtifact(url, artifact);
         }
         catch (IOException ex) {
             this.out.println("Update failed: " + ex.getMessage());
@@ -107,7 +115,7 @@ public final class SelfUpdater {
     }
 
     private void replaceArtifact(String url, Path artifact) throws IOException, InterruptedException {
-        Path directory = artifact.toAbsolutePath().getParent();
+        Path directory = parentDirectory(artifact);
         Path temp = Files.createTempFile(directory, ".habit-hooks-update", ".tmp");
         try {
             this.fetcher.downloadTo(url, temp);
@@ -119,6 +127,11 @@ public final class SelfUpdater {
         finally {
             Files.deleteIfExists(temp);
         }
+    }
+
+    private static Path parentDirectory(Path artifact) {
+        Path parent = artifact.toAbsolutePath().getParent();
+        return parent == null ? Path.of(".").toAbsolutePath() : parent;
     }
 
     static Optional<String> parseTag(String json) {
@@ -149,7 +162,13 @@ public final class SelfUpdater {
             Files.setPosixFilePermissions(path, permissions);
         }
         catch (UnsupportedOperationException ex) {
-            // Non-POSIX file system: nothing to do.
+            makeExecutableWithFileApi(path);
+        }
+    }
+
+    private static void makeExecutableWithFileApi(Path path) {
+        if (!path.toFile().setExecutable(true, false)) {
+            path.toFile().setExecutable(true, true);
         }
     }
 

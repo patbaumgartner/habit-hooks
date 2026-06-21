@@ -1,6 +1,7 @@
 package com.patbaumgartner.habithooks.report;
 
 import java.util.Locale;
+import java.util.Map;
 
 /** Supported quality report formats. */
 public enum ReportFormat {
@@ -19,6 +20,9 @@ public enum ReportFormat {
 
     private final String extension;
 
+    private static final Map<String, ReportFormat> FORMATS = Map.of("markdown", MARKDOWN, "md", MARKDOWN, "json", JSON,
+            "html", HTML, "sarif", SARIF);
+
     ReportFormat(String extension) {
         this.extension = extension;
     }
@@ -31,14 +35,12 @@ public enum ReportFormat {
     /** Parses a user-supplied format name. */
     public static ReportFormat parse(String value) {
         String normalized = value == null ? "" : value.toLowerCase(Locale.ROOT);
-        return switch (normalized) {
-            case "markdown", "md" -> MARKDOWN;
-            case "json" -> JSON;
-            case "html" -> HTML;
-            case "sarif" -> SARIF;
-            default -> throw new IllegalArgumentException(
-                    "Unsupported report format '" + value + "'. Use one of: markdown, md, json, html, sarif.");
-        };
+        ReportFormat format = FORMATS.get(normalized);
+        if (format != null) {
+            return format;
+        }
+        throw new IllegalArgumentException(
+                "Unsupported report format '" + value + "'. Use one of: markdown, md, json, html, sarif.");
     }
 
 }

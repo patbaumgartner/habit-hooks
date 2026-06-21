@@ -16,30 +16,30 @@
     </module>
     <module name="NewlineAtEndOfFile" />
     <module name="FileLength">
-        <property name="max" value="400" />
+        <property name="max" value="350" />
     </module>
 
     <module name="TreeWalker">
 
         <!-- ===== Size / Complexity ===== -->
         <module name="MethodLength">
-            <property name="max" value="25" />
+            <property name="max" value="20" />
             <property name="countEmpty" value="false" />
         </module>
         <module name="ParameterNumber">
-            <property name="max" value="5" />
+            <property name="max" value="4" />
             <property name="tokens" value="METHOD_DEF, CTOR_DEF" />
         </module>
         <module name="CyclomaticComplexity">
-            <property name="max" value="8" />
+            <property name="max" value="6" />
         </module>
         <module name="JavaNCSS">
-            <property name="methodMaximum" value="25" />
-            <property name="classMaximum" value="200" />
-            <property name="fileMaximum" value="350" />
+            <property name="methodMaximum" value="20" />
+            <property name="classMaximum" value="160" />
+            <property name="fileMaximum" value="300" />
         </module>
         <module name="BooleanExpressionComplexity">
-            <property name="max" value="4" />
+            <property name="max" value="3" />
         </module>
 
         <!-- ===== Naming ===== -->
@@ -77,10 +77,10 @@
         <module name="SimplifyBooleanReturn" />
         <module name="StringLiteralEquality" />
         <module name="NestedIfDepth">
-            <property name="max" value="3" />
+            <property name="max" value="2" />
         </module>
         <module name="NestedTryDepth">
-            <property name="max" value="2" />
+            <property name="max" value="1" />
         </module>
         <module name="MultipleVariableDeclarations" />
         <module name="OneStatementPerLine" />

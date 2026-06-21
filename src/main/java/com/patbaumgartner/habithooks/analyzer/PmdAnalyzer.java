@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PmdAnalysis;
+import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.reporting.Report;
@@ -112,9 +113,13 @@ public final class PmdAnalyzer implements Analyzer {
     }
 
     private static LanguageVersion getJavaLanguageVersion() {
-        LanguageVersion version = LanguageRegistry.PMD.getLanguageById(JAVA_LANGUAGE).getVersion(JAVA_VERSION);
+        Language javaLanguage = LanguageRegistry.PMD.getLanguageById(JAVA_LANGUAGE);
+        if (javaLanguage == null) {
+            throw new IllegalStateException("PMD Java language is unavailable");
+        }
+        LanguageVersion version = javaLanguage.getVersion(JAVA_VERSION);
         if (version == null) {
-            return LanguageRegistry.PMD.getLanguageById(JAVA_LANGUAGE).getDefaultVersion();
+            return javaLanguage.getDefaultVersion();
         }
         return version;
     }

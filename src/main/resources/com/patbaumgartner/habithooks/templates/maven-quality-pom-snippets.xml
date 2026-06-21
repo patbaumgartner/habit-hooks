@@ -62,7 +62,7 @@
                 <version>${spotbugs-maven-plugin.version}</version>
                 <configuration>
                     <effort>Max</effort>
-                    <threshold>High</threshold>
+                    <threshold>Medium</threshold>
                     <failOnError>false</failOnError>
                     <xmlOutput>true</xmlOutput>
                 </configuration>
@@ -104,6 +104,8 @@
                     <compilerArgs>
                         <arg>-XDcompilePolicy=simple</arg>
                         <arg>-Xplugin:ErrorProne</arg>
+                        <arg>-Xlint:all</arg>
+                        <arg>-Werror</arg>
                     </compilerArgs>
                     <annotationProcessorPaths>
                         <path>
@@ -128,6 +130,14 @@
                         <version>${pitest-maven-plugin.version}</version>
                         <configuration>
                             <timestampedReports>false</timestampedReports>
+                            <mutationThreshold>70</mutationThreshold>
+                            <coverageThreshold>80</coverageThreshold>
+                            <testStrengthThreshold>70</testStrengthThreshold>
+                            <excludedClasses>
+                                <param>*Application</param>
+                                <param>*Configuration</param>
+                                <param>*Properties</param>
+                            </excludedClasses>
                         </configuration>
                         <dependencies>
                             <dependency>

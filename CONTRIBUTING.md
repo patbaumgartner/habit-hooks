@@ -115,7 +115,7 @@ non-draft PRs with `--merge-open-prs`.
 Example:
 
 ```bash
-./scripts/repo-admin.sh --repo patbaumgartner/habbit-hooks --merge-open-prs
+./scripts/repo-admin.sh --repo patbaumgartner/habit-hooks --merge-open-prs
 ```
 
 ### Workflow action pin maintenance

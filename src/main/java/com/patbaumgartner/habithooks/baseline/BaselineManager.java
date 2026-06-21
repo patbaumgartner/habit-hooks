@@ -81,12 +81,12 @@ public final class BaselineManager {
             return;
         }
         BaselineDocument baseline = doc.get();
-        Set<String> toRemove = baseline.getEntries()
+        Set<String> toRemove = baseline.mutableEntries()
             .keySet()
             .stream()
             .filter(file -> !Files.exists(workingDir.resolve(file)))
             .collect(Collectors.toSet());
-        toRemove.forEach(baseline.getEntries()::remove);
+        toRemove.forEach(baseline.mutableEntries()::remove);
         save(baseline);
         LOGGER.atDebug().addArgument(() -> toRemove.size()).log("Baseline pruned: {} stale entries removed.");
     }
@@ -101,13 +101,13 @@ public final class BaselineManager {
             return "No baseline file found.";
         }
         BaselineDocument baseline = doc.get();
-        int fileCount = baseline.getEntries().size();
-        long ruleCount = baseline.getEntries().values().stream().mapToLong(e -> e.getRuleIds().size()).sum();
+        int fileCount = baseline.mutableEntries().size();
+        long ruleCount = baseline.mutableEntries().values().stream().mapToLong(e -> e.getRuleIds().size()).sum();
         return String.format("Baseline: %d file(s), %d snoozed violation(s).", fileCount, ruleCount);
     }
 
     private boolean isSnoozed(Violation violation, BaselineDocument doc) {
-        BaselineDocument.BaselineEntry entry = doc.getEntries().get(violation.file());
+        BaselineDocument.BaselineEntry entry = doc.mutableEntries().get(violation.file());
         if (entry == null) {
             return false;
         }
@@ -123,7 +123,7 @@ public final class BaselineManager {
         BaselineDocument.BaselineEntry entry = new BaselineDocument.BaselineEntry();
         entry.setCommitHash(git.lastCommitHash(file).orElse(null));
         entry.setRuleIds(violations.stream().map(Violation::ruleId).distinct().toList());
-        doc.getEntries().put(file, entry);
+        doc.mutableEntries().put(file, entry);
     }
 
     private Optional<BaselineDocument> load() {

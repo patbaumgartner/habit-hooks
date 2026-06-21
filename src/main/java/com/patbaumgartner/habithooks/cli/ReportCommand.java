@@ -45,13 +45,18 @@ final class ReportCommand implements Callable<Integer> {
             return 0;
         }
         QualityReport report = new QualityReportBuilder().build(run.result(), run.hasFailures());
+        writeReport(resolvedOutput, normalizedFormat, report);
+        return noFail || !run.hasFailures() ? 0 : 1;
+    }
+
+    private void writeReport(Path resolvedOutput, ReportFormat normalizedFormat, QualityReport report)
+            throws Exception {
         QualityReportWriter writer = new QualityReportWriter();
         Path artifactDirectory = writer.artifactDirectory(resolvedOutput, normalizedFormat);
         Optional<TrendStore.Snapshot> previous = new TrendStore().record(artifactDirectory.resolve("history"), report);
         Path output = writer.write(report, resolvedOutput, normalizedFormat, previous);
         System.out.println("Wrote " + output);
         previous.ifPresent(snapshot -> System.out.println(trendLine(report, snapshot)));
-        return noFail || !run.hasFailures() ? 0 : 1;
     }
 
     private ReportFormat parseFormat() {

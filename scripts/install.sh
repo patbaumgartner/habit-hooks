@@ -9,7 +9,7 @@
 #   ./scripts/install.sh
 #
 # Usage (curl-pipe):
-#   curl -fsSL https://raw.githubusercontent.com/patbaumgartner/habbit-hooks/main/scripts/install.sh | sh
+#   curl -fsSL https://raw.githubusercontent.com/patbaumgartner/habit-hooks/main/scripts/install.sh | sh
 #
 # Environment overrides:
 #   VERSION       Release tag/version to install (default: latest)
@@ -23,7 +23,7 @@
 
 set -eu
 
-REPO="patbaumgartner/habbit-hooks"
+REPO="patbaumgartner/habit-hooks"
 INSTALL_DIR="${INSTALL_DIR:-$HOME/.local/bin}"
 VERSION="${VERSION:-latest}"
 FORCE_JAR="${FORCE_JAR:-0}"

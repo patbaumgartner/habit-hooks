@@ -16,11 +16,11 @@ class PromptLoaderTest {
             "checkstyle:NestedIfDepth", "checkstyle:NestedTryDepth", "checkstyle:BooleanExpressionComplexity");
 
     private static final List<String> PMD_RULES = List.of("pmd:NcssCount", "pmd:GodClass", "pmd:UnusedPrivateField",
-            "pmd:UnusedLocalVariable", "pmd:EmptyCatchBlock", "pmd:LiteralsFirstInComparisons",
-            "pmd:ReturnEmptyCollectionRatherThanNull", "pmd:UseCollectionIsEmpty", "pmd:UseEqualsToCompareStrings",
-            "pmd:OverrideBothEqualsAndHashcode", "pmd:AvoidReassigningParameters", "pmd:LooseCoupling",
-            "pmd:ArrayIsStoredDirectly", "pmd:PreserveStackTrace", "pmd:CollapsibleIfStatements",
-            "pmd:ExcessiveParameterList");
+            "pmd:UnusedLocalVariable", "pmd:UnusedPrivateMethod", "pmd:UnusedFormalParameter", "pmd:UnusedAssignment",
+            "pmd:EmptyCatchBlock", "pmd:LiteralsFirstInComparisons", "pmd:ReturnEmptyCollectionRatherThanNull",
+            "pmd:UseCollectionIsEmpty", "pmd:UseEqualsToCompareStrings", "pmd:OverrideBothEqualsAndHashcode",
+            "pmd:AvoidReassigningParameters", "pmd:LooseCoupling", "pmd:ArrayIsStoredDirectly",
+            "pmd:PreserveStackTrace", "pmd:CollapsibleIfStatements", "pmd:ExcessiveParameterList");
 
     private static final List<String> MAVEN_RULES = mavenRules();
 

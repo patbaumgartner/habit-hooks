@@ -1,10 +1,10 @@
 # habit-hooks
 
-[![CI](https://github.com/patbaumgartner/habbit-hooks/actions/workflows/ci.yml/badge.svg)](https://github.com/patbaumgartner/habbit-hooks/actions/workflows/ci.yml)
+[![CI](https://github.com/patbaumgartner/habit-hooks/actions/workflows/ci.yml/badge.svg)](https://github.com/patbaumgartner/habit-hooks/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Java Version](https://img.shields.io/badge/Java-25-orange)](https://adoptium.net)
 [![Maven](https://img.shields.io/badge/Maven-3.9%2B-blue)](https://maven.apache.org)
-[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/patbaumgartner/habbit-hooks/badge)](https://securityscorecards.dev/viewer/?uri=github.com/patbaumgartner/habbit-hooks)
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/patbaumgartner/habit-hooks/badge)](https://securityscorecards.dev/viewer/?uri=github.com/patbaumgartner/habit-hooks)
 
 Stop reciting software engineering literature to your AI agent.
 
@@ -44,7 +44,7 @@ Use the install script. It picks the native binary for your platform when one
 is published, and otherwise downloads the fat JAR plus a wrapper script:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/patbaumgartner/habbit-hooks/main/scripts/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/patbaumgartner/habit-hooks/main/scripts/install.sh | sh
 ```
 
 Defaults install to `~/.local/bin`. Override with environment variables:
@@ -148,7 +148,7 @@ Two repository scripts keep operational tasks repeatable:
 ./scripts/cleanup-code.sh
 
 # Enforce repo settings (rebase-only), optional PR merge with rebase
-./scripts/repo-admin.sh --repo patbaumgartner/habbit-hooks --merge-open-prs
+./scripts/repo-admin.sh --repo patbaumgartner/habit-hooks --merge-open-prs
 ```
 
 Use `--dry-run` on either script to preview actions.
@@ -182,6 +182,9 @@ and *how to fix it*.
 | pmd               | `pmd:GodClass`                               | Class doing too much             |
 | pmd               | `pmd:UnusedPrivateField`                     | Unused field                     |
 | pmd               | `pmd:UnusedLocalVariable`                    | Unused variable                  |
+| pmd               | `pmd:UnusedPrivateMethod`                    | Unused private method            |
+| pmd               | `pmd:UnusedFormalParameter`                  | Unused private parameter         |
+| pmd               | `pmd:UnusedAssignment`                       | Assignment with no effect        |
 | pmd               | `pmd:EmptyCatchBlock`                        | Silent exception swallowing      |
 | pmd               | `pmd:LiteralsFirstInComparisons`             | Null-unsafe string comparison    |
 | pmd               | `pmd:ReturnEmptyCollectionRatherThanNull`    | Null instead of empty collection |
@@ -382,6 +385,10 @@ analyzer. `habit-hooks init --maven-snippets` writes
 `habit-hooks-maven-snippets.xml`, a reference file with copyable fragments for
 JaCoCo, SpotBugs, CycloneDX, OWASP Dependency Check, PIT, Spring Java Format,
 Error Prone, JSpecify, and Taikai. It does not edit `pom.xml` automatically.
+The snippets keep expensive checks opt-in, but the generated PIT profile includes
+minimum mutation, coverage, and test-strength thresholds, and the Error Prone
+compiler fragment enables `-Xlint:all` with `-Werror` for stricter Spring Boot
+service builds.
 
 `habit-hooks report` is the local Sonar-style path: it writes Markdown, JSON,
 HTML, or SARIF under `target/habit-hooks` and stores the latest trend snapshot in
@@ -542,7 +549,7 @@ Release integrity also includes:
 1. Verify provenance attestation with GitHub CLI:
 
 ```bash
-gh attestation verify habit-hooks-launcher.jar --repo patbaumgartner/habbit-hooks
+gh attestation verify habit-hooks-launcher.jar --repo patbaumgartner/habit-hooks
 ```
 
 1. Verify keyless Cosign signature:
@@ -551,7 +558,7 @@ gh attestation verify habit-hooks-launcher.jar --repo patbaumgartner/habbit-hook
 cosign verify-blob \
   --certificate habit-hooks-launcher.jar.pem \
   --signature habit-hooks-launcher.jar.sig \
-  --certificate-identity-regexp 'https://github.com/patbaumgartner/habbit-hooks/.github/workflows/release.yml@refs/tags/v.*' \
+  --certificate-identity-regexp 'https://github.com/patbaumgartner/habit-hooks/.github/workflows/release.yml@refs/tags/v.*' \
   --certificate-oidc-issuer https://token.actions.githubusercontent.com \
   habit-hooks-launcher.jar
 ```
@@ -692,8 +699,9 @@ Current implementation:
 - Optional Maven snippet scaffolding via `habit-hooks init --maven-snippets`
 - Baseline management (`status`, `snooze`, `prune`)
 - CI quality gates (Checkstyle, PMD/CPD, SpotBugs, tests, coverage)
+- Spring-oriented PMD defaults for exception wrapping, resource cleanup, logger hygiene, file stream avoidance, and coupling pressure
 - Integration test lifecycle via Maven Failsafe (`*IT.java`)
-- 70% minimum line coverage gate (JaCoCo)
+- 75% minimum line coverage gate (JaCoCo)
 - Spring Java Format (`spring-javaformat-maven-plugin`) check at validate phase
 - Reproducible build timestamp controls for jar and shaded artifacts
 - Release pipeline with SBOM and provenance attestation

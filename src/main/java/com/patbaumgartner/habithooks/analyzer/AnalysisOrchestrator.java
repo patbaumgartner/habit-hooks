@@ -43,23 +43,29 @@ public final class AnalysisOrchestrator {
     private List<Violation> runSingle(Analyzer analyzer, List<Path> files, Path workingDir) {
         String analyzerName = analyzer.toolPrefix();
         if (!analyzer.isAvailable(workingDir)) {
-            LOGGER.atWarn()
-                .addArgument(() -> analyzerName)
-                .addArgument(workingDir)
-                .log("Analyzer '{}' is not ready in {}; skipping. Run 'habit-hooks doctor' for setup details.");
-            return List.of();
+            return unavailableAnalyzer(analyzerName, workingDir);
         }
         if (files.isEmpty() && analyzer.requiresFiles()) {
-            LOGGER.atDebug()
-                .addArgument(() -> analyzerName)
-                .log("Skipping analyzer '{}' because no files matched scope.");
-            return List.of();
+            return noFilesMatched(analyzerName);
         }
         LOGGER.atDebug()
             .addArgument(() -> analyzerName)
             .addArgument(() -> files.size())
             .log("Running analyzer '{}' against {} files.");
         return analyzer.analyze(files, workingDir);
+    }
+
+    private static List<Violation> unavailableAnalyzer(String analyzerName, Path workingDir) {
+        LOGGER.atWarn()
+            .addArgument(() -> analyzerName)
+            .addArgument(workingDir)
+            .log("Analyzer '{}' is not ready in {}; skipping. Run 'habit-hooks doctor' for setup details.");
+        return List.of();
+    }
+
+    private static List<Violation> noFilesMatched(String analyzerName) {
+        LOGGER.atDebug().addArgument(() -> analyzerName).log("Skipping analyzer '{}' because no files matched scope.");
+        return List.of();
     }
 
 }

@@ -15,6 +15,7 @@ import com.patbaumgartner.habithooks.scope.FileScope;
 import com.patbaumgartner.habithooks.update.SelfUpdater;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.Callable;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -133,23 +134,32 @@ public final class HabitHooksCommand implements Callable<Integer> {
     }
 
     private List<Path> selectFiles(FileScope scope, HabitHooksConfig config, boolean excludeTests) {
-        if (all) {
-            return scope.allFiles(excludeTests);
-        }
-        if (last != null) {
-            return scope.changedInLastN(last);
-        }
-        if (branch != null) {
-            String base = branch.isBlank() ? config.getScope().getBranchBase() : branch;
-            return scope.changedSinceBranch(base);
-        }
-        if (since != null) {
-            return scope.changedSinceCommit(since);
+        Optional<List<Path>> selected = explicitlySelectedFiles(scope, config, excludeTests);
+        if (selected.isPresent()) {
+            return selected.get();
         }
         if (config.getScope().isOnlyChangedFiles()) {
             return scope.changedSinceBranch(config.getScope().getBranchBase());
         }
         return scope.allFiles(excludeTests);
+    }
+
+    private Optional<List<Path>> explicitlySelectedFiles(FileScope scope, HabitHooksConfig config,
+            boolean excludeTests) {
+        if (all) {
+            return Optional.of(scope.allFiles(excludeTests));
+        }
+        if (last != null) {
+            return Optional.of(scope.changedInLastN(last));
+        }
+        if (branch != null) {
+            String base = branch.isBlank() ? config.getScope().getBranchBase() : branch;
+            return Optional.of(scope.changedSinceBranch(base));
+        }
+        if (since != null) {
+            return Optional.of(scope.changedSinceCommit(since));
+        }
+        return Optional.empty();
     }
 
     private List<Path> filterTests(List<Path> files, boolean excludeTests) {

@@ -154,15 +154,15 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - `--config <path>` relative paths now resolve from the current working directory
 - Documentation refresh across README, ARCHITECTURE, AGENTS, and CLAUDE for concise defaults-first guidance
 
-[Unreleased]: https://github.com/patbaumgartner/habbit-hooks/compare/v0.1.12...HEAD
-[0.1.12]: https://github.com/patbaumgartner/habbit-hooks/releases/tag/v0.1.12
-[0.1.10]: https://github.com/patbaumgartner/habbit-hooks/releases/tag/v0.1.10
-[0.1.9]: https://github.com/patbaumgartner/habbit-hooks/releases/tag/v0.1.9
-[0.1.8]: https://github.com/patbaumgartner/habbit-hooks/releases/tag/v0.1.8
-[0.1.7]: https://github.com/patbaumgartner/habbit-hooks/releases/tag/v0.1.7
-[0.1.6]: https://github.com/patbaumgartner/habbit-hooks/releases/tag/v0.1.6
-[0.1.5]: https://github.com/patbaumgartner/habbit-hooks/releases/tag/v0.1.5
-[0.1.4]: https://github.com/patbaumgartner/habbit-hooks/releases/tag/v0.1.4
-[0.1.3]: https://github.com/patbaumgartner/habbit-hooks/releases/tag/v0.1.3
-[0.1.2]: https://github.com/patbaumgartner/habbit-hooks/releases/tag/v0.1.2
-[0.1.0]: https://github.com/patbaumgartner/habbit-hooks/releases/tag/v0.1.0
+[Unreleased]: https://github.com/patbaumgartner/habit-hooks/compare/v0.1.12...HEAD
+[0.1.12]: https://github.com/patbaumgartner/habit-hooks/releases/tag/v0.1.12
+[0.1.10]: https://github.com/patbaumgartner/habit-hooks/releases/tag/v0.1.10
+[0.1.9]: https://github.com/patbaumgartner/habit-hooks/releases/tag/v0.1.9
+[0.1.8]: https://github.com/patbaumgartner/habit-hooks/releases/tag/v0.1.8
+[0.1.7]: https://github.com/patbaumgartner/habit-hooks/releases/tag/v0.1.7
+[0.1.6]: https://github.com/patbaumgartner/habit-hooks/releases/tag/v0.1.6
+[0.1.5]: https://github.com/patbaumgartner/habit-hooks/releases/tag/v0.1.5
+[0.1.4]: https://github.com/patbaumgartner/habit-hooks/releases/tag/v0.1.4
+[0.1.3]: https://github.com/patbaumgartner/habit-hooks/releases/tag/v0.1.3
+[0.1.2]: https://github.com/patbaumgartner/habit-hooks/releases/tag/v0.1.2
+[0.1.0]: https://github.com/patbaumgartner/habit-hooks/releases/tag/v0.1.0

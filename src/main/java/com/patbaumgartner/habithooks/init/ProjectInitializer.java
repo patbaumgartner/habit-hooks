@@ -29,7 +29,7 @@ public final class ProjectInitializer {
 
     private final Options options;
 
-    private final PrintStream out;
+    private final Output out;
 
     /**
      * Creates an initializer for the given project.
@@ -40,7 +40,7 @@ public final class ProjectInitializer {
     public ProjectInitializer(Path workingDir, Options options, PrintStream out) {
         this.workingDir = workingDir;
         this.options = options;
-        this.out = out;
+        this.out = out::printf;
     }
 
     /** Runs the initialization process. */
@@ -58,6 +58,10 @@ public final class ProjectInitializer {
         if (options.mavenSnippets()) {
             writeIfAbsent("habit-hooks-maven-snippets.xml", "maven-quality-pom-snippets.xml");
         }
+        printCompletion();
+    }
+
+    private void printCompletion() {
         if (!options.dryRun()) {
             if (options.taikai()) {
                 out.println("ℹ️  Taikai tests require the com.enofex:taikai test dependency."
@@ -111,7 +115,7 @@ public final class ProjectInitializer {
 
     private void writeFile(Path target, String content) {
         try {
-            Files.createDirectories(target.getParent());
+            createParentDirectories(target);
             Files.writeString(target, content, StandardCharsets.UTF_8);
         }
         catch (IOException e) {
@@ -119,8 +123,26 @@ public final class ProjectInitializer {
         }
     }
 
+    private static void createParentDirectories(Path target) throws IOException {
+        Path parent = target.getParent();
+        if (parent != null) {
+            Files.createDirectories(parent);
+        }
+    }
+
     /** Options controlling which optional scaffold files are written. */
     public record Options(boolean dryRun, boolean taikai, boolean mavenSnippets) {
+    }
+
+    @FunctionalInterface
+    private interface Output {
+
+        void printf(String format, Object... args);
+
+        default void println(String line) {
+            printf("%s%n", line);
+        }
+
     }
 
 }

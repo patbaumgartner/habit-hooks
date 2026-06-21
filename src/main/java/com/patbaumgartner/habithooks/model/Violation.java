@@ -15,14 +15,14 @@ public record Violation(String ruleId, String file, int line, String message) {
      * Constructs a Violation and validates that required fields are present.
      */
     public Violation {
-        if (ruleId == null || ruleId.isBlank()) {
-            throw new IllegalArgumentException("ruleId must not be blank");
-        }
-        if (file == null || file.isBlank()) {
-            throw new IllegalArgumentException("file must not be blank");
-        }
-        if (message == null || message.isBlank()) {
-            throw new IllegalArgumentException("message must not be blank");
+        requireText(ruleId, "ruleId");
+        requireText(file, "file");
+        requireText(message, "message");
+    }
+
+    private static void requireText(String value, String name) {
+        if (value == null || value.isBlank()) {
+            throw new IllegalArgumentException(name + " must not be blank");
         }
     }
 

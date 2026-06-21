@@ -92,6 +92,14 @@
     "allDeclaredConstructors": true
   },
   {
+    "name": "net.sourceforge.pmd.lang.java.rule.design.AvoidRethrowingExceptionRule",
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "net.sourceforge.pmd.lang.java.rule.design.CouplingBetweenObjectsRule",
+    "allDeclaredConstructors": true
+  },
+  {
     "name": "net.sourceforge.pmd.lang.java.rule.design.SingularFieldRule",
     "allDeclaredConstructors": true
   },
@@ -105,6 +113,18 @@
   },
   {
     "name": "net.sourceforge.pmd.lang.java.rule.bestpractices.UnusedLocalVariableRule",
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "net.sourceforge.pmd.lang.java.rule.bestpractices.UnusedPrivateMethodRule",
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "net.sourceforge.pmd.lang.java.rule.bestpractices.UnusedFormalParameterRule",
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "net.sourceforge.pmd.lang.java.rule.bestpractices.UnusedAssignmentRule",
     "allDeclaredConstructors": true
   },
   {
@@ -129,6 +149,14 @@
   },
   {
     "name": "net.sourceforge.pmd.lang.java.rule.bestpractices.PreserveStackTraceRule",
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "net.sourceforge.pmd.lang.java.rule.bestpractices.UseTryWithResourcesRule",
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "net.sourceforge.pmd.lang.java.rule.errorprone.CloseResourceRule",
     "allDeclaredConstructors": true
   },
   {

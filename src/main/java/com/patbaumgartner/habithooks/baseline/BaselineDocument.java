@@ -37,12 +37,16 @@ public class BaselineDocument {
 
     /** Returns all baseline entries. */
     public Map<String, BaselineEntry> getEntries() {
-        return entries;
+        return Map.copyOf(entries);
     }
 
     /** Sets all baseline entries. */
     public void setEntries(Map<String, BaselineEntry> entries) {
-        this.entries = entries;
+        this.entries = entries == null ? new HashMap<>() : new HashMap<>(entries);
+    }
+
+    Map<String, BaselineEntry> mutableEntries() {
+        return entries;
     }
 
     /**

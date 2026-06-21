@@ -24,4 +24,24 @@ public record QualityReport(String generatedAt, int filesChecked, boolean clean,
         return Collections.unmodifiableMap(new LinkedHashMap<>(values));
     }
 
+    @Override
+    public Map<String, Long> byTool() {
+        return orderedCopy(byTool);
+    }
+
+    @Override
+    public Map<String, Long> byRule() {
+        return orderedCopy(byRule);
+    }
+
+    @Override
+    public Map<String, Long> byDimension() {
+        return orderedCopy(byDimension);
+    }
+
+    @Override
+    public List<ReportFinding> findings() {
+        return List.copyOf(findings);
+    }
+
 }

@@ -33,14 +33,14 @@ public final class CoachingRenderer {
 
     private static final int MAX_UNCOACHED_SHOWN = 10;
 
-    private final PrintStream out;
+    private final Output out;
 
     /**
      * Creates a renderer writing to the given stream.
      * @param out the output stream
      */
     public CoachingRenderer(PrintStream out) {
-        this.out = out;
+        this.out = out::printf;
     }
 
     /**
@@ -102,6 +102,17 @@ public final class CoachingRenderer {
 
     private static List<CoachingGroup> uncoached(List<CoachingGroup> groups) {
         return groups.stream().filter(g -> !g.isCoached()).toList();
+    }
+
+    @FunctionalInterface
+    private interface Output {
+
+        void printf(String format, Object... args);
+
+        default void println() {
+            printf("%n");
+        }
+
     }
 
 }

@@ -55,7 +55,7 @@ public class HabitHooksConfig {
         if (rules == null) {
             return Map.of();
         }
-        return rules;
+        return Map.copyOf(rules);
     }
 
     /** Sets the per-rule overrides map. */
@@ -68,7 +68,7 @@ public class HabitHooksConfig {
         if (scope == null) {
             return new ScopeConfig();
         }
-        return scope;
+        return copyScope(scope);
     }
 
     /** Sets the scope configuration. */
@@ -81,12 +81,20 @@ public class HabitHooksConfig {
         if (analyzers == null) {
             return Map.of();
         }
-        return analyzers;
+        return Map.copyOf(analyzers);
     }
 
     /** Sets the analyzer configurations. */
     public void setAnalyzers(Map<String, AnalyzerConfig> analyzers) {
         this.analyzers = analyzers == null ? new HashMap<>() : new HashMap<>(analyzers);
+    }
+
+    private static ScopeConfig copyScope(ScopeConfig source) {
+        ScopeConfig copy = new ScopeConfig();
+        copy.setOnlyChangedFiles(source.isOnlyChangedFiles());
+        copy.setBranchBase(source.getBranchBase());
+        copy.setExcludeTests(source.isExcludeTests());
+        return copy;
     }
 
 }

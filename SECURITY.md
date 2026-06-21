@@ -16,7 +16,7 @@
 
 Please report security issues through GitHub's private vulnerability reporting:
 
-<https://github.com/patbaumgartner/habbit-hooks/security/advisories/new>
+<https://github.com/patbaumgartner/habit-hooks/security/advisories/new>
 
 Include as much detail as possible:
 

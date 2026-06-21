@@ -6,6 +6,8 @@ import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -36,12 +38,15 @@ class SelfUpdaterTest {
     void reportsAlreadyUpToDate() {
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
         InstallTarget target = new InstallTarget("linux", "x64", false, Optional.empty());
-        SelfUpdater updater = new SelfUpdater("0.2.0", new PrintStream(buffer), new FakeFetcher(LATEST_JSON), target);
+        FakeFetcher fetcher = new FakeFetcher(LATEST_JSON);
+        SelfUpdater updater = new SelfUpdater("0.2.0", new PrintStream(buffer), fetcher, target);
 
         int exit = updater.run();
 
         assertThat(exit).isZero();
         assertThat(buffer.toString(StandardCharsets.UTF_8)).contains("Already up to date");
+        assertThat(fetcher.urls())
+            .containsExactly("https://api.github.com/repos/patbaumgartner/habit-hooks/releases/latest");
     }
 
     @Test
@@ -49,14 +54,17 @@ class SelfUpdaterTest {
         Path artifact = Files.writeString(dir.resolve("habit-hooks"), "OLD");
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
         InstallTarget target = new InstallTarget("linux", "x64", true, Optional.of(artifact));
-        SelfUpdater updater = new SelfUpdater("0.1.0", new PrintStream(buffer),
-                new FakeFetcher(LATEST_JSON, "NEW-BINARY"), target);
+        FakeFetcher fetcher = new FakeFetcher(LATEST_JSON, "NEW-BINARY");
+        SelfUpdater updater = new SelfUpdater("0.1.0", new PrintStream(buffer), fetcher, target);
 
         int exit = updater.run();
 
         assertThat(exit).isZero();
         assertThat(Files.readString(artifact)).isEqualTo("NEW-BINARY");
         assertThat(buffer.toString(StandardCharsets.UTF_8)).contains("Updated to 0.2.0");
+        assertThat(fetcher.urls()).containsExactly(
+                "https://api.github.com/repos/patbaumgartner/habit-hooks/releases/latest",
+                "https://github.com/patbaumgartner/habit-hooks/releases/download/v0.2.0/habit-hooks-linux-x64");
     }
 
     @Test
@@ -89,6 +97,8 @@ class SelfUpdaterTest {
 
         private final String payload;
 
+        private final List<String> urls = new ArrayList<>();
+
         FakeFetcher(String json) {
             this(json, "");
         }
@@ -100,12 +110,18 @@ class SelfUpdaterTest {
 
         @Override
         public String getText(String url) {
+            this.urls.add(url);
             return this.json;
         }
 
         @Override
         public void downloadTo(String url, Path destination) throws IOException {
+            this.urls.add(url);
             Files.writeString(destination, this.payload);
+        }
+
+        List<String> urls() {
+            return List.copyOf(this.urls);
         }
 
     }

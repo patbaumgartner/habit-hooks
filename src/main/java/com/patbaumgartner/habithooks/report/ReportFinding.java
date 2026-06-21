@@ -2,17 +2,15 @@ package com.patbaumgartner.habithooks.report;
 
 import com.patbaumgartner.habithooks.model.Violation;
 import java.util.Comparator;
-import java.util.List;
+import java.util.Map;
 
 /** A report-friendly view of a normalized analyzer violation. */
 public record ReportFinding(String ruleId, String tool, String dimension, String severity, String file, int line,
         String message) {
 
-    private static final List<String> SUPPLY_CHAIN_TOOLS = List.of("owasp", "cyclonedx");
-
-    private static final List<String> TEST_SIGNAL_TOOLS = List.of("jacoco", "pitest");
-
-    private static final List<String> CORRECTNESS_TOOLS = List.of("spotbugs", "errorprone");
+    private static final Map<String, String> DIMENSIONS_BY_TOOL = Map.of("owasp", "supply-chain", "cyclonedx",
+            "supply-chain", "jacoco", "test-signal", "pitest", "test-signal", "taikai", "architecture",
+            "spring-javaformat", "formatting", "spotbugs", "correctness", "errorprone", "correctness");
 
     private static final int CRITICAL_RANK = 0;
 
@@ -56,19 +54,11 @@ public record ReportFinding(String ruleId, String tool, String dimension, String
     }
 
     private static String dimensionOf(String tool, String ruleId) {
-        if (SUPPLY_CHAIN_TOOLS.contains(tool)) {
-            return "supply-chain";
+        String dimension = DIMENSIONS_BY_TOOL.get(tool);
+        if (dimension != null) {
+            return dimension;
         }
-        if (TEST_SIGNAL_TOOLS.contains(tool)) {
-            return "test-signal";
-        }
-        if ("taikai".equals(tool)) {
-            return "architecture";
-        }
-        if ("spring-javaformat".equals(tool)) {
-            return "formatting";
-        }
-        if (CORRECTNESS_TOOLS.contains(tool) || ruleId.contains("Null")) {
+        if (ruleId.contains("Null")) {
             return "correctness";
         }
         return "maintainability";

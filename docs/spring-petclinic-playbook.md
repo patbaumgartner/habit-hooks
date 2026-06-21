@@ -7,7 +7,7 @@ to fix, fixing those findings in Petclinic, and collecting an after report.
 The reference workspace layout used while validating this playbook was:
 
 ```text
-/home/patbaumgartner/GitHub/habbit-hooks
+/home/patbaumgartner/GitHub/habit-hooks
 /home/patbaumgartner/GitHub/spring-petclinic
 ```
 
@@ -20,7 +20,7 @@ Always start by upgrading the installed `habit-hooks` binary, then record the
 version used for the reference validation run.
 
 ```bash
-cd /home/patbaumgartner/GitHub/habbit-hooks
+cd /home/patbaumgartner/GitHub/habit-hooks
 
 habit-hooks --version
 habit-hooks --update
@@ -32,7 +32,7 @@ published release tag explicitly. Set `HH_VERSION` to the release you intend to
 validate.
 
 ```bash
-cd /home/patbaumgartner/GitHub/habbit-hooks
+cd /home/patbaumgartner/GitHub/habit-hooks
 
 HH_VERSION=v0.1.10
 VERSION="$HH_VERSION" scripts/install.sh
@@ -171,7 +171,8 @@ stays unchanged:
 
 - `habit-hooks-analyzers`: SpotBugs and OWASP Dependency Check
 - `habit-hooks-errorprone`: Maven Compiler Plugin with Error Prone
-- `mutation-test`: PIT with the JUnit 5 plugin and XML output
+- `mutation-test`: PIT with the JUnit 5 plugin, XML output, and threshold gates
+  for mutation score, coverage, and test strength
 
 Add or verify a package-correct Taikai test at
 `src/test/java/org/springframework/samples/petclinic/ArchitectureTest.java`:
@@ -421,14 +422,14 @@ included so a future maintainer can reproduce the workflow and see where the
 playbook came from.
 
 ```bash
-git -C /home/patbaumgartner/GitHub/habbit-hooks status --short --branch --untracked-files=all
+git -C /home/patbaumgartner/GitHub/habit-hooks status --short --branch --untracked-files=all
 git -C /home/patbaumgartner/GitHub/spring-petclinic status --short --branch --untracked-files=all
 command -v habit-hooks || true
 habit-hooks --version || true
 
 habit-hooks --update
-git -C /home/patbaumgartner/GitHub/habbit-hooks --no-pager log --oneline -5
-git -C /home/patbaumgartner/GitHub/habbit-hooks tag --sort=-v:refname | sed -n '1,10p'
+git -C /home/patbaumgartner/GitHub/habit-hooks --no-pager log --oneline -5
+git -C /home/patbaumgartner/GitHub/habit-hooks tag --sort=-v:refname | sed -n '1,10p'
 VERSION=v0.1.10 scripts/install.sh
 habit-hooks --version
 
@@ -472,6 +473,6 @@ cp target/pmd.xml target/habit-hooks-reference-validation-v0.1.10/after/pmd.xml
 
 cat target/habit-hooks-reference-validation-v0.1.10/after/report.json
 cat target/habit-hooks-reference-validation-v0.1.10/after/tasks.md
-git -C /home/patbaumgartner/GitHub/habbit-hooks --no-pager status --short --branch --untracked-files=all
+git -C /home/patbaumgartner/GitHub/habit-hooks --no-pager status --short --branch --untracked-files=all
 git -C /home/patbaumgartner/GitHub/spring-petclinic --no-pager status --short --branch --untracked-files=all
 ```

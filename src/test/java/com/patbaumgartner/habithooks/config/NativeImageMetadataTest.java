@@ -16,6 +16,79 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class NativeImageMetadataTest {
 
+    private static final List<String> PMD_RULE_TYPES = List.of("net.sourceforge.pmd.lang.rule.xpath.XPathRule",
+            "net.sourceforge.pmd.lang.java.rule.design.NcssCountRule",
+            "net.sourceforge.pmd.lang.java.rule.design.ExcessiveParameterListRule",
+            "net.sourceforge.pmd.lang.java.rule.design.CyclomaticComplexityRule",
+            "net.sourceforge.pmd.lang.java.rule.design.GodClassRule",
+            "net.sourceforge.pmd.lang.java.rule.design.AvoidRethrowingExceptionRule",
+            "net.sourceforge.pmd.lang.java.rule.design.CouplingBetweenObjectsRule",
+            "net.sourceforge.pmd.lang.java.rule.design.SingularFieldRule",
+            "net.sourceforge.pmd.lang.java.rule.bestpractices.UseCollectionIsEmptyRule",
+            "net.sourceforge.pmd.lang.java.rule.bestpractices.UnusedPrivateFieldRule",
+            "net.sourceforge.pmd.lang.java.rule.bestpractices.UnusedLocalVariableRule",
+            "net.sourceforge.pmd.lang.java.rule.bestpractices.UnusedPrivateMethodRule",
+            "net.sourceforge.pmd.lang.java.rule.bestpractices.UnusedFormalParameterRule",
+            "net.sourceforge.pmd.lang.java.rule.bestpractices.UnusedAssignmentRule",
+            "net.sourceforge.pmd.lang.java.rule.bestpractices.AvoidReassigningParametersRule",
+            "net.sourceforge.pmd.lang.java.rule.bestpractices.LooseCouplingRule",
+            "net.sourceforge.pmd.lang.java.rule.bestpractices.LiteralsFirstInComparisonsRule",
+            "net.sourceforge.pmd.lang.java.rule.bestpractices.ArrayIsStoredDirectlyRule",
+            "net.sourceforge.pmd.lang.java.rule.bestpractices.MethodReturnsInternalArrayRule",
+            "net.sourceforge.pmd.lang.java.rule.bestpractices.PreserveStackTraceRule",
+            "net.sourceforge.pmd.lang.java.rule.bestpractices.UseTryWithResourcesRule",
+            "net.sourceforge.pmd.lang.java.rule.errorprone.CloseResourceRule",
+            "net.sourceforge.pmd.lang.java.rule.errorprone.OverrideBothEqualsAndHashcodeRule",
+            "net.sourceforge.pmd.lang.java.rule.errorprone.ProperCloneImplementationRule",
+            "net.sourceforge.pmd.lang.java.rule.performance.UseStringBufferForStringAppendsRule");
+
+    private static final List<String> CHECKSTYLE_MODULE_TYPES = List.of(
+            "com.puppycrawl.tools.checkstyle.api.TokenTypes", "\"allPublicFields\": true",
+            "com.puppycrawl.tools.checkstyle.Checker", "com.puppycrawl.tools.checkstyle.TreeWalker",
+            "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck",
+            "com.puppycrawl.tools.checkstyle.checks.NewlineAtEndOfFileCheck",
+            "com.puppycrawl.tools.checkstyle.checks.sizes.FileLengthCheck",
+            "com.puppycrawl.tools.checkstyle.checks.sizes.MethodLengthCheck",
+            "com.puppycrawl.tools.checkstyle.checks.sizes.ParameterNumberCheck",
+            "com.puppycrawl.tools.checkstyle.checks.metrics.CyclomaticComplexityCheck",
+            "com.puppycrawl.tools.checkstyle.checks.metrics.JavaNCSSCheck",
+            "com.puppycrawl.tools.checkstyle.checks.metrics.BooleanExpressionComplexityCheck",
+            "com.puppycrawl.tools.checkstyle.checks.naming.TypeNameCheck",
+            "com.puppycrawl.tools.checkstyle.checks.naming.MethodNameCheck",
+            "com.puppycrawl.tools.checkstyle.checks.naming.ParameterNameCheck",
+            "com.puppycrawl.tools.checkstyle.checks.naming.LocalVariableNameCheck",
+            "com.puppycrawl.tools.checkstyle.checks.naming.MemberNameCheck",
+            "com.puppycrawl.tools.checkstyle.checks.naming.StaticVariableNameCheck",
+            "com.puppycrawl.tools.checkstyle.checks.naming.ConstantNameCheck",
+            "com.puppycrawl.tools.checkstyle.checks.naming.PackageNameCheck",
+            "com.puppycrawl.tools.checkstyle.checks.naming.ClassTypeParameterNameCheck",
+            "com.puppycrawl.tools.checkstyle.checks.design.VisibilityModifierCheck",
+            "com.puppycrawl.tools.checkstyle.checks.design.FinalClassCheck",
+            "com.puppycrawl.tools.checkstyle.checks.design.InnerTypeLastCheck",
+            "com.puppycrawl.tools.checkstyle.checks.design.OneTopLevelClassCheck",
+            "com.puppycrawl.tools.checkstyle.checks.coding.MagicNumberCheck",
+            "com.puppycrawl.tools.checkstyle.checks.coding.InnerAssignmentCheck",
+            "com.puppycrawl.tools.checkstyle.checks.coding.SimplifyBooleanExpressionCheck",
+            "com.puppycrawl.tools.checkstyle.checks.coding.SimplifyBooleanReturnCheck",
+            "com.puppycrawl.tools.checkstyle.checks.coding.StringLiteralEqualityCheck",
+            "com.puppycrawl.tools.checkstyle.checks.coding.NestedIfDepthCheck",
+            "com.puppycrawl.tools.checkstyle.checks.coding.NestedTryDepthCheck",
+            "com.puppycrawl.tools.checkstyle.checks.coding.MultipleVariableDeclarationsCheck",
+            "com.puppycrawl.tools.checkstyle.checks.coding.OneStatementPerLineCheck",
+            "com.puppycrawl.tools.checkstyle.checks.coding.FallThroughCheck",
+            "com.puppycrawl.tools.checkstyle.checks.coding.UnnecessaryParenthesesCheck",
+            "com.puppycrawl.tools.checkstyle.checks.coding.NoFinalizerCheck",
+            "com.puppycrawl.tools.checkstyle.checks.imports.AvoidStarImportCheck",
+            "com.puppycrawl.tools.checkstyle.checks.imports.RedundantImportCheck",
+            "com.puppycrawl.tools.checkstyle.checks.imports.UnusedImportsCheck",
+            "com.puppycrawl.tools.checkstyle.checks.imports.IllegalImportCheck",
+            "com.puppycrawl.tools.checkstyle.checks.blocks.EmptyBlockCheck",
+            "com.puppycrawl.tools.checkstyle.checks.blocks.NeedBracesCheck",
+            "com.puppycrawl.tools.checkstyle.checks.blocks.LeftCurlyCheck",
+            "com.puppycrawl.tools.checkstyle.checks.TodoCommentCheck",
+            "com.puppycrawl.tools.checkstyle.checks.UpperEllCheck",
+            "com.puppycrawl.tools.checkstyle.checks.ArrayTypeStyleCheck");
+
     private static final Path REFLECT_CONFIG = Path
         .of("src/main/resources/META-INF/native-image/com.patbaumgartner/habit-hooks/reflect-config.json");
 
@@ -46,24 +119,7 @@ class NativeImageMetadataTest {
     void registersPmdRulesForNativeReflection() throws Exception {
         String metadata = Files.readString(REFLECT_CONFIG);
 
-        assertThat(metadata).contains("net.sourceforge.pmd.lang.rule.xpath.XPathRule",
-                "net.sourceforge.pmd.lang.java.rule.design.NcssCountRule",
-                "net.sourceforge.pmd.lang.java.rule.design.ExcessiveParameterListRule",
-                "net.sourceforge.pmd.lang.java.rule.design.CyclomaticComplexityRule",
-                "net.sourceforge.pmd.lang.java.rule.design.GodClassRule",
-                "net.sourceforge.pmd.lang.java.rule.design.SingularFieldRule",
-                "net.sourceforge.pmd.lang.java.rule.bestpractices.UseCollectionIsEmptyRule",
-                "net.sourceforge.pmd.lang.java.rule.bestpractices.UnusedPrivateFieldRule",
-                "net.sourceforge.pmd.lang.java.rule.bestpractices.UnusedLocalVariableRule",
-                "net.sourceforge.pmd.lang.java.rule.bestpractices.AvoidReassigningParametersRule",
-                "net.sourceforge.pmd.lang.java.rule.bestpractices.LooseCouplingRule",
-                "net.sourceforge.pmd.lang.java.rule.bestpractices.LiteralsFirstInComparisonsRule",
-                "net.sourceforge.pmd.lang.java.rule.bestpractices.ArrayIsStoredDirectlyRule",
-                "net.sourceforge.pmd.lang.java.rule.bestpractices.MethodReturnsInternalArrayRule",
-                "net.sourceforge.pmd.lang.java.rule.bestpractices.PreserveStackTraceRule",
-                "net.sourceforge.pmd.lang.java.rule.errorprone.OverrideBothEqualsAndHashcodeRule",
-                "net.sourceforge.pmd.lang.java.rule.errorprone.ProperCloneImplementationRule",
-                "net.sourceforge.pmd.lang.java.rule.performance.UseStringBufferForStringAppendsRule");
+        assertContainsAll(metadata, PMD_RULE_TYPES);
     }
 
     @Test
@@ -83,51 +139,11 @@ class NativeImageMetadataTest {
     void registersConfiguredCheckstyleModulesForNativeReflection() throws Exception {
         String metadata = Files.readString(REFLECT_CONFIG);
 
-        assertThat(metadata).contains("com.puppycrawl.tools.checkstyle.api.TokenTypes", "\"allPublicFields\": true",
-                "com.puppycrawl.tools.checkstyle.Checker", "com.puppycrawl.tools.checkstyle.TreeWalker",
-                "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck",
-                "com.puppycrawl.tools.checkstyle.checks.NewlineAtEndOfFileCheck",
-                "com.puppycrawl.tools.checkstyle.checks.sizes.FileLengthCheck",
-                "com.puppycrawl.tools.checkstyle.checks.sizes.MethodLengthCheck",
-                "com.puppycrawl.tools.checkstyle.checks.sizes.ParameterNumberCheck",
-                "com.puppycrawl.tools.checkstyle.checks.metrics.CyclomaticComplexityCheck",
-                "com.puppycrawl.tools.checkstyle.checks.metrics.JavaNCSSCheck",
-                "com.puppycrawl.tools.checkstyle.checks.metrics.BooleanExpressionComplexityCheck",
-                "com.puppycrawl.tools.checkstyle.checks.naming.TypeNameCheck",
-                "com.puppycrawl.tools.checkstyle.checks.naming.MethodNameCheck",
-                "com.puppycrawl.tools.checkstyle.checks.naming.ParameterNameCheck",
-                "com.puppycrawl.tools.checkstyle.checks.naming.LocalVariableNameCheck",
-                "com.puppycrawl.tools.checkstyle.checks.naming.MemberNameCheck",
-                "com.puppycrawl.tools.checkstyle.checks.naming.StaticVariableNameCheck",
-                "com.puppycrawl.tools.checkstyle.checks.naming.ConstantNameCheck",
-                "com.puppycrawl.tools.checkstyle.checks.naming.PackageNameCheck",
-                "com.puppycrawl.tools.checkstyle.checks.naming.ClassTypeParameterNameCheck",
-                "com.puppycrawl.tools.checkstyle.checks.design.VisibilityModifierCheck",
-                "com.puppycrawl.tools.checkstyle.checks.design.FinalClassCheck",
-                "com.puppycrawl.tools.checkstyle.checks.design.InnerTypeLastCheck",
-                "com.puppycrawl.tools.checkstyle.checks.design.OneTopLevelClassCheck",
-                "com.puppycrawl.tools.checkstyle.checks.coding.MagicNumberCheck",
-                "com.puppycrawl.tools.checkstyle.checks.coding.InnerAssignmentCheck",
-                "com.puppycrawl.tools.checkstyle.checks.coding.SimplifyBooleanExpressionCheck",
-                "com.puppycrawl.tools.checkstyle.checks.coding.SimplifyBooleanReturnCheck",
-                "com.puppycrawl.tools.checkstyle.checks.coding.StringLiteralEqualityCheck",
-                "com.puppycrawl.tools.checkstyle.checks.coding.NestedIfDepthCheck",
-                "com.puppycrawl.tools.checkstyle.checks.coding.NestedTryDepthCheck",
-                "com.puppycrawl.tools.checkstyle.checks.coding.MultipleVariableDeclarationsCheck",
-                "com.puppycrawl.tools.checkstyle.checks.coding.OneStatementPerLineCheck",
-                "com.puppycrawl.tools.checkstyle.checks.coding.FallThroughCheck",
-                "com.puppycrawl.tools.checkstyle.checks.coding.UnnecessaryParenthesesCheck",
-                "com.puppycrawl.tools.checkstyle.checks.coding.NoFinalizerCheck",
-                "com.puppycrawl.tools.checkstyle.checks.imports.AvoidStarImportCheck",
-                "com.puppycrawl.tools.checkstyle.checks.imports.RedundantImportCheck",
-                "com.puppycrawl.tools.checkstyle.checks.imports.UnusedImportsCheck",
-                "com.puppycrawl.tools.checkstyle.checks.imports.IllegalImportCheck",
-                "com.puppycrawl.tools.checkstyle.checks.blocks.EmptyBlockCheck",
-                "com.puppycrawl.tools.checkstyle.checks.blocks.NeedBracesCheck",
-                "com.puppycrawl.tools.checkstyle.checks.blocks.LeftCurlyCheck",
-                "com.puppycrawl.tools.checkstyle.checks.TodoCommentCheck",
-                "com.puppycrawl.tools.checkstyle.checks.UpperEllCheck",
-                "com.puppycrawl.tools.checkstyle.checks.ArrayTypeStyleCheck");
+        assertContainsAll(metadata, CHECKSTYLE_MODULE_TYPES);
+    }
+
+    private static void assertContainsAll(String metadata, List<String> expectedValues) {
+        assertThat(metadata).contains(expectedValues.toArray(String[]::new));
     }
 
     private static List<Class<?>> jacksonTypes() {

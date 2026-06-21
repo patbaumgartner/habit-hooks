@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.patbaumgartner</groupId>
@@ -285,13 +287,18 @@
               <shadedClassifierName>launcher</shadedClassifierName>
               <createDependencyReducedPom>false</createDependencyReducedPom>
               <transformers>
-                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                <transformer
+                  implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                   <mainClass>com.patbaumgartner.habithooks.HabitHooks</mainClass>
                 </transformer>
-                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"></transformer>
-                <transformer implementation="org.apache.maven.plugins.shade.resource.ComponentsXmlResourceTransformer"></transformer>
-                <transformer implementation="org.apache.maven.plugins.shade.resource.ApacheLicenseResourceTransformer"></transformer>
-                <transformer implementation="org.apache.maven.plugins.shade.resource.ApacheNoticeResourceTransformer">
+                <transformer
+                  implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"></transformer>
+                <transformer
+                  implementation="org.apache.maven.plugins.shade.resource.ComponentsXmlResourceTransformer"></transformer>
+                <transformer
+                  implementation="org.apache.maven.plugins.shade.resource.ApacheLicenseResourceTransformer"></transformer>
+                <transformer
+                  implementation="org.apache.maven.plugins.shade.resource.ApacheNoticeResourceTransformer">
                   <addHeader>false</addHeader>
                 </transformer>
               </transformers>
@@ -356,7 +363,7 @@
                     <limit>
                       <counter>LINE</counter>
                       <value>COVEREDRATIO</value>
-                      <minimum>0.70</minimum>
+                      <minimum>0.75</minimum>
                     </limit>
                   </limits>
                 </rule>
@@ -407,7 +414,7 @@
           </rulesets>
           <failOnViolation>true</failOnViolation>
           <printFailingErrors>true</printFailingErrors>
-          <minimumTokens>100</minimumTokens>
+          <minimumTokens>70</minimumTokens>
           <includeTests>false</includeTests>
           <targetJdk>${java.version}</targetJdk>
           <!-- No JXR report is generated; skip cross-reference links to avoid a noisy warning -->
@@ -442,7 +449,7 @@
         <version>${spotbugs-maven-plugin.version}</version>
         <configuration>
           <effort>Max</effort>
-          <threshold>High</threshold>
+          <threshold>Medium</threshold>
           <failOnError>true</failOnError>
         </configuration>
         <executions>
@@ -543,7 +550,7 @@
       </plugin>
     </plugins>
   </build>
-  <url>https://github.com/patbaumgartner/habbit-hooks</url>
+  <url>https://github.com/patbaumgartner/habit-hooks</url>
   <inceptionYear>2026</inceptionYear>
   <licenses>
     <license>
@@ -562,18 +569,18 @@
   </developers>
 
   <scm>
-    <connection>scm:git:git://github.com/patbaumgartner/habbit-hooks.git</connection>
-    <developerConnection>scm:git:ssh://github.com:patbaumgartner/habbit-hooks.git</developerConnection>
-    <url>https://github.com/patbaumgartner/habbit-hooks/tree/main</url>
+    <connection>scm:git:git://github.com/patbaumgartner/habit-hooks.git</connection>
+    <developerConnection>scm:git:ssh://github.com:patbaumgartner/habit-hooks.git</developerConnection>
+    <url>https://github.com/patbaumgartner/habit-hooks/tree/main</url>
     <tag>HEAD</tag>
   </scm>
   <issueManagement>
     <system>GitHub Issues</system>
-    <url>https://github.com/patbaumgartner/habbit-hooks/issues</url>
+    <url>https://github.com/patbaumgartner/habit-hooks/issues</url>
   </issueManagement>
   <ciManagement>
     <system>GitHub Actions</system>
-    <url>https://github.com/patbaumgartner/habbit-hooks/actions</url>
+    <url>https://github.com/patbaumgartner/habit-hooks/actions</url>
   </ciManagement>
 
   <!-- GraalVM native image build (opt-in: mvn -Pnative package) -->

@@ -93,7 +93,7 @@ Configuration loading behavior:
 
 - Unit tests with JUnit 5 and AssertJ.
 - Integration tests through Maven Failsafe (`*IT.java`) for end-to-end command flows.
-- JaCoCo minimum line coverage gate at 70%.
+- JaCoCo minimum line coverage gate at 75%.
 - Checkstyle, PMD/CPD, SpotBugs, spring-javaformat formatting check, and optional PIT mutation profile.
 - Optional habit-hooks analyzers can normalize SpotBugs, JaCoCo, CycloneDX, PIT,
     OWASP Dependency Check, Spring Java Format, Error Prone, and JSpecify feedback.

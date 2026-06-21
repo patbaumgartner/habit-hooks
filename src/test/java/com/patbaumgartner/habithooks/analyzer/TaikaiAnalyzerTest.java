@@ -27,30 +27,25 @@ class TaikaiAnalyzerTest {
 
     @Test
     void isNotAvailableWhenTestClassMissing() throws IOException {
-        Files.createDirectories(tempDir.resolve("src/test/java/com/example"));
-        Files.writeString(tempDir.resolve("src/test/java/com/example/OtherTest.java"), "class OtherTest {}");
-        Files.writeString(tempDir.resolve("mvnw"), "#!/bin/sh");
+        writeTestClass("OtherTest.java", "class OtherTest {}");
+        writeMavenWrapper();
         assertThat(new TaikaiAnalyzer("ArchitectureTest").isAvailable(tempDir)).isFalse();
     }
 
     @Test
     void isAvailableWhenMvnwAndTestClassPresent() throws IOException {
-        Path testDir = tempDir.resolve("src/test/java/com/example");
-        Files.createDirectories(testDir);
-        Files.writeString(testDir.resolve("ArchitectureTest.java"), "class ArchitectureTest {}");
-        Files.writeString(tempDir.resolve("mvnw"), "#!/bin/sh");
+        writeTestClass("ArchitectureTest.java", "class ArchitectureTest {}");
+        writeMavenWrapper();
         assertThat(new TaikaiAnalyzer("ArchitectureTest").isAvailable(tempDir)).isTrue();
     }
 
     @Test
     void isNotAvailableWhenTaikaiTestHasNoBuildDependency() throws IOException {
-        Path testDir = tempDir.resolve("src/test/java/com/example");
-        Files.createDirectories(testDir);
-        Files.writeString(testDir.resolve("ArchitectureTest.java"), """
+        writeTestClass("ArchitectureTest.java", """
                 import com.enofex.taikai.Taikai;
                 class ArchitectureTest {}
                 """);
-        Files.writeString(tempDir.resolve("mvnw"), "#!/bin/sh");
+        writeMavenWrapper();
         Files.writeString(tempDir.resolve("pom.xml"), "<project></project>");
 
         assertThat(new TaikaiAnalyzer("ArchitectureTest").isAvailable(tempDir)).isFalse();
@@ -58,13 +53,11 @@ class TaikaiAnalyzerTest {
 
     @Test
     void isAvailableWhenTaikaiTestHasBuildDependency() throws IOException {
-        Path testDir = tempDir.resolve("src/test/java/com/example");
-        Files.createDirectories(testDir);
-        Files.writeString(testDir.resolve("ArchitectureTest.java"), """
+        writeTestClass("ArchitectureTest.java", """
                 import com.enofex.taikai.Taikai;
                 class ArchitectureTest {}
                 """);
-        Files.writeString(tempDir.resolve("mvnw"), "#!/bin/sh");
+        writeMavenWrapper();
         Files.writeString(tempDir.resolve("pom.xml"), "<artifactId>taikai</artifactId>");
 
         assertThat(new TaikaiAnalyzer("ArchitectureTest").isAvailable(tempDir)).isTrue();
@@ -106,6 +99,16 @@ class TaikaiAnalyzerTest {
     }
 
     // ── helpers ──────────────────────────────────────────────────────────────
+
+    private void writeTestClass(String filename, String content) throws IOException {
+        Path testDir = tempDir.resolve("src/test/java/com/example");
+        Files.createDirectories(testDir);
+        Files.writeString(testDir.resolve(filename), content);
+    }
+
+    private void writeMavenWrapper() throws IOException {
+        Files.writeString(tempDir.resolve("mvnw"), "#!/bin/sh");
+    }
 
     private static TaikaiAnalyzer noMavenAnalyzer(String testClass) {
         return new TaikaiAnalyzer(testClass) {

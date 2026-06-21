@@ -37,8 +37,8 @@ class ProjectInitializerTest {
         assertThat(Files.exists(tempDir.resolve(".habit-hooks-baseline.json"))).isTrue();
         assertThat(Files.exists(tempDir.resolve("habit-hooks-maven-snippets.xml"))).isFalse();
         assertThat(Files.readString(tempDir.resolve(".habit-hooks.yaml"))).contains("spotbugs:", "spring-javaformat:");
-        assertThat(Files.readString(tempDir.resolve("checkstyle.xml"))).doesNotContain("FileTabCharacter",
-                "EmptyLineSeparator");
+        assertThat(Files.readString(tempDir.resolve("checkstyle.xml"))).contains("FileTabCharacter",
+                "EmptyLineSeparator", "value=\"20\"", "value=\"4\"", "value=\"6\"");
     }
 
     @Test

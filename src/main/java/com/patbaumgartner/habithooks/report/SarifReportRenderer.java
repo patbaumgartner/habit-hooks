@@ -18,7 +18,7 @@ final class SarifReportRenderer {
             .map(SarifReportRenderer::rule)
             .toList();
         Map<String, Object> driver = Map.of("name", "habit-hooks", "informationUri",
-                "https://github.com/patbaumgartner/habbit-hooks", "rules", rules);
+                "https://github.com/patbaumgartner/habit-hooks", "rules", rules);
         return Map.of("version", "2.1.0", "$schema", "https://json.schemastore.org/sarif-2.1.0.json", "runs",
                 List.of(Map.of("tool", Map.of("driver", driver), "results", results)));
     }
