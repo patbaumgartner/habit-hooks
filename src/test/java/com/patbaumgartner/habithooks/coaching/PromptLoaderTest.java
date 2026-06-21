@@ -100,7 +100,8 @@ class PromptLoaderTest {
     }
 
     private static List<String> metaRules(String toolPrefix) {
-        return List.of(toolPrefix + ":goal-failed", toolPrefix + ":report-missing", toolPrefix + ":report-unreadable");
+        return List.of(toolPrefix + ":goal-failed", toolPrefix + ":lifecycle-blocked", toolPrefix + ":report-missing",
+                toolPrefix + ":report-unreadable");
     }
 
 }

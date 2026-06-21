@@ -25,6 +25,11 @@ public non-sealed class MavenGoalAnalyzer implements Analyzer {
 
     private static final String MAVEN_WRAPPER = "mvnw";
 
+    private static final List<String> MAVEN_FOOTER_LINES = List.of("[Help ",
+            "cwiki.apache.org/confluence/display/MAVEN", "To see the full stack trace",
+            "Re-run Maven using the -X switch", "For more information about the errors", "BUILD FAILURE",
+            "BUILD SUCCESS", "Finished at:", "Total time:");
+
     private final String toolPrefix;
 
     private final String goal;
@@ -67,6 +72,9 @@ public non-sealed class MavenGoalAnalyzer implements Analyzer {
     public List<Violation> analyze(List<Path> files, Path workingDir) {
         ExecutionResult execution = runMaven(workingDir);
         Optional<Path> outputLog = writeCapturedOutput(workingDir, execution.output());
+        if (isLifecycleBlocked(execution)) {
+            return lifecycleBlockedViolation(execution, workingDir, outputLog);
+        }
         if (capturesOutput() && execution.exitCode() == 0) {
             return List.of();
         }
@@ -128,6 +136,10 @@ public non-sealed class MavenGoalAnalyzer implements Analyzer {
         return false;
     }
 
+    private boolean isLifecycleBlocked(ExecutionResult execution) {
+        return MavenExecutionClassifier.lifecycleBlocked(toolPrefix, execution.exitCode(), execution.output());
+    }
+
     private List<String> buildMavenCommand(Path workingDir) {
         String mvn = Files.isRegularFile(workingDir.resolve(MAVEN_WRAPPER)) ? "./" + MAVEN_WRAPPER : "mvn";
         List<String> command = new ArrayList<>();
@@ -165,6 +177,12 @@ public non-sealed class MavenGoalAnalyzer implements Analyzer {
                     + reportFile + "." + outputSummary(execution.output(), workingDir, outputLog)));
     }
 
+    private List<Violation> lifecycleBlockedViolation(ExecutionResult execution, Path workingDir,
+            Optional<Path> outputLog) {
+        return List.of(buildViolation("lifecycle-blocked", "pom.xml", 1, "Maven stopped before the " + toolPrefix
+                + " analyzer goal started." + outputSummary(execution.output(), workingDir, outputLog)));
+    }
+
     private String goalFailedMessage(String output, Path workingDir, Optional<Path> outputLog) {
         return "Maven goal '" + goal + "' failed but the report contained no parseable findings."
                 + outputSummary(output, workingDir, outputLog);
@@ -182,9 +200,7 @@ public non-sealed class MavenGoalAnalyzer implements Analyzer {
     }
 
     private static boolean isUsefulOutputLine(String line) {
-        return !line.isBlank() && !line.contains("[Help ")
-                && !line.contains("cwiki.apache.org/confluence/display/MAVEN")
-                && !line.contains("To see the full stack trace") && !line.contains("Re-run Maven using the -X switch");
+        return !line.isBlank() && MAVEN_FOOTER_LINES.stream().noneMatch(line::contains);
     }
 
     private Violation buildViolation(String rule, String file, int line, String message) {

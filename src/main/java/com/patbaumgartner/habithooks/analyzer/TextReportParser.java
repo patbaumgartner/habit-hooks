@@ -8,9 +8,14 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /** Parses captured text output from Maven-backed tools. */
 final class TextReportParser {
+
+    private static final Pattern ERROR_PRONE_DIAGNOSTIC = Pattern
+        .compile("^\\[ERROR\\]\\s+.+?:\\[\\d+,\\d+]\\s+\\[([A-Za-z][A-Za-z0-9_]+)]\\s+.*");
 
     private TextReportParser() {
     }
@@ -21,8 +26,15 @@ final class TextReportParser {
         if (content.isBlank()) {
             return List.of();
         }
+        Optional<String> formatterLine = content.lines()
+            .map(String::strip)
+            .filter(TextReportParser::isFormatterLine)
+            .findFirst();
+        if (formatterLine.isEmpty()) {
+            return List.of();
+        }
         return List.of(new Violation(toolPrefix + ":Formatting", ReportSupport.reportFilePath(reportPath, workingDir),
-                1, firstLine(content)));
+                1, formatterLine.get()));
     }
 
     static List<Violation> parseErrorProne(Path reportPath, Path workingDir, String toolPrefix) throws IOException {
@@ -40,17 +52,13 @@ final class TextReportParser {
     }
 
     private static Optional<String> errorProneRule(String line) {
-        int separator = line.indexOf("] [");
-        int start = separator < 0 ? -1 : line.indexOf("[", separator + 1);
-        int end = start < 0 ? -1 : line.indexOf("]", start);
-        if (start < 0 || end < 0 || !line.contains("[ERROR]")) {
-            return Optional.empty();
-        }
-        return Optional.of(line.substring(start + 1, end));
+        Matcher matcher = ERROR_PRONE_DIAGNOSTIC.matcher(line);
+        return matcher.matches() ? Optional.of(matcher.group(1)) : Optional.empty();
     }
 
-    private static String firstLine(String content) {
-        return content.lines().findFirst().orElse(content);
+    private static boolean isFormatterLine(String line) {
+        String lower = line.toLowerCase();
+        return lower.contains("format") && lower.contains("violation") && !lower.contains("failed to execute goal");
     }
 
     private record ReportLine(int index, String text) {

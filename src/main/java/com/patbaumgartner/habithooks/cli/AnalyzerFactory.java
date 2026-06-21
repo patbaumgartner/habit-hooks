@@ -19,7 +19,7 @@ import java.util.Set;
 final class AnalyzerFactory {
 
     private static final Map<String, String> DEFAULT_GOALS = Map.of("spotbugs", "spotbugs:spotbugs", "jacoco",
-            "test jacoco:report", "cyclonedx", "package cyclonedx:makeAggregateBom", "pitest",
+            "test jacoco:report", "cyclonedx", "cyclonedx:makeAggregateBom", "pitest",
             "-Pmutation-test test-compile org.pitest:pitest-maven:mutationCoverage", "spring-javaformat",
             "spring-javaformat:validate", "errorprone", "compile", "owasp",
             "org.owasp:dependency-check-maven:check -Dformat=JSON");

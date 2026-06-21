@@ -193,27 +193,33 @@ and *how to fix it*.
 | pmd               | `pmd:ArrayIsStoredDirectly`                  | Array stored without copying     |
 | pmd               | `pmd:PreserveStackTrace`                     | Lost stack trace on rethrow      |
 | spotbugs          | `spotbugs:goal-failed`                       | SpotBugs goal failed             |
+| spotbugs          | `spotbugs:lifecycle-blocked`                 | SpotBugs lifecycle blocked       |
 | spotbugs          | `spotbugs:report-missing`                    | SpotBugs report missing          |
 | spotbugs          | `spotbugs:report-unreadable`                 | SpotBugs report unreadable       |
 | jacoco            | `jacoco:LineCoverage`                        | Line coverage gap                |
 | jacoco            | `jacoco:goal-failed`                         | JaCoCo goal failed               |
+| jacoco            | `jacoco:lifecycle-blocked`                   | JaCoCo lifecycle blocked         |
 | jacoco            | `jacoco:report-missing`                      | JaCoCo report missing            |
 | jacoco            | `jacoco:report-unreadable`                   | JaCoCo report unreadable         |
 | cyclonedx         | `cyclonedx:InvalidBom`                       | Invalid SBOM                     |
 | cyclonedx         | `cyclonedx:MissingComponents`                | SBOM missing components          |
 | cyclonedx         | `cyclonedx:goal-failed`                      | CycloneDX goal failed            |
+| cyclonedx         | `cyclonedx:lifecycle-blocked`                | CycloneDX lifecycle blocked      |
 | cyclonedx         | `cyclonedx:report-missing`                   | CycloneDX report missing         |
 | cyclonedx         | `cyclonedx:report-unreadable`                | CycloneDX report unreadable      |
 | pitest            | `pitest:SURVIVED`                            | Surviving mutation               |
 | pitest            | `pitest:NO_COVERAGE`                         | Mutation without coverage        |
 | pitest            | `pitest:goal-failed`                         | PIT goal failed                  |
+| pitest            | `pitest:lifecycle-blocked`                   | PIT lifecycle blocked            |
 | pitest            | `pitest:report-missing`                      | PIT report missing               |
 | pitest            | `pitest:report-unreadable`                   | PIT report unreadable            |
 | spring-javaformat | `spring-javaformat:Formatting`               | Formatting drift                 |
 | spring-javaformat | `spring-javaformat:goal-failed`              | Formatter goal failed            |
+| spring-javaformat | `spring-javaformat:lifecycle-blocked`        | Formatter lifecycle blocked      |
 | spring-javaformat | `spring-javaformat:report-missing`           | Formatter output missing         |
 | spring-javaformat | `spring-javaformat:report-unreadable`        | Formatter output unreadable      |
 | errorprone        | `errorprone:goal-failed`                     | Error Prone compile failed       |
+| errorprone        | `errorprone:lifecycle-blocked`               | Error Prone lifecycle blocked    |
 | errorprone        | `errorprone:report-missing`                  | Error Prone output missing       |
 | errorprone        | `errorprone:report-unreadable`               | Error Prone output unreadable    |
 | owasp             | `owasp:CveCritical`                          | Critical CVE                     |
@@ -222,6 +228,7 @@ and *how to fix it*.
 | owasp             | `owasp:CveLow`                               | Low CVE                          |
 | owasp             | `owasp:SuppressedVulnerability`              | Suppressed vulnerability         |
 | owasp             | `owasp:goal-failed`                          | OWASP scan failed                |
+| owasp             | `owasp:lifecycle-blocked`                    | OWASP lifecycle blocked          |
 | owasp             | `owasp:report-missing`                       | OWASP report missing             |
 | owasp             | `owasp:report-unreadable`                    | OWASP report unreadable          |
 | jspecify          | `jspecify:DependencyMissing`                 | JSpecify dependency missing      |
@@ -332,7 +339,7 @@ analyzers:
     reportFile: target/site/jacoco/jacoco.xml
   cyclonedx:                   # opt-in: validates target/bom.json
     enabled: false
-    goal: package cyclonedx:makeAggregateBom
+    goal: cyclonedx:makeAggregateBom
     reportFile: target/bom.json
   pitest:                      # opt-in: expensive mutation testing
     enabled: false

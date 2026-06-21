@@ -40,7 +40,7 @@ analyzers:
     reportFile: target/site/jacoco/jacoco.xml
   cyclonedx:
     enabled: false
-    goal: package cyclonedx:makeAggregateBom
+    goal: cyclonedx:makeAggregateBom
     reportFile: target/bom.json
   pitest:
     enabled: false

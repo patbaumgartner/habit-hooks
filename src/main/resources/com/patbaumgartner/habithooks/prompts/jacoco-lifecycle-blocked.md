@@ -1,0 +1,9 @@
+The configured Maven run stopped before the JaCoCo analyzer goal started. Coverage output from a previous run may still exist, but it does not describe the current build.
+
+**How to fix it:**
+
+1. Inspect the Maven output referenced by habit-hooks.
+2. Fix the first lifecycle failure, such as formatting, compilation, or tests.
+3. Re-run habit-hooks so JaCoCo can generate fresh evidence.
+
+Treat the first Maven failure as the blocker; do not chase downstream analyzer symptoms until it is gone.

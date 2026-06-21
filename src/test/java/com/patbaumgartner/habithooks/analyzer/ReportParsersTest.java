@@ -94,6 +94,30 @@ class ReportParsersTest {
     }
 
     @Test
+    void ignoresGenericMavenHelpAsErrorProneRule() throws Exception {
+        Path report = write("target/habit-hooks/errorprone.log", """
+                [ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException
+                """);
+
+        List<Violation> violations = ReportParsers.errorProneText().parse(report, tempDir, "errorprone");
+
+        assertThat(violations).isEmpty();
+    }
+
+    @Test
+    void ignoresSuccessfulSpringJavaFormatMavenOutput() throws Exception {
+        Path report = write("target/habit-hooks/spring-javaformat.log", """
+                [INFO] Scanning for projects...
+                [INFO] --- spring-javaformat:0.0.47:validate (default-cli) @ example ---
+                [INFO] BUILD SUCCESS
+                """);
+
+        List<Violation> violations = ReportParsers.springJavaFormatText().parse(report, tempDir, "spring-javaformat");
+
+        assertThat(violations).isEmpty();
+    }
+
+    @Test
     void parsesOwaspDependencyCheckVulnerabilities() throws Exception {
         Path report = write("target/dependency-check-report.json", """
                 {
