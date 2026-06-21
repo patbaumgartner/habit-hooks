@@ -1,7 +1,7 @@
 # .habit-hooks.yaml — self-dogfooding configuration
 #
 # habit-hooks runs against itself in CI using this config.
-# Run: java -jar target/habit-hooks-*-launcher.jar --all
+# Run: habit-hooks --all
 
 prompts: ./prompts
 

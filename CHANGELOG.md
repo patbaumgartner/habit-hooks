@@ -13,7 +13,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - JSpecify adoption analyzer for nullness annotation setup
 - Built-in coaching prompts for Maven-backed analyzer meta-rules and JSpecify adoption findings
 - Local quality reports in Markdown, JSON, HTML, and SARIF via `habit-hooks report`
-- Agent task export via `habit-hooks tasks`
+- Prioritized agent task export with verification commands and acceptance criteria via `habit-hooks tasks`
 - Analyzer prerequisite checks via `habit-hooks doctor`
 - Maven dependency and plugin update reporting via `habit-hooks dependencies`
 - Optional Maven plugin/dependency snippet scaffolding via `habit-hooks init --maven-snippets`
@@ -21,6 +21,12 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ### Changed
 
 - README now documents the expanded analyzer configuration, coached prompt coverage, rule severity semantics, and Maven snippet workflow
+- Report and task format flags now fail fast on unknown values and use `.md` for Markdown artifacts
+- Report, task, and dependency output paths now resolve relative to the analyzed project root
+- Artifact command help and README examples now document `--output`, `--no-fail`, and dependency update safety flags consistently
+- Report summary maps now render in deterministic key order for stable human and agent artifacts
+- Markdown/HTML reports now surface local trend deltas when a previous snapshot exists
+- `habit-hooks init` now points users to the installed `habit-hooks --all` command after scaffolding
 
 ## [0.1.0] - 2026-06-20
 

@@ -10,6 +10,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -18,14 +20,21 @@ public final class AgentTaskExporter {
 
     private static final int LOCATION_LIMIT = 10;
 
+    private static final String VERIFICATION_COMMAND = "habit-hooks --all";
+
     private static final ObjectMapper MAPPER = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
 
     /** Writes agent tasks and returns the generated path. */
     public Path write(AnalysisResult result, Path outputDir, String format) throws IOException {
+        return write(result, outputDir, Format.parse(format));
+    }
+
+    /** Writes agent tasks and returns the generated path. */
+    public Path write(AnalysisResult result, Path outputDir, Format format) throws IOException {
         Files.createDirectories(outputDir);
         List<AgentTask> tasks = tasks(result);
-        Path output = outputDir.resolve("tasks." + format);
-        if ("json".equals(format)) {
+        Path output = outputDir.resolve("tasks." + format.extension());
+        if (format == Format.JSON) {
             MAPPER.writeValue(output.toFile(), tasks);
         }
         else {
@@ -43,15 +52,17 @@ public final class AgentTaskExporter {
             .collect(Collectors.groupingBy(ReportFinding::ruleId))
             .entrySet()
             .stream()
-            .sorted(MapEntryComparator.INSTANCE)
+            .sorted(MapEntryComparator.INSTANCE.thenComparing(Map.Entry::getKey))
             .map(entry -> toTask(sequence.getAndIncrement(), entry.getKey(), entry.getValue()))
             .toList();
     }
 
     private static AgentTask toTask(int sequence, String ruleId, List<ReportFinding> findings) {
-        ReportFinding first = findings.getFirst();
+        List<ReportFinding> sortedFindings = findings.stream().sorted(ReportFinding.priorityOrder()).toList();
+        ReportFinding first = sortedFindings.getFirst();
         return new AgentTask("HH-" + String.format("%03d", sequence), title(first), ruleId, first.dimension(),
-                first.severity(), findings.size(), locations(findings));
+                first.severity(), sortedFindings.size(), VERIFICATION_COMMAND, acceptanceCriteria(first),
+                locations(sortedFindings));
     }
 
     private static String title(ReportFinding finding) {
@@ -67,8 +78,21 @@ public final class AgentTaskExporter {
         return findings.stream().map(AgentTaskExporter::location).distinct().limit(LOCATION_LIMIT).toList();
     }
 
+    private static List<String> acceptanceCriteria(ReportFinding finding) {
+        return List.of("Resolve all current findings for " + finding.ruleId() + ".",
+                "Keep the change focused and behavior-preserving unless the finding exposes a real bug.",
+                "Re-run " + VERIFICATION_COMMAND + " and confirm the rule no longer appears.");
+    }
+
     private static String markdown(List<AgentTask> tasks) {
         StringBuilder output = new StringBuilder("# habit-hooks agent tasks\n\n");
+        output.append("Work these in priority order. Keep each task focused, then re-run `")
+            .append(VERIFICATION_COMMAND)
+            .append("`.\n\n");
+        if (tasks.isEmpty()) {
+            output.append("No tasks generated.\n");
+            return output.toString();
+        }
         tasks.forEach(task -> appendTask(output, task));
         return output.toString();
     }
@@ -79,6 +103,9 @@ public final class AgentTaskExporter {
         output.append("- Dimension: ").append(task.dimension()).append("\n");
         output.append("- Severity: ").append(task.severity()).append("\n");
         output.append("- Findings: ").append(task.count()).append("\n");
+        output.append("- Verification: `").append(task.verificationCommand()).append("`\n");
+        output.append("- Acceptance criteria:\n");
+        task.acceptanceCriteria().forEach(criterion -> output.append("  - ").append(criterion).append('\n'));
         task.locations().forEach(location -> output.append("- Location: ").append(location).append('\n'));
         output.append('\n');
     }
@@ -87,14 +114,50 @@ public final class AgentTaskExporter {
         return finding.line() > 0 ? finding.file() + ":" + finding.line() : finding.file();
     }
 
-    private enum MapEntryComparator implements Comparator<java.util.Map.Entry<String, List<ReportFinding>>> {
+    /** Supported task export formats. */
+    public enum Format {
+
+        /** Markdown task list, written as {@code tasks.md}. */
+        MARKDOWN("md"),
+
+        /** JSON task list, written as {@code tasks.json}. */
+        JSON("json");
+
+        private final String extension;
+
+        Format(String extension) {
+            this.extension = extension;
+        }
+
+        String extension() {
+            return extension;
+        }
+
+        /** Parses a user-supplied format name. */
+        public static Format parse(String value) {
+            String normalized = value == null ? "" : value.toLowerCase(Locale.ROOT);
+            return switch (normalized) {
+                case "markdown", "md" -> MARKDOWN;
+                case "json" -> JSON;
+                default -> throw new IllegalArgumentException(
+                        "Unsupported task format '" + value + "'. Use one of: markdown, md, json.");
+            };
+        }
+
+    }
+
+    private enum MapEntryComparator implements Comparator<Map.Entry<String, List<ReportFinding>>> {
 
         INSTANCE;
 
         @Override
-        public int compare(java.util.Map.Entry<String, List<ReportFinding>> left,
-                java.util.Map.Entry<String, List<ReportFinding>> right) {
-            return left.getKey().compareTo(right.getKey());
+        public int compare(Map.Entry<String, List<ReportFinding>> left, Map.Entry<String, List<ReportFinding>> right) {
+            return ReportFinding.priorityOrder()
+                .compare(priorityFinding(left.getValue()), priorityFinding(right.getValue()));
+        }
+
+        private static ReportFinding priorityFinding(List<ReportFinding> findings) {
+            return findings.stream().min(ReportFinding.priorityOrder()).orElseThrow();
         }
 
     }

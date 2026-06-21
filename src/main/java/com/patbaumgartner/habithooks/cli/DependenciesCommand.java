@@ -27,21 +27,33 @@ final class DependenciesCommand implements Callable<Integer> {
     @Option(names = { "--allow-major" }, description = "Allow major updates when --apply is used")
     private boolean allowMajor;
 
-    @Option(names = { "--output" }, description = "Report output file",
-            defaultValue = "target/habit-hooks/dependencies.txt")
+    @Option(names = { "--output" }, description = "Report output file, relative to the project root",
+            defaultValue = "target/habit-hooks/dependencies.txt", paramLabel = "<file>")
     private Path output;
 
     @Override
     public Integer call() throws Exception {
         Path workingDir = parent.workingDir();
+        Path resolvedOutput = resolveOutput(workingDir);
         List<String> command = apply ? applyCommand(workingDir) : reportCommand(workingDir);
         Process process = start(command, workingDir);
         String text = readOutput(process);
-        Files.createDirectories(output.getParent());
-        Files.writeString(output, text, StandardCharsets.UTF_8);
+        createOutputParent(resolvedOutput);
+        Files.writeString(resolvedOutput, text, StandardCharsets.UTF_8);
         System.out.println(text.strip().isBlank() ? "No dependency output." : text.strip());
-        System.out.println("Wrote " + output);
+        System.out.println("Wrote " + resolvedOutput);
         return process.waitFor();
+    }
+
+    private Path resolveOutput(Path workingDir) {
+        return output.isAbsolute() ? output : workingDir.resolve(output);
+    }
+
+    private void createOutputParent(Path resolvedOutput) throws Exception {
+        Path parentDir = resolvedOutput.getParent();
+        if (parentDir != null) {
+            Files.createDirectories(parentDir);
+        }
     }
 
     private List<String> reportCommand(Path workingDir) {

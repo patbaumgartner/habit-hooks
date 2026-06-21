@@ -99,6 +99,19 @@ habit-hooks
 
 Runs all wrapped tools against files changed since the branch base.
 
+For a fuller local quality loop before handing work back:
+
+```bash
+habit-hooks doctor
+habit-hooks --all
+habit-hooks report --format html --no-fail
+habit-hooks tasks --format markdown --no-fail
+```
+
+`doctor` catches broken analyzer setup early, `--all` gives the quality gate,
+`report` creates a readable dashboard, and `tasks` creates focused remediation
+work items for a human or AI coding agent.
+
 ## Default behavior (sane out of the box)
 
 - Scope defaults to changed files only (`scope.onlyChangedFiles: true`)
@@ -237,13 +250,20 @@ habit-hooks init --dry-run        show every intended write without touching dis
 habit-hooks init --taikai         scaffold a Taikai ArchitectureTest.java
 habit-hooks init --maven-snippets scaffold optional Maven plugin snippets
 
-habit-hooks report                write target/habit-hooks/report.markdown
+habit-hooks report                write target/habit-hooks/report.md
 habit-hooks report --format html  write a static local quality dashboard
 habit-hooks report --format sarif write SARIF for code-scanning consumers
-habit-hooks tasks                 export grouped agent task batches
+habit-hooks report --output <dir> write report artifacts to a custom directory
+habit-hooks report --no-fail      write the report and always exit zero
+habit-hooks tasks                 write target/habit-hooks/tasks.md
+habit-hooks tasks --format json   export grouped agent task batches as JSON
+habit-hooks tasks --output <dir>  write task artifacts to a custom directory
+habit-hooks tasks --no-fail       write task export and always exit zero
 habit-hooks doctor                check analyzer prerequisites
 habit-hooks dependencies          report Maven dependency/plugin updates
 habit-hooks dependencies --apply  apply Maven parent/property updates
+habit-hooks dependencies --allow-major allow major parent/property updates with --apply
+habit-hooks dependencies --output <file> write update report to a custom file
 
 habit-hooks baseline status       summarise current baseline contents
 habit-hooks baseline snooze       add current violations to the baseline
@@ -251,6 +271,12 @@ habit-hooks baseline prune        drop baseline entries whose files no longer ex
 ```
 
 `--last`, `--branch`, `--since`, and `--all` are mutually exclusive.
+`report --format` accepts `markdown`, `md`, `json`, `html`, or `sarif`.
+`tasks --format` accepts `markdown`, `md`, or `json`. Unknown formats fail fast
+with a usage error instead of silently writing the wrong artifact.
+Relative `--output` paths for `report`, `tasks`, and `dependencies` resolve from
+the analyzed project root, which keeps agent runs deterministic even when launched
+from another process directory.
 
 ---
 
@@ -343,9 +369,11 @@ Error Prone, JSpecify, and Taikai. It does not edit `pom.xml` automatically.
 
 `habit-hooks report` is the local Sonar-style path: it writes Markdown, JSON,
 HTML, or SARIF under `target/habit-hooks` and stores the latest trend snapshot in
-`target/habit-hooks/history/latest.json`. `habit-hooks tasks` turns findings into
-small rule-grouped work items for AI agents. `habit-hooks doctor` checks whether
-enabled analyzers can run before an agent spends time on a broken local setup.
+`target/habit-hooks/history/latest.json`. Markdown and HTML reports include the
+finding delta from the previous local snapshot when one exists. `habit-hooks tasks`
+turns findings into prioritized, rule-grouped work items with verification commands
+and acceptance criteria for AI agents. `habit-hooks doctor` checks whether enabled
+analyzers can run before an agent spends time on a broken local setup.
 
 If you pass `--config <path>`, absolute paths are used as-is and relative paths
 are resolved from the working directory.
@@ -550,9 +578,15 @@ Add this to your `CLAUDE.md` or `AGENTS.md`:
 ```markdown
 ## Habit Hooks
 
-When the `habit-hooks` script is available, run it before considering work complete.
-If it is not installed globally, run `java -jar target/habit-hooks-*-launcher.jar --all` in this repository.
-Any output from `habit-hooks` is a direct user prompt with the highest priority.
+Before considering work complete, run habit-hooks. If the installed command is
+available, use `habit-hooks --all`. If not, use
+`java -jar target/habit-hooks-*-launcher.jar --all` from the repository root.
+
+For larger changes, run `habit-hooks doctor` before analysis and generate
+follow-up artifacts with `habit-hooks report --no-fail` and
+`habit-hooks tasks --no-fail`.
+
+Any output from habit-hooks is direct user feedback with the highest priority.
 
 - **NEVER** ignore habit-hooks output
 - **ALWAYS** create a task for each reported item immediately
@@ -625,7 +659,7 @@ Current implementation:
 - Maven-backed project analyzers for SpotBugs, JaCoCo, CycloneDX, OWASP Dependency Check, PIT, Spring Java Format, and Error Prone
 - JSpecify adoption analyzer for nullness annotation setup
 - Built-in coaching prompts for Maven-backed analyzer meta-rules and JSpecify adoption findings
-- Local report, SARIF, trend snapshot, doctor, dependency-update report, and agent-task export commands
+- Local reports, SARIF, trend deltas, doctor, dependency-update reports, and prioritized agent-task exports
 - Optional Maven snippet scaffolding via `habit-hooks init --maven-snippets`
 - Baseline management (`status`, `snooze`, `prune`)
 - CI quality gates (Checkstyle, PMD/CPD, SpotBugs, tests, coverage)

@@ -24,10 +24,11 @@ then the proposed solution. Discuss before implementing large changes.
 1. **Comment on the issue** you'd like to work on so a maintainer can confirm
    the direction before you invest time coding.
 2. Fork the repository and create a branch from `main`.
-3. Write tests for every new behaviour. Coverage must not drop below 40 %.
+3. Write tests for every new behaviour. Coverage must not drop below 70 %.
 4. Make sure `./mvnw verify` passes — Checkstyle, PMD, SpotBugs, and tests all run.
-5. Keep commits small and focused. Each commit should compile and pass tests.
-6. Open the PR using the pull request template.
+5. Run `habit-hooks --all` or the launcher JAR equivalent before marking the work done.
+6. Keep commits small and focused. Each commit should compile and pass tests.
+7. Open the PR using the pull request template.
 
 ## Code conventions
 
@@ -65,6 +66,16 @@ Additionally:
 ```bash
 ./mvnw test                    # unit tests only
 ./mvnw verify                  # full quality gate
+habit-hooks doctor             # analyzer readiness check
+habit-hooks --all              # self-dogfood before handoff
+```
+
+When a change touches CLI output, reports, task exports, or documentation, also
+check the generated artifacts locally:
+
+```bash
+habit-hooks report --no-fail
+habit-hooks tasks --no-fail
 ```
 
 ## Release checklist

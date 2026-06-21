@@ -30,6 +30,7 @@ class ProjectInitializerTest {
         Output output = run(false, false);
 
         assertThat(output.text()).contains("initialized");
+        assertThat(output.text()).contains("habit-hooks --all");
         assertThat(Files.exists(tempDir.resolve("checkstyle.xml"))).isTrue();
         assertThat(Files.exists(tempDir.resolve("pmd-ruleset.xml"))).isTrue();
         assertThat(Files.exists(tempDir.resolve(".habit-hooks.yaml"))).isTrue();

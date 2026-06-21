@@ -30,10 +30,11 @@ Steps to reproduce the behaviour:
 
 ## Environment
 
-- habit-hooks version: <!-- `java -jar habit-hooks.jar --version` -->
+- habit-hooks version: <!-- `habit-hooks --version` or `java -jar target/habit-hooks-*-launcher.jar --version` -->
 - Java version: <!-- `java -version` -->
 - OS:
 - Build tool: <!-- Maven / Gradle / standalone JAR -->
+- Analyzer readiness: <!-- paste `habit-hooks doctor` output if relevant -->
 
 ## Configuration
 

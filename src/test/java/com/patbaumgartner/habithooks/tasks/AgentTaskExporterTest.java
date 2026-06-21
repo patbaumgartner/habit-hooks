@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class AgentTaskExporterTest {
 
@@ -26,6 +27,8 @@ class AgentTaskExporterTest {
         assertThat(tasks).hasSize(2);
         assertThat(tasks.get(0).ruleId()).isEqualTo("owasp:CveHigh");
         assertThat(tasks.get(1).count()).isEqualTo(2);
+        assertThat(tasks.get(0).verificationCommand()).isEqualTo("habit-hooks --all");
+        assertThat(tasks.get(0).acceptanceCriteria()).hasSize(3);
     }
 
     @Test
@@ -37,6 +40,14 @@ class AgentTaskExporterTest {
 
         assertThat(Files.readString(markdown)).contains("habit-hooks agent tasks", "pmd:GodClass");
         assertThat(Files.readString(json)).contains("pmd:GodClass");
+        assertThat(markdown).hasFileName("tasks.md");
+        assertThat(json).hasFileName("tasks.json");
+    }
+
+    @Test
+    void rejectsUnknownTaskFormat() {
+        assertThatThrownBy(() -> AgentTaskExporter.Format.parse("xml")).isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining("Unsupported task format");
     }
 
 }

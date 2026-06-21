@@ -45,6 +45,49 @@ class HabitHooksCliIT {
         assertThat(secondRun.output()).contains("all checks passed");
     }
 
+    @Test
+    void reportWritesMarkdownWithoutFailingWhenRequested() throws IOException {
+        prepareProject(tempDir, true);
+
+        CommandResult result = execute(tempDir, "report", "--no-fail");
+
+        assertThat(result.exitCode()).isZero();
+        assertThat(result.output()).contains("report.md");
+        assertThat(Files.exists(tempDir.resolve("target/habit-hooks/report.md"))).isTrue();
+    }
+
+    @Test
+    void tasksWritesJsonWithoutFailingWhenRequested() throws IOException {
+        prepareProject(tempDir, true);
+
+        CommandResult result = execute(tempDir, "tasks", "--format", "json", "--no-fail");
+
+        assertThat(result.exitCode()).isZero();
+        assertThat(result.output()).contains("tasks.json");
+        assertThat(Files.readString(tempDir.resolve("target/habit-hooks/tasks.json"))).contains("verificationCommand");
+    }
+
+    @Test
+    void invalidReportFormatReturnsUsageError() throws IOException {
+        prepareProject(tempDir, true);
+
+        CommandResult result = execute(tempDir, "report", "--format", "xml");
+
+        assertThat(result.exitCode()).isEqualTo(2);
+        assertThat(result.output()).contains("Unsupported report format");
+    }
+
+    @Test
+    void dependenciesWriteRelativeOutputInProjectRoot() throws IOException {
+        writeMavenWrapper(tempDir);
+
+        CommandResult result = execute(tempDir, "dependencies", "--output", "reports/dependencies.txt");
+
+        assertThat(result.exitCode()).isZero();
+        assertThat(result.output()).contains("Wrote", "reports/dependencies.txt");
+        assertThat(Files.readString(tempDir.resolve("reports/dependencies.txt"))).contains("dependency report");
+    }
+
     private static void prepareProject(Path projectDir, boolean withViolation) throws IOException {
         Path sourceDir = projectDir.resolve("src/main/java/com/example");
         Files.createDirectories(sourceDir);
@@ -121,18 +164,27 @@ class HabitHooksCliIT {
         assertThat(exitCode).isZero();
     }
 
+    private static void writeMavenWrapper(Path projectDir) throws IOException {
+        Path wrapper = projectDir.resolve("mvnw");
+        Files.writeString(wrapper, "#!/bin/sh\necho dependency report\n", StandardCharsets.UTF_8);
+        assertThat(wrapper.toFile().setExecutable(true)).isTrue();
+    }
+
     private static CommandResult execute(Path workingDir, String... args) {
         String originalUserDir = System.getProperty("user.dir", ".");
         PrintStream originalOut = System.out;
+        PrintStream originalErr = System.err;
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         try {
             System.setProperty("user.dir", workingDir.toString());
             System.setOut(new PrintStream(out, true, StandardCharsets.UTF_8));
+            System.setErr(new PrintStream(out, true, StandardCharsets.UTF_8));
             int exitCode = new CommandLine(new HabitHooksCommand()).execute(args);
             return new CommandResult(exitCode, out.toString(StandardCharsets.UTF_8));
         }
         finally {
             System.setOut(originalOut);
+            System.setErr(originalErr);
             System.setProperty("user.dir", originalUserDir);
         }
     }

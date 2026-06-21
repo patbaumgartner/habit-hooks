@@ -59,7 +59,7 @@ public final class ProjectInitializer {
             writeIfAbsent("habit-hooks-maven-snippets.xml", "maven-quality-pom-snippets.xml");
         }
         if (!options.dryRun()) {
-            out.println("✅ habit-hooks initialized. Run: java -jar habit-hooks.jar --all");
+            out.println("✅ habit-hooks initialized. Run: habit-hooks --all");
         }
     }
 

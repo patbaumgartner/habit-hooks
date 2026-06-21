@@ -16,6 +16,19 @@ java -jar target/habit-hooks-*-launcher.jar
 
 Use `--all` when you need a full-repository pass.
 
+For larger or cross-cutting changes, run the setup check first:
+
+```bash
+habit-hooks doctor
+```
+
+After a failing run, generate focused follow-up artifacts when useful:
+
+```bash
+habit-hooks report --no-fail
+habit-hooks tasks --no-fail
+```
+
 ## Non-negotiable rules
 
 - Never ignore habit-hooks output.
@@ -33,6 +46,10 @@ Each coached section starts with `❌` and contains:
 3. Violations (file, line, message)
 
 `Uncoached rules` still require remediation. They are not optional.
+
+`habit-hooks tasks` groups findings by rule and includes acceptance criteria,
+locations, and the verification command. Treat each generated task as actionable
+work, not as advisory text.
 
 ## Clean run
 
@@ -68,6 +85,8 @@ Local launcher runs:
 
 ```bash
 java -jar target/habit-hooks-*-launcher.jar --all
+java -jar target/habit-hooks-*-launcher.jar report --format html --no-fail
+java -jar target/habit-hooks-*-launcher.jar tasks --format json --no-fail
 java -jar target/habit-hooks-*-launcher.jar --help
 ```
 

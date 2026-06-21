@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /** Writes local quality reports in agent- and tool-friendly formats. */
 public final class QualityReportWriter {
@@ -20,24 +21,27 @@ public final class QualityReportWriter {
 
     /** Writes the report and returns the generated artifact path. */
     public Path write(QualityReport report, Path outputDir, String format) throws IOException {
+        return write(report, outputDir, ReportFormat.parse(format), Optional.empty());
+    }
+
+    /** Writes the report and returns the generated artifact path. */
+    public Path write(QualityReport report, Path outputDir, ReportFormat format, Optional<TrendStore.Snapshot> previous)
+            throws IOException {
         Files.createDirectories(outputDir);
-        Path output = outputDir.resolve("report." + extension(format));
+        Path output = outputDir.resolve("report." + format.extension());
         switch (format) {
-            case "json" -> MAPPER.writeValue(output.toFile(), report);
-            case "html" -> Files.writeString(output, html(report), StandardCharsets.UTF_8);
-            case "sarif" -> MAPPER.writeValue(output.toFile(), sarif(report));
-            default -> Files.writeString(output, markdown(report), StandardCharsets.UTF_8);
+            case JSON -> MAPPER.writeValue(output.toFile(), report);
+            case HTML -> Files.writeString(output, html(report, previous), StandardCharsets.UTF_8);
+            case SARIF -> MAPPER.writeValue(output.toFile(), SarifReportRenderer.render(report));
+            case MARKDOWN -> Files.writeString(output, markdown(report, previous), StandardCharsets.UTF_8);
         }
         return output;
     }
 
-    private static String extension(String format) {
-        return "sarif".equals(format) ? "sarif" : format;
-    }
-
-    private static String markdown(QualityReport report) {
+    private static String markdown(QualityReport report, Optional<TrendStore.Snapshot> previous) {
         StringBuilder output = new StringBuilder("# habit-hooks local quality report\n\n");
         appendSummary(output, report);
+        appendTrend(output, report, previous);
         appendMap(output, "By dimension", report.byDimension());
         appendMap(output, "By tool", report.byTool());
         appendFindings(output, report.findings());
@@ -49,6 +53,25 @@ public final class QualityReportWriter {
         output.append("- Files checked: ").append(report.filesChecked()).append('\n');
         output.append("- Findings: ").append(report.totalFindings()).append('\n');
         output.append("- Gate: ").append(report.failing() ? "failing" : "passing").append("\n\n");
+    }
+
+    private static void appendTrend(StringBuilder output, QualityReport report,
+            Optional<TrendStore.Snapshot> previous) {
+        output.append("## Trend\n\n");
+        if (previous.isEmpty()) {
+            output.append("No previous local report snapshot.\n\n");
+            return;
+        }
+        TrendStore.Snapshot snapshot = previous.get();
+        output.append("- Previous findings: ")
+            .append(snapshot.totalFindings())
+            .append(" (generated ")
+            .append(snapshot.generatedAt())
+            .append(")\n");
+        output.append("- Current findings: ").append(report.totalFindings()).append('\n');
+        output.append("- Delta: ")
+            .append(formatDelta(report.totalFindings() - snapshot.totalFindings()))
+            .append("\n\n");
     }
 
     private static void appendMap(StringBuilder output, String heading, Map<String, Long> counts) {
@@ -81,20 +104,22 @@ public final class QualityReportWriter {
             .append('\n');
     }
 
-    private static String html(QualityReport report) {
+    private static String html(QualityReport report, Optional<TrendStore.Snapshot> previous) {
         return "<!doctype html><html><head><meta charset=\"utf-8\"><title>habit-hooks report</title>"
                 + "<style>body{font-family:system-ui;margin:2rem;max-width:72rem}li{margin:.35rem 0}"
-                + "code{background:#eee;padding:.1rem .25rem}</style></head><body>" + htmlBody(report)
+                + "code{background:#eee;padding:.1rem .25rem}</style></head><body>" + htmlBody(report, previous)
                 + "</body></html>";
     }
 
-    private static String htmlBody(QualityReport report) {
+    private static String htmlBody(QualityReport report, Optional<TrendStore.Snapshot> previous) {
         StringBuilder body = new StringBuilder("<h1>habit-hooks local quality report</h1>");
         body.append("<p>Findings: ")
             .append(report.totalFindings())
             .append(". Gate: ")
             .append(report.failing() ? "failing" : "passing")
-            .append(".</p><ul>");
+            .append(".</p>")
+            .append(htmlTrend(report, previous))
+            .append("<ul>");
         report.findings()
             .stream()
             .limit(HTML_FINDING_LIMIT)
@@ -108,28 +133,13 @@ public final class QualityReportWriter {
         return body.append("</ul>").toString();
     }
 
-    private static Map<String, Object> sarif(QualityReport report) {
-        List<Map<String, Object>> results = report.findings().stream().map(QualityReportWriter::sarifResult).toList();
-        Map<String, Object> driver = Map.of("name", "habit-hooks", "informationUri",
-                "https://github.com/patbaumgartner/habbit-hooks");
-        return Map.of("version", "2.1.0", "$schema", "https://json.schemastore.org/sarif-2.1.0.json", "runs",
-                List.of(Map.of("tool", Map.of("driver", driver), "results", results)));
-    }
-
-    private static Map<String, Object> sarifResult(ReportFinding finding) {
-        Map<String, Object> region = Map.of("startLine", Math.max(1, finding.line()));
-        Map<String, Object> location = Map.of("physicalLocation",
-                Map.of("artifactLocation", Map.of("uri", finding.file()), "region", region));
-        return Map.of("ruleId", finding.ruleId(), "level", sarifLevel(finding.severity()), "message",
-                Map.of("text", finding.message()), "locations", List.of(location));
-    }
-
-    private static String sarifLevel(String severity) {
-        return switch (severity) {
-            case "critical", "high" -> "error";
-            case "medium" -> "warning";
-            default -> "note";
-        };
+    private static String htmlTrend(QualityReport report, Optional<TrendStore.Snapshot> previous) {
+        if (previous.isEmpty()) {
+            return "<p>Trend: no previous local report snapshot.</p>";
+        }
+        int delta = report.totalFindings() - previous.get().totalFindings();
+        return "<p>Trend: " + escape(formatDelta(delta)) + " findings since " + escape(previous.get().generatedAt())
+                + ".</p>";
     }
 
     private static String location(ReportFinding finding) {
@@ -138,6 +148,10 @@ public final class QualityReportWriter {
 
     private static String escape(String value) {
         return value.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
+    }
+
+    private static String formatDelta(int delta) {
+        return delta > 0 ? "+" + delta : Integer.toString(delta);
     }
 
 }

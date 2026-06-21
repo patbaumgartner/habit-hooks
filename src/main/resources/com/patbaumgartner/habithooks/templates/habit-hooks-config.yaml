@@ -2,6 +2,7 @@
 #
 # Edit the analyzers and scope sections to fit your project.
 # Full config reference: https://github.com/patbaumgartner/habbit-hooks#configuration
+# Agent loop: habit-hooks doctor && habit-hooks --all && habit-hooks tasks --no-fail
 
 prompts: ./prompts
 

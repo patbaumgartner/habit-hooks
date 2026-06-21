@@ -26,7 +26,8 @@ flowchart LR
     L --> M[Console output + exit code]
     H --> P[QualityReportBuilder]
     P --> Q[Markdown/JSON/HTML/SARIF]
-    P --> R[Agent task export]
+    Q --> S[TrendStore]
+    P --> R[Prioritized agent task export]
 ```
 
 ## CLI precedence and defaults
@@ -61,6 +62,16 @@ Configuration loading behavior:
 - `com.patbaumgartner.habithooks.init`: scaffolding for first-time project setup.
 - `com.patbaumgartner.habithooks.report`: local quality reports, SARIF, and trend snapshots.
 - `com.patbaumgartner.habithooks.tasks`: rule-grouped task batches for AI agents.
+
+## Artifact commands
+
+- `report` builds a stable `QualityReport`, writes `report.md`, `report.json`,
+    `report.html`, or `report.sarif`, and records the latest local trend snapshot.
+- `tasks` turns findings into prioritized, rule-grouped work items with locations,
+    acceptance criteria, and a verification command for AI agents.
+- `doctor` checks analyzer availability before a full run spends time on a broken setup.
+- `dependencies` wraps the Maven Versions Plugin for repeatable dependency and
+    plugin update reports, with an explicit `--apply` mode for parent/property updates.
 
 ## Design constraints
 
