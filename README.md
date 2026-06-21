@@ -4,6 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Java Version](https://img.shields.io/badge/Java-25-orange)](https://adoptium.net)
 [![Maven](https://img.shields.io/badge/Maven-3.9%2B-blue)](https://maven.apache.org)
+[![Coached rules](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/patbaumgartner/habit-hooks/main/docs/coached-rules-badge.json)](#coached-rules)
 [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/patbaumgartner/habit-hooks/badge)](https://securityscorecards.dev/viewer/?uri=github.com/patbaumgartner/habit-hooks)
 
 Stop reciting software engineering literature to your AI agent.
@@ -182,6 +183,7 @@ and *how to fix it*.
 | checkstyle        | `checkstyle:MethodLength`                    | Oversized method                 |
 | checkstyle        | `checkstyle:ParameterNumber`                 | Too many parameters              |
 | checkstyle        | `checkstyle:CyclomaticComplexity`            | High complexity                  |
+| checkstyle        | `checkstyle:JavaNCSS`                        | High non-commenting source lines |
 | checkstyle        | `checkstyle:VisibilityModifier`              | Weak encapsulation               |
 | checkstyle        | `checkstyle:MagicNumber`                     | Magic numbers                    |
 | checkstyle        | `checkstyle:EmptyLineSeparator`              | Missing separation               |
@@ -189,9 +191,21 @@ and *how to fix it*.
 | checkstyle        | `checkstyle:NestedIfDepth`                   | Deeply nested conditions         |
 | checkstyle        | `checkstyle:NestedTryDepth`                  | Deeply nested try blocks         |
 | checkstyle        | `checkstyle:BooleanExpressionComplexity`     | Complex boolean expression       |
+| checkstyle        | `checkstyle:HideUtilityClassConstructor`     | Utility class needs private ctor |
+| checkstyle        | `checkstyle:ModifiedControlVariable`         | Modified loop control variable   |
+| checkstyle        | `checkstyle:EqualsAvoidNull`                 | Literal not first in `equals()`  |
+| checkstyle        | `checkstyle:CovariantEquals`                 | Covariant `equals()`             |
+| checkstyle        | `checkstyle:DefaultComesLast`                | `default` case not last          |
+| checkstyle        | `checkstyle:UnnecessarySemicolonInEnumeration` | Redundant semicolon in enum    |
+| checkstyle        | `checkstyle:UnnecessarySemicolonAfterTypeMemberDeclaration` | Redundant semicolon |
 | pmd               | `pmd:NcssCount`                              | Oversized method or class (PMD)  |
+| pmd               | `pmd:CyclomaticComplexity`                   | High complexity (PMD)            |
 | pmd               | `pmd:ExcessiveParameterList`                 | Too many parameters              |
+| pmd               | `pmd:TooManyFields`                          | Too many fields                  |
+| pmd               | `pmd:TooManyMethods`                         | Too many methods                 |
 | pmd               | `pmd:CollapsibleIfStatements`                | Collapsible if statements        |
+| pmd               | `pmd:SimplifiedTernary`                      | Simplifiable ternary             |
+| pmd               | `pmd:SingularField`                          | Field could be a local           |
 | pmd               | `pmd:GodClass`                               | Class doing too much             |
 | pmd               | `pmd:UnusedPrivateField`                     | Unused field                     |
 | pmd               | `pmd:UnusedLocalVariable`                    | Unused variable                  |
@@ -207,7 +221,21 @@ and *how to fix it*.
 | pmd               | `pmd:AvoidReassigningParameters`             | Reassigned parameter             |
 | pmd               | `pmd:LooseCoupling`                          | Concrete type in API             |
 | pmd               | `pmd:ArrayIsStoredDirectly`                  | Array stored without copying     |
+| pmd               | `pmd:MethodReturnsInternalArray`             | Internal array exposed           |
 | pmd               | `pmd:PreserveStackTrace`                     | Lost stack trace on rethrow      |
+| pmd               | `pmd:CompareObjectsWithEquals`               | Reference comparison of objects  |
+| pmd               | `pmd:EqualsNull`                             | `equals()` used for null check   |
+| pmd               | `pmd:MissingOverride`                        | Missing `@Override`              |
+| pmd               | `pmd:PrimitiveWrapperInstantiation`          | Primitive wrapper instantiated   |
+| pmd               | `pmd:UselessParentheses`                     | Useless parentheses              |
+| pmd               | `pmd:UnnecessaryReturn`                      | Redundant `return`               |
+| pmd               | `pmd:UnnecessaryModifier`                    | Redundant modifier               |
+| pmd               | `pmd:CopyPaste`                              | Duplicated code (CPD)            |
+| pmd               | `pmd:GuardLogStatement`                      | Unguarded log statement (opt-in) |
+| cpd               | `cpd:goal-failed`                            | CPD goal failed                  |
+| cpd               | `cpd:lifecycle-blocked`                      | CPD lifecycle blocked            |
+| cpd               | `cpd:report-missing`                         | CPD report missing               |
+| cpd               | `cpd:report-unreadable`                      | CPD report unreadable            |
 | spotbugs          | `spotbugs:goal-failed`                       | SpotBugs goal failed             |
 | spotbugs          | `spotbugs:lifecycle-blocked`                 | SpotBugs lifecycle blocked       |
 | spotbugs          | `spotbugs:report-missing`                    | SpotBugs report missing          |
@@ -663,13 +691,13 @@ Any output from habit-hooks is direct user feedback with the highest priority.
 ❌ Habit Hooks: 3 violations
 
 ❌ Oversized Method
-Methods over 25 lines tend to bundle multiple responsibilities and become
+Methods over 20 lines tend to bundle multiple responsibilities and become
 harder to read, test, and maintain in isolation.
 [...coaching prompt...]
 
 Violations:
   src/main/java/com/example/UserService.java:45
-    Method 'processUserData' has 32 lines. Maximum allowed is 25.
+    Method 'processUserData' has 32 lines. Maximum allowed is 20.
 
 ❌ God Class
 A class that knows everything does too much. God classes accumulate logic
@@ -737,7 +765,6 @@ Current implementation:
 
 Planned next:
 
-- Additional coached rule coverage
 - Startup benchmark trend visualization in published CI artifacts
 
 ---

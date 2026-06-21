@@ -52,11 +52,24 @@ jobs:
           echo "avg_ms=$avg"
           echo "avg_ms=$avg" >> "$GITHUB_STEP_SUMMARY"
 
+          mkdir -p target/benchmark
+          printf '{"timestamp":"%s","commit":"%s","ref":"%s","variant":"jvm","avg_ms":%s}\n' \
+            "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$GITHUB_SHA" "$GITHUB_REF_NAME" "$avg" \
+            > target/benchmark/startup-jvm.json
+
           # Regression guard: fail if average startup exceeds 2500ms
           if [ "$avg" -gt 2500 ]; then
             echo "Startup regression detected: avg ${avg}ms exceeds threshold 2500ms" >&2
             exit 1
           fi
+
+      - name: Upload startup trend record
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: startup-trend-jvm
+          path: target/benchmark/startup-jvm.json
+          retention-days: 90
 
   startup-native:
     name: Native startup regression guard
@@ -99,8 +112,21 @@ jobs:
           echo "avg_ms=$avg"
           echo "avg_ms=$avg" >> "$GITHUB_STEP_SUMMARY"
 
+          mkdir -p target/benchmark
+          printf '{"timestamp":"%s","commit":"%s","ref":"%s","variant":"native","avg_ms":%s}\n' \
+            "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$GITHUB_SHA" "$GITHUB_REF_NAME" "$avg" \
+            > target/benchmark/startup-native.json
+
           # Native startup should stay very fast
           if [ "$avg" -gt 500 ]; then
             echo "Native startup regression detected: avg ${avg}ms exceeds threshold 500ms" >&2
             exit 1
           fi
+
+      - name: Upload startup trend record
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: startup-trend-native
+          path: target/benchmark/startup-native.json
+          retention-days: 90

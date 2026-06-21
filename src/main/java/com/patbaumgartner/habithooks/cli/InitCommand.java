@@ -35,10 +35,14 @@ public final class InitCommand implements Runnable {
     @Option(names = { "--spring-boot" }, description = "Enable Spring Boot analyzer defaults and support files")
     private boolean springBoot;
 
+    @Option(names = { "--agents" }, description = "Only scaffold AGENTS.md, leaving other files untouched")
+    private boolean agentsOnly;
+
     @Override
     public void run() {
         Path workingDir = parent.workingDir();
-        ProjectInitializer.Options options = new ProjectInitializer.Options(dryRun, taikai, mavenSnippets, springBoot);
+        ProjectInitializer.Options options = new ProjectInitializer.Options(dryRun, taikai, mavenSnippets, springBoot,
+                agentsOnly);
         ProjectInitializer initializer = new ProjectInitializer(workingDir, options, System.out);
         initializer.initialize();
     }

@@ -36,6 +36,13 @@ jobs:
       - name: Build, test, and quality gate
         run: ./mvnw --batch-mode --update-snapshots verify
 
+      - name: Verify coached-rule badge is up to date
+        if: matrix.java == '25'
+        run: |
+          ./scripts/coached-rules-count.sh
+          git diff --exit-code docs/coached-rules-badge.json \
+            || { echo "::error::docs/coached-rules-badge.json is stale. Run scripts/coached-rules-count.sh and commit the result."; exit 1; }
+
       - name: Upload coverage to Codecov
         if: matrix.java == '25'
         uses: codecov/codecov-action@0fb7174895f61a3b6b78fc075e0cd60383518dac # v5

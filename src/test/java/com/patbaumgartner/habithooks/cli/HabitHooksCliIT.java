@@ -88,6 +88,22 @@ class HabitHooksCliIT {
         assertThat(Files.readString(tempDir.resolve("reports/dependencies.txt"))).contains("dependency report");
     }
 
+    @Test
+    void explainPrintsCoachingForKnownRule() {
+        CommandResult result = execute(tempDir, "explain", "pmd:GodClass");
+
+        assertThat(result.exitCode()).isZero();
+        assertThat(result.output()).contains("God Class", "pmd:GodClass");
+    }
+
+    @Test
+    void explainReturnsErrorForUncoachedRule() {
+        CommandResult result = execute(tempDir, "explain", "pmd:DoesNotExist");
+
+        assertThat(result.exitCode()).isEqualTo(1);
+        assertThat(result.output()).contains("No coaching prompt");
+    }
+
     private static void prepareProject(Path projectDir, boolean withViolation) throws IOException {
         Path sourceDir = projectDir.resolve("src/main/java/com/example");
         Files.createDirectories(sourceDir);

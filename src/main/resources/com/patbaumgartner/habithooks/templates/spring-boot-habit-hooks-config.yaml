@@ -34,6 +34,10 @@ analyzers:
     enabled: true
     rulesets:
       - pmd-ruleset.xml
+  cpd:
+    enabled: true
+    goal: pmd:cpd
+    reportFile: target/cpd.xml
   taikai:
     enabled: true
     testClass: ArchitectureTest

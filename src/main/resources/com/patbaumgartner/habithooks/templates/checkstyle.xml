@@ -65,8 +65,11 @@
         <module name="FinalClass" />
         <module name="InnerTypeLast" />
         <module name="OneTopLevelClass" />
+        <module name="HideUtilityClassConstructor" />
 
         <!-- ===== Coding ===== -->
+        <module name="UnnecessarySemicolonInEnumeration" />
+        <module name="UnnecessarySemicolonAfterTypeMemberDeclaration" />
         <module name="MagicNumber">
             <property name="ignoreNumbers" value="-1, 0, 1, 2" />
             <property name="ignoreAnnotation" value="true" />
@@ -87,6 +90,12 @@
         <module name="FallThrough" />
         <module name="UnnecessaryParentheses" />
         <module name="NoFinalizer" />
+        <module name="ModifiedControlVariable" />
+
+        <!-- ===== Equality &amp; Switch ===== -->
+        <module name="EqualsAvoidNull" />
+        <module name="CovariantEquals" />
+        <module name="DefaultComesLast" />
 
         <!-- ===== Imports ===== -->
         <module name="AvoidStarImport" />

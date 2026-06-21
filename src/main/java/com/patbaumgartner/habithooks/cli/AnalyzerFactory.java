@@ -23,23 +23,24 @@ final class AnalyzerFactory {
             "test jacoco:report", "cyclonedx", "cyclonedx:makeAggregateBom", "pitest",
             "-Pmutation-test test-compile org.pitest:pitest-maven:mutationCoverage", "spring-javaformat",
             "spring-javaformat:validate", "errorprone", "compile", "owasp",
-            "org.owasp:dependency-check-maven:check -Dformat=JSON");
+            "org.owasp:dependency-check-maven:check -Dformat=JSON", "cpd", "pmd:cpd");
 
     private static final Map<String, String> DEFAULT_REPORTS = Map.of("spotbugs", "target/spotbugsXml.xml", "jacoco",
             "target/site/jacoco/jacoco.xml", "cyclonedx", "target/bom.json", "pitest",
             "target/pit-reports/mutations.xml", "spring-javaformat", "target/habit-hooks/spring-javaformat.log",
-            "errorprone", "target/habit-hooks/errorprone.log", "owasp", "target/dependency-check-report.json");
+            "errorprone", "target/habit-hooks/errorprone.log", "owasp", "target/dependency-check-report.json", "cpd",
+            "target/cpd.xml");
 
     private static final Map<String, MavenGoalAnalyzer.ReportParser> PARSERS = Map.of("spotbugs",
             ReportParsers.spotbugsXml(), "jacoco", ReportParsers.jacocoXml(), "cyclonedx",
             ReportParsers.cyclonedxJson(), "pitest", ReportParsers.pitestXml(), "spring-javaformat",
             ReportParsers.springJavaFormatText(), "errorprone", ReportParsers.errorProneText(), "owasp",
-            ReportParsers.owaspDependencyCheckJson());
+            ReportParsers.owaspDependencyCheckJson(), "cpd", ReportParsers.cpdXml());
 
     private static final Set<String> CAPTURING_ANALYZERS = Set.of("spring-javaformat", "errorprone");
 
     private static final List<String> MAVEN_ANALYZERS = List.of("spotbugs", "jacoco", "cyclonedx", "pitest",
-            "spring-javaformat", "errorprone", "owasp");
+            "spring-javaformat", "errorprone", "owasp", "cpd");
 
     private static final String NATIVE_IMAGE_PROPERTY = "org.graalvm.nativeimage.imagecode";
 

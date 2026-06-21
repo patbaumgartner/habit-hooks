@@ -70,6 +70,22 @@
     <rule ref="category/java/bestpractices.xml/MethodReturnsInternalArray" />
     <rule ref="category/java/bestpractices.xml/PreserveStackTrace" />
     <rule ref="category/java/bestpractices.xml/UseTryWithResources" />
+    <rule ref="category/java/bestpractices.xml/MissingOverride" />
+    <rule ref="category/java/bestpractices.xml/PrimitiveWrapperInstantiation" />
+
+    <!--
+      GuardLogStatement is shipped as coached guidance (see prompts/pmd-GuardLogStatement.md)
+      but is OFF by default: on codebases that already use parameterized logging it mostly
+      flags cheap getter arguments, where adding isXxxEnabled() guards is noise. Opt in and
+      restrict it to the levels that matter for your hot paths, e.g.:
+
+      <rule ref="category/java/bestpractices.xml/GuardLogStatement">
+          <properties>
+              <property name="logLevels" value="trace,debug" />
+              <property name="guardsMethods" value="isTraceEnabled,isDebugEnabled" />
+          </properties>
+      </rule>
+    -->
 
     <!-- ===== Error Prone ===== -->
     <rule ref="category/java/errorprone.xml/EmptyCatchBlock">
@@ -84,9 +100,16 @@
     <rule ref="category/java/errorprone.xml/ReturnEmptyCollectionRatherThanNull" />
     <rule ref="category/java/errorprone.xml/OverrideBothEqualsAndHashcode" />
     <rule ref="category/java/errorprone.xml/ProperCloneImplementation" />
+    <rule ref="category/java/errorprone.xml/CompareObjectsWithEquals" />
+    <rule ref="category/java/errorprone.xml/EqualsNull" />
 
     <!-- ===== Performance ===== -->
     <rule ref="category/java/performance.xml/AvoidFileStream" />
     <rule ref="category/java/performance.xml/UseArraysAsList" />
     <rule ref="category/java/performance.xml/UseStringBufferForStringAppends" />
+
+    <!-- ===== Code Style ===== -->
+    <rule ref="category/java/codestyle.xml/UselessParentheses" />
+    <rule ref="category/java/codestyle.xml/UnnecessaryReturn" />
+    <rule ref="category/java/codestyle.xml/UnnecessaryModifier" />
 </ruleset>

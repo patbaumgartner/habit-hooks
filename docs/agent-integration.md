@@ -90,3 +90,66 @@ habit-hooks tasks --format json --no-fail
 
 If `doctor` reports missing Maven profiles or dependencies, fix the build setup
 before changing application code.
+
+## End-to-end fix walkthrough
+
+A complete agent loop, from first run to a clean gate:
+
+1. **Run the gate** and capture the coached output.
+
+   ```bash
+   habit-hooks --all
+   ```
+
+   ```text
+   ❌ Habit Hooks: 2 violations
+
+   ❌ Useless Parentheses
+   Parentheses that do not change evaluation order add visual noise...
+
+   Violations:
+     src/main/java/com/example/Report.java:105
+       Useless parentheses around `value * scale`.
+   ```
+
+2. **Export a structured queue** so the work is ordered and traceable.
+
+   ```bash
+   habit-hooks tasks --format json --no-fail > habit-hooks-tasks.json
+   ```
+
+3. **Understand a rule on demand** before touching code.
+
+   ```bash
+   habit-hooks explain pmd:UselessParentheses
+   ```
+
+   This prints the same coaching shown inline, without needing a fresh
+   violation to trigger it.
+
+4. **Fix one task**, keeping the change focused and behavior-preserving.
+
+5. **Re-run the verification command** from the task (`verificationCommand`,
+   usually `habit-hooks --all`) and confirm the rule no longer appears.
+
+6. **Regenerate tasks** only after the current batch is clean, then repeat
+   until the gate passes:
+
+   ```text
+   ✅ Habit Hooks: all checks passed.
+   ```
+
+Work tasks in export order and never start unrelated work while a coached
+finding is still open.
+
+## Scaffolding the agent guide only
+
+When a repository already has Checkstyle/PMD configuration and you only want the
+agent operating guide, scaffold `AGENTS.md` on its own:
+
+```bash
+habit-hooks init --agents
+```
+
+This writes `AGENTS.md` (Spring Boot variant when combined with
+`--spring-boot`) and leaves every other file untouched.

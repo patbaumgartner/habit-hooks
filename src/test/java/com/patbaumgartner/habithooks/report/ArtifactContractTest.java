@@ -81,6 +81,13 @@ class ArtifactContractTest {
         assertThat(sarif.toString()).doesNotContain("habbit-hooks");
     }
 
+    @Test
+    void sarifRulesCarryTitlesAndHelpUri() {
+        Map<String, Object> sarif = SarifReportRenderer.render(fixedReport());
+
+        assertThat(sarif.toString()).contains("God Class").contains("#coached-rules");
+    }
+
     private static QualityReport fixedReport() {
         ReportFinding finding = new ReportFinding("pmd:GodClass", "pmd", "maintainability", "low", "Big.java", 7,
                 "Too big");

@@ -1,10 +1,13 @@
 package com.patbaumgartner.habithooks.report;
 
+import com.patbaumgartner.habithooks.coaching.RuleTitles;
 import java.util.List;
 import java.util.Map;
 
 /** Renders a quality report as SARIF 2.1.0. */
 final class SarifReportRenderer {
+
+    private static final String HELP_URI = "https://github.com/patbaumgartner/habit-hooks#coached-rules";
 
     private SarifReportRenderer() {
     }
@@ -24,7 +27,8 @@ final class SarifReportRenderer {
     }
 
     private static Map<String, Object> rule(String ruleId) {
-        return Map.of("id", ruleId, "name", ruleId, "shortDescription", Map.of("text", ruleId));
+        String title = RuleTitles.titleFor(ruleId);
+        return Map.of("id", ruleId, "name", title, "shortDescription", Map.of("text", title), "helpUri", HELP_URI);
     }
 
     private static Map<String, Object> result(ReportFinding finding) {

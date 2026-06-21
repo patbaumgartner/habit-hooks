@@ -30,7 +30,7 @@ import picocli.CommandLine.ScopeType;
 @Command(name = "habit-hooks", mixinStandardHelpOptions = true, versionProvider = VersionProvider.class,
         description = "Automated quality checks that nudge Java AI agents toward better habits.",
         subcommands = { InitCommand.class, BaselineCommand.class, ReportCommand.class, TasksCommand.class,
-                DoctorCommand.class, DependenciesCommand.class })
+                DoctorCommand.class, DependenciesCommand.class, ExplainCommand.class })
 public final class HabitHooksCommand implements Callable<Integer> {
 
     @Option(names = { "--config" }, description = "Path to the habit-hooks config file", scope = ScopeType.INHERIT)

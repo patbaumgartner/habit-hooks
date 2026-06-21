@@ -117,6 +117,19 @@ class ProjectInitializerTest {
         assertThat(Files.exists(tempDir.resolve("src/test/java/ArchitectureTest.java"))).isFalse();
     }
 
+    @Test
+    void agentsOnlyWritesOnlyAgentsFile() {
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        PrintStream out = new PrintStream(buffer, true, StandardCharsets.UTF_8);
+        ProjectInitializer.Options options = new ProjectInitializer.Options(false, false, false, false, true);
+        new ProjectInitializer(tempDir, options, out).initialize();
+
+        assertThat(Files.exists(tempDir.resolve("AGENTS.md"))).isTrue();
+        assertThat(Files.exists(tempDir.resolve("checkstyle.xml"))).isFalse();
+        assertThat(Files.exists(tempDir.resolve(".habit-hooks.yaml"))).isFalse();
+        assertThat(buffer.toString(StandardCharsets.UTF_8)).contains("AGENTS.md scaffolded");
+    }
+
     private Output run(boolean dryRun, boolean taikai) {
         return run(dryRun, taikai, false);
     }
@@ -128,7 +141,8 @@ class ProjectInitializerTest {
     private Output run(boolean dryRun, boolean taikai, boolean mavenSnippets, boolean springBoot) {
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
         PrintStream out = new PrintStream(buffer, true, StandardCharsets.UTF_8);
-        ProjectInitializer.Options options = new ProjectInitializer.Options(dryRun, taikai, mavenSnippets, springBoot);
+        ProjectInitializer.Options options = new ProjectInitializer.Options(dryRun, taikai, mavenSnippets, springBoot,
+                false);
         new ProjectInitializer(tempDir, options, out).initialize();
         return new Output(buffer.toString(StandardCharsets.UTF_8));
     }

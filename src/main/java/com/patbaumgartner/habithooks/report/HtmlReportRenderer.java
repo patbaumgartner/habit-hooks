@@ -102,7 +102,7 @@ final class HtmlReportRenderer {
     }
 
     private static long percent(long value, int total) {
-        return total == 0 ? 0 : Math.max(MINIMUM_VISIBLE_BAR_PERCENT, Math.round((value * PERCENT_SCALE) / total));
+        return total == 0 ? 0 : Math.max(MINIMUM_VISIBLE_BAR_PERCENT, Math.round(value * PERCENT_SCALE / total));
     }
 
     private static String gate(QualityReport report) {

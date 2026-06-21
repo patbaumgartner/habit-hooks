@@ -49,6 +49,16 @@ public final class ProjectInitializer {
         if (options.dryRun()) {
             out.println("[dry-run] The following files would be written:");
         }
+        if (options.agentsOnly()) {
+            writeIfAbsent("AGENTS.md", agentsTemplate());
+            printAgentsOnlyCompletion();
+            return;
+        }
+        scaffoldAll();
+        printCompletion();
+    }
+
+    private void scaffoldAll() {
         writeIfAbsent("checkstyle.xml", "checkstyle.xml");
         writeIfAbsent("pmd-ruleset.xml", "pmd-ruleset.xml");
         writeIfAbsent(".habit-hooks.yaml", configTemplate());
@@ -60,7 +70,6 @@ public final class ProjectInitializer {
         if (options.mavenSnippets() || options.springBoot()) {
             writeIfAbsent("habit-hooks-maven-snippets.xml", "maven-quality-pom-snippets.xml");
         }
-        printCompletion();
     }
 
     private String configTemplate() {
@@ -75,6 +84,12 @@ public final class ProjectInitializer {
             return "spring-boot-agents.md.template";
         }
         return "agents.md.template";
+    }
+
+    private void printAgentsOnlyCompletion() {
+        if (!options.dryRun()) {
+            out.println("✅ AGENTS.md scaffolded. Commit it so coding agents pick up the habit-hooks workflow.");
+        }
     }
 
     private void printCompletion() {
@@ -151,7 +166,8 @@ public final class ProjectInitializer {
     }
 
     /** Options controlling which optional scaffold files are written. */
-    public record Options(boolean dryRun, boolean taikai, boolean mavenSnippets, boolean springBoot) {
+    public record Options(boolean dryRun, boolean taikai, boolean mavenSnippets, boolean springBoot,
+            boolean agentsOnly) {
     }
 
     @FunctionalInterface

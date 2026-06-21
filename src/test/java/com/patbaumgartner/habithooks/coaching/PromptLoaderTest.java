@@ -11,16 +11,24 @@ import static org.assertj.core.api.Assertions.assertThat;
 class PromptLoaderTest {
 
     private static final List<String> CHECKSTYLE_RULES = List.of("checkstyle:MethodLength",
-            "checkstyle:ParameterNumber", "checkstyle:CyclomaticComplexity", "checkstyle:VisibilityModifier",
-            "checkstyle:MagicNumber", "checkstyle:EmptyLineSeparator", "checkstyle:FileTabCharacter",
-            "checkstyle:NestedIfDepth", "checkstyle:NestedTryDepth", "checkstyle:BooleanExpressionComplexity");
+            "checkstyle:ParameterNumber", "checkstyle:CyclomaticComplexity", "checkstyle:JavaNCSS",
+            "checkstyle:VisibilityModifier", "checkstyle:MagicNumber", "checkstyle:EmptyLineSeparator",
+            "checkstyle:FileTabCharacter", "checkstyle:NestedIfDepth", "checkstyle:NestedTryDepth",
+            "checkstyle:BooleanExpressionComplexity", "checkstyle:EqualsAvoidNull", "checkstyle:CovariantEquals",
+            "checkstyle:DefaultComesLast", "checkstyle:ModifiedControlVariable",
+            "checkstyle:HideUtilityClassConstructor", "checkstyle:UnnecessarySemicolonInEnumeration",
+            "checkstyle:UnnecessarySemicolonAfterTypeMemberDeclaration");
 
     private static final List<String> PMD_RULES = List.of("pmd:NcssCount", "pmd:GodClass", "pmd:UnusedPrivateField",
             "pmd:UnusedLocalVariable", "pmd:UnusedPrivateMethod", "pmd:UnusedFormalParameter", "pmd:UnusedAssignment",
             "pmd:EmptyCatchBlock", "pmd:LiteralsFirstInComparisons", "pmd:ReturnEmptyCollectionRatherThanNull",
             "pmd:UseCollectionIsEmpty", "pmd:UseEqualsToCompareStrings", "pmd:OverrideBothEqualsAndHashcode",
             "pmd:AvoidReassigningParameters", "pmd:LooseCoupling", "pmd:ArrayIsStoredDirectly",
-            "pmd:PreserveStackTrace", "pmd:CollapsibleIfStatements", "pmd:ExcessiveParameterList");
+            "pmd:PreserveStackTrace", "pmd:CollapsibleIfStatements", "pmd:ExcessiveParameterList",
+            "pmd:CyclomaticComplexity", "pmd:TooManyFields", "pmd:TooManyMethods", "pmd:SimplifiedTernary",
+            "pmd:SingularField", "pmd:MethodReturnsInternalArray", "pmd:CompareObjectsWithEquals", "pmd:EqualsNull",
+            "pmd:MissingOverride", "pmd:PrimitiveWrapperInstantiation", "pmd:CopyPaste", "pmd:GuardLogStatement",
+            "pmd:UselessParentheses", "pmd:UnnecessaryReturn", "pmd:UnnecessaryModifier");
 
     private static final List<String> MAVEN_RULES = mavenRules();
 
@@ -92,6 +100,7 @@ class PromptLoaderTest {
         rules.addAll(metaRules("pitest"));
         rules.addAll(metaRules("spring-javaformat"));
         rules.addAll(metaRules("errorprone"));
+        rules.addAll(metaRules("cpd"));
         rules.addAll(List.of("owasp:CveCritical", "owasp:CveHigh", "owasp:CveMedium", "owasp:CveLow",
                 "owasp:SuppressedVulnerability"));
         rules.addAll(metaRules("owasp"));

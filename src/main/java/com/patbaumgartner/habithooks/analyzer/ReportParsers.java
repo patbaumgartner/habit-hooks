@@ -31,6 +31,11 @@ public final class ReportParsers {
         return (reportPath, workingDir, toolPrefix) -> PmdXmlReportParser.parse(reportPath, workingDir, toolPrefix);
     }
 
+    /** Creates a parser for CPD duplication XML reports. */
+    public static MavenGoalAnalyzer.ReportParser cpdXml() {
+        return (reportPath, workingDir, toolPrefix) -> CpdXmlReportParser.parse(reportPath, workingDir, toolPrefix);
+    }
+
     /** Creates a parser for Spring Java Format validation output. */
     public static MavenGoalAnalyzer.ReportParser springJavaFormatText() {
         return (reportPath, workingDir, toolPrefix) -> TextReportParser.parseSpringJavaFormat(reportPath, workingDir,
