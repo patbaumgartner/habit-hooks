@@ -54,7 +54,7 @@ jobs:
           retention-days: 7
 
   self-check:
-    name: Self-dogfood (habit-hooks checks itself)
+    name: Reference validation (habit-hooks checks itself)
     runs-on: ubuntu-latest
     needs: build
 

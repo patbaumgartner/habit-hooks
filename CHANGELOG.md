@@ -13,7 +13,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Added
 
-- Spring Petclinic analyzer playbook documenting full native dogfood setup, artifact generation, and analyzer feedback collection
+- Spring Petclinic analyzer playbook documenting full native reference validation setup, artifact generation, and analyzer feedback collection
 - Polished self-contained HTML quality reports with summary metrics, trend panels, breakdown bars, and severity-styled finding cards
 
 ### Changed
@@ -83,7 +83,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Maven dependency and plugin update reporting via `habit-hooks dependencies`
 - Optional Maven plugin/dependency snippet scaffolding via `habit-hooks init --maven-snippets`
 - Agent integration, artifact contract, and release smoke documentation under `docs/`
-- Coaching prompts for scaffolded whitespace and PMD design rules surfaced by Spring Petclinic dogfooding
+- Coaching prompts for scaffolded whitespace and PMD design rules surfaced by Spring Petclinic reference validation
 
 ### Changed
 
@@ -118,7 +118,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - `--all`, `--last <n>`, `--branch`, `--since <hash>` scope flags
 - Coached prompts for 22 rules across Checkstyle and PMD
 - Taikai architecture-test scaffolding via `init --taikai`
-- Self-dogfooding: habit-hooks runs against its own source in CI
+- Reference validation: habit-hooks runs against its own source in CI
 - Architecture reference document (`ARCHITECTURE.md`)
 - ADRs for native distribution, supply chain controls, baseline model, and quality-gate policy
 - CodeQL workflow for Java security analysis

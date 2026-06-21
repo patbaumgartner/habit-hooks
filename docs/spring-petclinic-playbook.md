@@ -1,6 +1,6 @@
 # Spring Petclinic analyzer playbook
 
-This playbook is the reference dogfood workflow for running `habit-hooks` against
+This playbook is the reference validation workflow for running `habit-hooks` against
 Spring Petclinic, collecting a before report, letting `habit-hooks` tell you what
 to fix, fixing those findings in Petclinic, and collecting an after report.
 
@@ -17,7 +17,7 @@ Linux/macOS shell syntax and a Maven-based Spring Petclinic checkout.
 ## 1. Upgrade habit-hooks first
 
 Always start by upgrading the installed `habit-hooks` binary, then record the
-version used for the dogfood run.
+version used for the reference validation run.
 
 ```bash
 cd /home/patbaumgartner/GitHub/habbit-hooks
@@ -45,12 +45,12 @@ in the evidence directory name.
 
 ```bash
 HH_VERSION="$(habit-hooks --version | awk '{print $2}')"
-DOGFOOD_ROOT="target/habit-hooks-dogfood-v${HH_VERSION#v}"
+REFERENCE_VALIDATION_ROOT="target/habit-hooks-reference-validation-v${HH_VERSION#v}"
 ```
 
 ## 2. Analyzer inventory
 
-For Spring Petclinic, the example dogfood run enables every analyzer surface that
+For Spring Petclinic, the example reference validation run enables every analyzer surface that
 can produce useful project feedback.
 
 | Analyzer | Purpose | Primary artifact |
@@ -85,7 +85,7 @@ habit-hooks init --maven-snippets --taikai
 habit-hooks init --help
 ```
 
-Update `.habit-hooks.yaml` so dogfooding checks the full main source tree and
+Update `.habit-hooks.yaml` so reference validation checks the full main source tree and
 enables all analyzers:
 
 ```yaml
@@ -222,7 +222,7 @@ that is why the companion Maven PMD command is part of the evidence workflow.
 
 Run OWASP Dependency Check once without `-DautoUpdate=false` if the local NVD
 database is empty or stale. After the first refresh, keep `-DautoUpdate=false`
-for repeated dogfood/report runs so the analyzer reuses the local cache.
+for repeated reference validation and report runs so the analyzer reuses the local cache.
 
 ## 4. Capture the before evidence
 
@@ -232,7 +232,7 @@ Create a versioned evidence directory and record the exact commands you run.
 cd /home/patbaumgartner/GitHub/spring-petclinic
 
 HH_VERSION="$(habit-hooks --version | awk '{print $2}')"
-out="target/habit-hooks-dogfood-v${HH_VERSION#v}/before"
+out="target/habit-hooks-reference-validation-v${HH_VERSION#v}/before"
 mkdir -p "$out/logs"
 
 cat > "$out/commands-used.txt" <<'EOF'
@@ -344,7 +344,7 @@ Use the same artifact set under `after`.
 cd /home/patbaumgartner/GitHub/spring-petclinic
 
 HH_VERSION="$(habit-hooks --version | awk '{print $2}')"
-out="target/habit-hooks-dogfood-v${HH_VERSION#v}/after"
+out="target/habit-hooks-reference-validation-v${HH_VERSION#v}/after"
 mkdir -p "$out/logs"
 ```
 
@@ -368,14 +368,14 @@ The validation run for this playbook produced this after result:
 
 ## 7. Evidence checklist
 
-Before handing off the dogfood result, confirm both the before and after
+Before handing off the reference validation result, confirm both the before and after
 directories contain the expected evidence.
 
 ```bash
 cd /home/patbaumgartner/GitHub/spring-petclinic
 
 HH_VERSION="$(habit-hooks --version | awk '{print $2}')"
-root="target/habit-hooks-dogfood-v${HH_VERSION#v}"
+root="target/habit-hooks-reference-validation-v${HH_VERSION#v}"
 
 for phase in before after; do
   out="$root/$phase"
@@ -413,7 +413,7 @@ rg -n "Exception|ERROR|MissingReflection|Cannot|NullPointerException|No Java fil
 ```
 
 PMD may emit Maven site warnings such as missing Source XRef or parent URL. Those
-warnings are not dogfood infrastructure failures when `pmd.xml` exists and the
+warnings are not reference validation infrastructure failures when `pmd.xml` exists and the
 PMD command exits `0`.
 
 ## 8. Commands used while validating this playbook
@@ -445,35 +445,35 @@ find src/test/java -name '*ArchitectureTest*.java' -print
 habit-hooks doctor
 
 habit-hooks --all
-habit-hooks report --format markdown --output target/habit-hooks-dogfood-v0.1.10/before/report.md --no-fail
-habit-hooks report --format json --output target/habit-hooks-dogfood-v0.1.10/before/report.json --no-fail
-habit-hooks report --format html --output target/habit-hooks-dogfood-v0.1.10/before/report.html --no-fail
-habit-hooks report --format sarif --output target/habit-hooks-dogfood-v0.1.10/before/report.sarif --no-fail
-habit-hooks tasks --format markdown --output target/habit-hooks-dogfood-v0.1.10/before/tasks.md --no-fail
-habit-hooks tasks --format json --output target/habit-hooks-dogfood-v0.1.10/before/tasks.json --no-fail
-habit-hooks dependencies --output target/habit-hooks-dogfood-v0.1.10/before/dependencies.txt
+habit-hooks report --format markdown --output target/habit-hooks-reference-validation-v0.1.10/before/report.md --no-fail
+habit-hooks report --format json --output target/habit-hooks-reference-validation-v0.1.10/before/report.json --no-fail
+habit-hooks report --format html --output target/habit-hooks-reference-validation-v0.1.10/before/report.html --no-fail
+habit-hooks report --format sarif --output target/habit-hooks-reference-validation-v0.1.10/before/report.sarif --no-fail
+habit-hooks tasks --format markdown --output target/habit-hooks-reference-validation-v0.1.10/before/tasks.md --no-fail
+habit-hooks tasks --format json --output target/habit-hooks-reference-validation-v0.1.10/before/tasks.json --no-fail
+habit-hooks dependencies --output target/habit-hooks-reference-validation-v0.1.10/before/dependencies.txt
 ./mvnw --batch-mode --no-transfer-progress pmd:pmd -Dpmd.rulesets=pmd-ruleset.xml
 
-sed -n '1,220p' target/habit-hooks-dogfood-v0.1.10/before/tasks.md
-sed -n '1,220p' target/habit-hooks-dogfood-v0.1.10/before/report.json
-rg -n "Exception|ERROR|MissingReflection|Cannot|NullPointerException|No Java files|Failed|WARN|aborted|failed|not ready|FAIL|unknown TokenTypes" target/habit-hooks-dogfood-v0.1.10/before/logs target/habit-hooks-dogfood-v0.1.10/before/report.md target/habit-hooks-dogfood-v0.1.10/before/tasks.md target/habit-hooks-dogfood-v0.1.10/before/dependencies.txt || true
+sed -n '1,220p' target/habit-hooks-reference-validation-v0.1.10/before/tasks.md
+sed -n '1,220p' target/habit-hooks-reference-validation-v0.1.10/before/report.json
+rg -n "Exception|ERROR|MissingReflection|Cannot|NullPointerException|No Java files|Failed|WARN|aborted|failed|not ready|FAIL|unknown TokenTypes" target/habit-hooks-reference-validation-v0.1.10/before/logs target/habit-hooks-reference-validation-v0.1.10/before/report.md target/habit-hooks-reference-validation-v0.1.10/before/tasks.md target/habit-hooks-reference-validation-v0.1.10/before/dependencies.txt || true
 
 ./mvnw --batch-mode --no-transfer-progress spring-javaformat:apply
 ./mvnw --batch-mode --no-transfer-progress -Dtest=EntityTests,ArchitectureTest test
 habit-hooks --all
 
-habit-hooks report --format markdown --output target/habit-hooks-dogfood-v0.1.10/after/report.md --no-fail
-habit-hooks report --format json --output target/habit-hooks-dogfood-v0.1.10/after/report.json --no-fail
-habit-hooks report --format html --output target/habit-hooks-dogfood-v0.1.10/after/report.html --no-fail
-habit-hooks report --format sarif --output target/habit-hooks-dogfood-v0.1.10/after/report.sarif --no-fail
-habit-hooks tasks --format markdown --output target/habit-hooks-dogfood-v0.1.10/after/tasks.md --no-fail
-habit-hooks tasks --format json --output target/habit-hooks-dogfood-v0.1.10/after/tasks.json --no-fail
-habit-hooks dependencies --output target/habit-hooks-dogfood-v0.1.10/after/dependencies.txt
+habit-hooks report --format markdown --output target/habit-hooks-reference-validation-v0.1.10/after/report.md --no-fail
+habit-hooks report --format json --output target/habit-hooks-reference-validation-v0.1.10/after/report.json --no-fail
+habit-hooks report --format html --output target/habit-hooks-reference-validation-v0.1.10/after/report.html --no-fail
+habit-hooks report --format sarif --output target/habit-hooks-reference-validation-v0.1.10/after/report.sarif --no-fail
+habit-hooks tasks --format markdown --output target/habit-hooks-reference-validation-v0.1.10/after/tasks.md --no-fail
+habit-hooks tasks --format json --output target/habit-hooks-reference-validation-v0.1.10/after/tasks.json --no-fail
+habit-hooks dependencies --output target/habit-hooks-reference-validation-v0.1.10/after/dependencies.txt
 ./mvnw --batch-mode --no-transfer-progress pmd:pmd -Dpmd.rulesets=pmd-ruleset.xml
-cp target/pmd.xml target/habit-hooks-dogfood-v0.1.10/after/pmd.xml
+cp target/pmd.xml target/habit-hooks-reference-validation-v0.1.10/after/pmd.xml
 
-cat target/habit-hooks-dogfood-v0.1.10/after/report.json
-cat target/habit-hooks-dogfood-v0.1.10/after/tasks.md
+cat target/habit-hooks-reference-validation-v0.1.10/after/report.json
+cat target/habit-hooks-reference-validation-v0.1.10/after/tasks.md
 git -C /home/patbaumgartner/GitHub/habbit-hooks --no-pager status --short --branch --untracked-files=all
 git -C /home/patbaumgartner/GitHub/spring-petclinic --no-pager status --short --branch --untracked-files=all
 ```

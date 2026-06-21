@@ -12,7 +12,7 @@
 #   4. Remove unused imports and order remaining imports
 #   5. Apply Spring Java Format
 #   6. Run the full quality gate (verify)
-#   7. Self-dogfood: run habit-hooks against itself
+#   7. Reference validation: run habit-hooks against itself
 #
 # Requires: Java 25+, Maven 3.9+ on $PATH or present as ./mvnw
 
@@ -148,7 +148,7 @@ if [[ "$SKIP_VERIFY" == false ]]; then
     step "Running full quality gate (clean verify)"
     run "$MVN" clean verify
 
-    step "Self-dogfood: running habit-hooks against itself"
+    step "Reference validation: running habit-hooks against itself"
     run java -jar target/habit-hooks-*-launcher.jar --all
 fi
 

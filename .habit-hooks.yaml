@@ -1,4 +1,4 @@
-# .habit-hooks.yaml — self-dogfooding configuration
+# .habit-hooks.yaml — reference validation configuration
 #
 # habit-hooks runs against itself in CI using this config.
 # Run: habit-hooks --all

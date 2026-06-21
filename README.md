@@ -144,7 +144,7 @@ For full-repo analysis, run `habit-hooks --all`.
 Two repository scripts keep operational tasks repeatable:
 
 ```bash
-# Refresh dependencies, rewrite code, run verify, self-dogfood
+# Refresh dependencies, rewrite code, run verify, reference validation
 ./scripts/cleanup-code.sh
 
 # Enforce repo settings (rebase-only), optional PR merge with rebase
@@ -376,7 +376,7 @@ tests. The JSpecify analyzer is also project-scoped; it checks whether the annot
 dependency is present and whether main sources have started using nullness markers.
 
 Keep expensive analyzers disabled for tight local loops and enable them in stricter
-contexts such as `--all`, pre-push, CI self-dogfood, or nightly quality sweeps.
+contexts such as `--all`, pre-push, CI reference validation, or nightly quality sweeps.
 Enable the matching Maven plugin or dependency before turning on a Maven-backed
 analyzer. `habit-hooks init --maven-snippets` writes
 `habit-hooks-maven-snippets.xml`, a reference file with copyable fragments for

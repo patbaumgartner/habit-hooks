@@ -32,7 +32,7 @@ then the proposed solution. Discuss before implementing large changes.
 
 ## Code conventions
 
-This project self-dogfoods — habit-hooks runs against its own source code in CI.
+This project uses reference validation — habit-hooks runs against its own source code in CI.
 The conventions are enforced mechanically:
 
 - **Method length ≤ 25 lines** — if you're writing more, extract a helper
@@ -67,7 +67,7 @@ Additionally:
 ./mvnw test                    # unit tests only
 ./mvnw verify                  # full quality gate
 habit-hooks doctor             # analyzer readiness check
-habit-hooks --all              # self-dogfood before handoff
+habit-hooks --all              # reference validation before handoff
 ```
 
 When a change touches CLI output, reports, task exports, or documentation, also
