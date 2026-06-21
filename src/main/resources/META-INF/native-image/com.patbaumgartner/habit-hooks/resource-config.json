@@ -1,0 +1,9 @@
+{
+  "resources": {
+    "includes": [
+      { "pattern": "com/patbaumgartner/habithooks/version\\.properties" },
+      { "pattern": "com/patbaumgartner/habithooks/prompts/.*\\.md" },
+      { "pattern": "com/patbaumgartner/habithooks/templates/.*" }
+    ]
+  }
+}
