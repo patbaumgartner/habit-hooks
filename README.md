@@ -55,6 +55,16 @@ FORCE_JAR=1 sh scripts/install.sh
 The JAR path requires a Java 25+ runtime; the script checks for it and exits
 with guidance if it is missing. Make sure your install dir is on `PATH`.
 
+To upgrade an existing install to the latest release in place, run:
+
+```bash
+habit-hooks --update
+```
+
+It detects whether you are running the native binary or the JAR, downloads the
+matching asset from the latest GitHub release, and atomically replaces the
+installed artifact. Re-run `habit-hooks` afterwards to use the new version.
+
 Or build from source:
 
 ```bash
@@ -178,6 +188,7 @@ habit-hooks --since <hash>        check files changed since the given commit
 habit-hooks --all                 check all Java files regardless of git scope
 habit-hooks --config <path>       use an explicit config file
 habit-hooks --version             print version
+habit-hooks --update              download and install the latest release
 
 habit-hooks init                  scaffold tool configs and habit-hooks config
 habit-hooks init --dry-run        show every intended write without touching disk

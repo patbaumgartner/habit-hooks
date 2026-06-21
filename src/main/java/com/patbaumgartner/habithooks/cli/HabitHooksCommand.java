@@ -16,6 +16,7 @@ import com.patbaumgartner.habithooks.model.AnalysisResult;
 import com.patbaumgartner.habithooks.model.CoachingGroup;
 import com.patbaumgartner.habithooks.model.Violation;
 import com.patbaumgartner.habithooks.scope.FileScope;
+import com.patbaumgartner.habithooks.update.SelfUpdater;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,8 +54,18 @@ public final class HabitHooksCommand implements Callable<Integer> {
             paramLabel = "<hash>")
     private String since;
 
+    @Option(names = { "--update" }, description = "Download and install the latest habit-hooks release")
+    private boolean update;
+
     @Override
     public Integer call() {
+        if (this.update) {
+            return new SelfUpdater(VersionProvider.currentVersion(), System.out).run();
+        }
+        return runChecks();
+    }
+
+    private Integer runChecks() {
         Path workingDir = workingDir();
         HabitHooksConfig config = ConfigLoader.load(configPath, workingDir);
         List<Path> files = resolveScope(workingDir, config);

@@ -13,16 +13,28 @@ public final class VersionProvider implements IVersionProvider {
 
     private static final String PROPERTIES_RESOURCE = "com/patbaumgartner/habithooks/version.properties";
 
+    private static final String UNKNOWN = "unknown";
+
     @Override
-    public String[] getVersion() throws IOException {
+    public String[] getVersion() {
+        return new String[] { "habit-hooks " + currentVersion() };
+    }
+
+    /**
+     * Returns the raw version string from the bundled {@code version.properties}.
+     * @return the version, or {@code "unknown"} when it cannot be read
+     */
+    public static String currentVersion() {
         Properties props = new Properties();
-        try (InputStream in = getClass().getClassLoader().getResourceAsStream(PROPERTIES_RESOURCE)) {
+        try (InputStream in = VersionProvider.class.getClassLoader().getResourceAsStream(PROPERTIES_RESOURCE)) {
             if (in != null) {
                 props.load(in);
             }
         }
-        String version = props.getProperty("version", "unknown");
-        return new String[] { "habit-hooks " + version };
+        catch (IOException ex) {
+            return UNKNOWN;
+        }
+        return props.getProperty("version", UNKNOWN);
     }
 
 }
