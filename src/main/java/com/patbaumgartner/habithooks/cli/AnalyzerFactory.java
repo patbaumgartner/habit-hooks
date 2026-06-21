@@ -40,6 +40,8 @@ final class AnalyzerFactory {
     private static final List<String> MAVEN_ANALYZERS = List.of("spotbugs", "jacoco", "cyclonedx", "pitest",
             "spring-javaformat", "errorprone", "owasp");
 
+    private static final String NATIVE_IMAGE_PROPERTY = "org.graalvm.nativeimage.imagecode";
+
     private AnalyzerFactory() {
     }
 
@@ -63,9 +65,13 @@ final class AnalyzerFactory {
 
     private static void addPmd(List<Analyzer> analyzers, Map<String, AnalyzerConfig> analyzerConfig) {
         AnalyzerConfig pmd = analyzerConfig.getOrDefault("pmd", new AnalyzerConfig());
-        if (pmd.isEnabled()) {
+        if (pmd.isEnabled() && !isNativeImage()) {
             analyzers.add(new PmdAnalyzer(pmd.getRulesets()));
         }
+    }
+
+    private static boolean isNativeImage() {
+        return System.getProperty(NATIVE_IMAGE_PROPERTY) != null;
     }
 
     private static void addTaikai(List<Analyzer> analyzers, Map<String, AnalyzerConfig> analyzerConfig) {
