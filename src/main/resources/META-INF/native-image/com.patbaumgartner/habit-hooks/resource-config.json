@@ -4,6 +4,7 @@
       { "pattern": "com/patbaumgartner/habithooks/version\\.properties" },
       { "pattern": "com/patbaumgartner/habithooks/prompts/.*\\.md" },
       { "pattern": "com/patbaumgartner/habithooks/templates/.*" },
+      { "pattern": "com/puppycrawl/tools/checkstyle/.*\\.dtd" },
       { "pattern": "category/java/.*\\.xml" },
       { "pattern": "rulesets/.*\\.xml" }
     ]

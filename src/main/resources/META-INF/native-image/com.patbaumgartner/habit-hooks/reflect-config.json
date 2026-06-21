@@ -70,5 +70,77 @@
     "allDeclaredConstructors": true,
     "allDeclaredFields": true,
     "allDeclaredMethods": true
+  },
+  {
+    "name": "net.sourceforge.pmd.lang.rule.xpath.XPathRule",
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "net.sourceforge.pmd.lang.java.rule.design.NcssCountRule",
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "net.sourceforge.pmd.lang.java.rule.design.ExcessiveParameterListRule",
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "net.sourceforge.pmd.lang.java.rule.design.CyclomaticComplexityRule",
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "net.sourceforge.pmd.lang.java.rule.design.GodClassRule",
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "net.sourceforge.pmd.lang.java.rule.design.SingularFieldRule",
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "net.sourceforge.pmd.lang.java.rule.bestpractices.UseCollectionIsEmptyRule",
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "net.sourceforge.pmd.lang.java.rule.bestpractices.UnusedPrivateFieldRule",
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "net.sourceforge.pmd.lang.java.rule.bestpractices.UnusedLocalVariableRule",
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "net.sourceforge.pmd.lang.java.rule.bestpractices.AvoidReassigningParametersRule",
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "net.sourceforge.pmd.lang.java.rule.bestpractices.LooseCouplingRule",
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "net.sourceforge.pmd.lang.java.rule.bestpractices.LiteralsFirstInComparisonsRule",
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "net.sourceforge.pmd.lang.java.rule.bestpractices.ArrayIsStoredDirectlyRule",
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "net.sourceforge.pmd.lang.java.rule.bestpractices.MethodReturnsInternalArrayRule",
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "net.sourceforge.pmd.lang.java.rule.bestpractices.PreserveStackTraceRule",
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "net.sourceforge.pmd.lang.java.rule.errorprone.OverrideBothEqualsAndHashcodeRule",
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "net.sourceforge.pmd.lang.java.rule.errorprone.ProperCloneImplementationRule",
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "net.sourceforge.pmd.lang.java.rule.performance.UseStringBufferForStringAppendsRule",
+    "allDeclaredConstructors": true
   }
 ]
