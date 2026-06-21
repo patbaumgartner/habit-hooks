@@ -358,7 +358,7 @@ Releases include:
 
 - `habit-hooks-launcher.jar` — runnable fat JAR
 - `habit-hooks-<os>-<arch>` — native binaries (e.g. `habit-hooks-linux-x64`,
-  `habit-hooks-linux-arm64`, `habit-hooks-darwin-x64`, `habit-hooks-darwin-arm64`)
+  `habit-hooks-linux-arm64`, `habit-hooks-darwin-arm64`)
 - `habit-hooks-<version>-sources.jar` — source archive
 - `bom.json` — CycloneDX SBOM
 

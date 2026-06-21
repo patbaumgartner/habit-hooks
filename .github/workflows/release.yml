@@ -126,8 +126,6 @@ jobs:
             asset: habit-hooks-linux-x64
           - os: ubuntu-24.04-arm
             asset: habit-hooks-linux-arm64
-          - os: macos-13
-            asset: habit-hooks-darwin-x64
           - os: macos-latest
             asset: habit-hooks-darwin-arm64
 
