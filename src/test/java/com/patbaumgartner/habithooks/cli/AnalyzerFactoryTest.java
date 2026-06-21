@@ -2,6 +2,7 @@ package com.patbaumgartner.habithooks.cli;
 
 import com.patbaumgartner.habithooks.analyzer.Analyzer;
 import com.patbaumgartner.habithooks.analyzer.CheckstyleAnalyzer;
+import com.patbaumgartner.habithooks.analyzer.MavenPmdAnalyzer;
 import com.patbaumgartner.habithooks.analyzer.PmdAnalyzer;
 import com.patbaumgartner.habithooks.config.HabitHooksConfig;
 import java.util.List;
@@ -27,12 +28,14 @@ class AnalyzerFactoryTest {
     }
 
     @Test
-    void skipsInProcessPmdInNativeImage() {
+    void createsMavenBackedPmdInNativeImage() {
         System.setProperty(NATIVE_IMAGE_PROPERTY, "runtime");
 
         List<Analyzer> analyzers = AnalyzerFactory.create(new HabitHooksConfig());
 
-        assertThat(analyzers).anyMatch(CheckstyleAnalyzer.class::isInstance).noneMatch(PmdAnalyzer.class::isInstance);
+        assertThat(analyzers).anyMatch(CheckstyleAnalyzer.class::isInstance)
+            .anyMatch(MavenPmdAnalyzer.class::isInstance)
+            .noneMatch(PmdAnalyzer.class::isInstance);
     }
 
 }

@@ -121,8 +121,8 @@ work items for a human or AI coding agent.
 - Test sources are excluded by default (`scope.excludeTests: true`)
 - Build output directories (`target/`, `build/`) are always excluded regardless of scope
 - Checkstyle is enabled by default using `checkstyle.xml`
-- PMD is enabled by default using `pmd-ruleset.xml` on the JVM launcher
-- Native binaries skip the in-process PMD analyzer because PMD's Java engine needs JVM classpath bootstrap behavior; use the JAR launcher when PMD coverage is required
+- PMD is enabled by default using `pmd-ruleset.xml`
+- Native binaries run PMD through the Maven PMD goal and parse `target/pmd.xml`, so they need `./mvnw` or `mvn` available for PMD coverage
 - Missing, null, or blank config values fall back to safe defaults
 
 For full-repo analysis, run `habit-hooks --all`.

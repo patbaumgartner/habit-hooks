@@ -12,6 +12,7 @@ final class MavenExecutionClassifier {
             Map.entry("cyclonedx",
                     List.of("--- cyclonedx:", "cyclonedx-maven-plugin", "No plugin found for prefix 'cyclonedx'")),
             Map.entry("pitest", List.of("--- pitest-maven:", "--- pitest:", "pitest-maven")),
+            Map.entry("pmd", List.of("--- pmd:", "maven-pmd-plugin", "PMD version")),
             Map.entry("spring-javaformat",
                     List.of("--- spring-javaformat:", "spring-javaformat-maven-plugin",
                             "No plugin found for prefix 'spring-javaformat'")),

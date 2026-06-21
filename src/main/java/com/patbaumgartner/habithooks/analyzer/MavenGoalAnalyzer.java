@@ -114,8 +114,10 @@ public non-sealed class MavenGoalAnalyzer implements Analyzer {
         if (!capturesOutput() && output.isBlank()) {
             return Optional.empty();
         }
-        Path reportPath = capturesOutput() ? workingDir.resolve(reportFile)
-                : workingDir.resolve("target/habit-hooks/" + toolPrefix + ".log");
+        Path reportDir = workingDir.resolve("target/habit-hooks");
+        Path outputDir = Files.exists(reportDir) && !Files.isDirectory(reportDir)
+                ? workingDir.resolve("target/habit-hooks-logs") : reportDir;
+        Path reportPath = capturesOutput() ? workingDir.resolve(reportFile) : outputDir.resolve(toolPrefix + ".log");
         try {
             Files.createDirectories(reportPath.getParent());
             Files.writeString(reportPath, output, StandardCharsets.UTF_8);

@@ -56,7 +56,7 @@ can produce useful project feedback.
 | Analyzer | Purpose | Primary artifact |
 | --- | --- | --- |
 | `checkstyle` | file-scoped structural checks and coaching | native console/report output |
-| `pmd` | source code design and best-practice findings | `target/pmd.xml` companion report |
+| `pmd` | source code design and best-practice findings | native console/report output backed by `target/pmd.xml` |
 | `taikai` | architecture-test failures from `ArchitectureTest` | `target/surefire-reports/TEST-*ArchitectureTest*.xml` |
 | `spotbugs` | bytecode bug patterns | `target/spotbugsXml.xml` |
 | `jacoco` | line coverage gaps | `target/site/jacoco/jacoco.xml` |
@@ -67,10 +67,9 @@ can produce useful project feedback.
 | `owasp` | dependency vulnerability findings | `target/dependency-check-report.json` |
 | `jspecify` | nullness dependency/adoption checks | native console/report output |
 
-Native builds may intentionally skip in-process PMD when PMD internals are not
-native-image safe. Do not treat that as permission to skip PMD. Generate
-`target/pmd.xml` directly with Maven as a companion artifact, and use the JVM
-launcher for strict PMD coaching parity when needed.
+Native builds run PMD through Maven because PMD's Java engine is not embedded in
+the native image. Keep `./mvnw` or `mvn` available so native habit-hooks can
+generate `target/pmd.xml` and feed PMD findings into the normal coaching output.
 
 ## 3. Scaffold Petclinic
 
@@ -216,9 +215,8 @@ habit-hooks doctor
 ```
 
 Expected `doctor` output lists every native-ready analyzer as `OK`: `checkstyle`,
-`taikai`, `spotbugs`, `jacoco`, `cyclonedx`, `pitest`, `spring-javaformat`,
-`errorprone`, `owasp`, and `jspecify`. PMD may be absent from native `doctor`;
-that is why the companion Maven PMD command is part of the evidence workflow.
+`pmd`, `taikai`, `spotbugs`, `jacoco`, `cyclonedx`, `pitest`,
+`spring-javaformat`, `errorprone`, `owasp`, and `jspecify`.
 
 Run OWASP Dependency Check once without `-DautoUpdate=false` if the local NVD
 database is empty or stale. After the first refresh, keep `-DautoUpdate=false`

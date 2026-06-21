@@ -9,6 +9,14 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+## [0.1.12] - 2026-06-21
+
+### Fixed
+
+- Native binaries now run PMD through a Maven-backed analyzer that parses `target/pmd.xml` instead of skipping PMD coverage
+- Native analyzer log capture now falls back to `target/habit-hooks-logs` when a local native executable occupies `target/habit-hooks`
+- Native Checkstyle metadata now includes `EmptyLineSeparatorCheck` so full-repository native checks can load the default Checkstyle config
+
 ## [0.1.10] - 2026-06-21
 
 ### Added
@@ -146,7 +154,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - `--config <path>` relative paths now resolve from the current working directory
 - Documentation refresh across README, ARCHITECTURE, AGENTS, and CLAUDE for concise defaults-first guidance
 
-[Unreleased]: https://github.com/patbaumgartner/habbit-hooks/compare/v0.1.10...HEAD
+[Unreleased]: https://github.com/patbaumgartner/habbit-hooks/compare/v0.1.12...HEAD
+[0.1.12]: https://github.com/patbaumgartner/habbit-hooks/releases/tag/v0.1.12
 [0.1.10]: https://github.com/patbaumgartner/habbit-hooks/releases/tag/v0.1.10
 [0.1.9]: https://github.com/patbaumgartner/habbit-hooks/releases/tag/v0.1.9
 [0.1.8]: https://github.com/patbaumgartner/habbit-hooks/releases/tag/v0.1.8

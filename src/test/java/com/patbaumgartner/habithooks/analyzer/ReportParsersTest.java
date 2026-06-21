@@ -65,6 +65,49 @@ class ReportParsersTest {
     }
 
     @Test
+    void parsesMavenPmdViolations() throws Exception {
+        Path report = write("target/pmd.xml", """
+                <?xml version=\"1.0\" encoding=\"UTF-8\"?>
+                <pmd>
+                  <file name=\"%s\">
+                    <violation beginline=\"5\" rule=\"EmptyCatchBlock\">
+                      Avoid empty catch blocks
+                    </violation>
+                  </file>
+                </pmd>
+                """.formatted(tempDir.resolve("src/main/java/com/example/Example.java")));
+
+        List<Violation> violations = ReportParsers.pmdXml().parse(report, tempDir, "pmd");
+
+        assertThat(violations).hasSize(1);
+        assertThat(violations.get(0).ruleId()).isEqualTo("pmd:EmptyCatchBlock");
+        assertThat(violations.get(0).location()).isEqualTo("src/main/java/com/example/Example.java:5");
+        assertThat(violations.get(0).message()).contains("Avoid empty catch blocks");
+    }
+
+    @Test
+    void filtersMavenPmdReportToScopedFiles() throws Exception {
+        write("pmd-ruleset.xml", "<ruleset/>");
+        write("target/pmd.xml", """
+                <?xml version=\"1.0\" encoding=\"UTF-8\"?>
+                <pmd>
+                  <file name=\"%s\">
+                    <violation beginline=\"5\" rule=\"EmptyCatchBlock\">empty</violation>
+                  </file>
+                  <file name=\"%s\">
+                    <violation beginline=\"7\" rule=\"GodClass\">large</violation>
+                  </file>
+                </pmd>
+                """.formatted(tempDir.resolve("src/main/java/Included.java"),
+                tempDir.resolve("src/main/java/Excluded.java")));
+        MavenPmdAnalyzer analyzer = mavenPmdAnalyzer(0, "");
+
+        List<Violation> violations = analyzer.analyze(List.of(tempDir.resolve("src/main/java/Included.java")), tempDir);
+
+        assertThat(violations).extracting(Violation::ruleId).containsExactly("pmd:EmptyCatchBlock");
+    }
+
+    @Test
     void parsesJacocoReportWithDoctype() throws Exception {
         Path report = write("target/site/jacoco/jacoco.xml", """
                 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -149,6 +192,15 @@ class ReportParsersTest {
         Files.createDirectories(report.getParent());
         Files.writeString(report, content);
         return report;
+    }
+
+    private static MavenPmdAnalyzer mavenPmdAnalyzer(int exitCode, String output) {
+        return new MavenPmdAnalyzer("pmd-ruleset.xml") {
+            @Override
+            ExecutionResult runMaven(Path workingDir) {
+                return new ExecutionResult(exitCode, output);
+            }
+        };
     }
 
 }

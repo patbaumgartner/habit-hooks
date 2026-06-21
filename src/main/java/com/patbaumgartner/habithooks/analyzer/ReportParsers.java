@@ -26,6 +26,11 @@ public final class ReportParsers {
         return (reportPath, workingDir, toolPrefix) -> PitestReportParser.parse(reportPath, workingDir, toolPrefix);
     }
 
+    /** Creates a parser for Maven PMD XML reports. */
+    public static MavenGoalAnalyzer.ReportParser pmdXml() {
+        return (reportPath, workingDir, toolPrefix) -> PmdXmlReportParser.parse(reportPath, workingDir, toolPrefix);
+    }
+
     /** Creates a parser for Spring Java Format validation output. */
     public static MavenGoalAnalyzer.ReportParser springJavaFormatText() {
         return (reportPath, workingDir, toolPrefix) -> TextReportParser.parseSpringJavaFormat(reportPath, workingDir,

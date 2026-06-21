@@ -482,6 +482,12 @@
     "allDeclaredMethods": true
   },
   {
+    "name": "com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck",
+    "allDeclaredConstructors": true,
+    "allPublicMethods": true,
+    "allDeclaredMethods": true
+  },
+  {
     "name": "com.puppycrawl.tools.checkstyle.checks.blocks.EmptyBlockCheck",
     "allDeclaredConstructors": true,
     "allPublicMethods": true,

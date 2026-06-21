@@ -74,6 +74,20 @@ class MavenGoalAnalyzerTest {
     }
 
     @Test
+    void outputLogFallsBackWhenReportDirectoryIsAFile() throws IOException {
+        write("target/habit-hooks", "native executable placeholder");
+        MavenGoalAnalyzer analyzer = analyzer("spotbugs", "target/spotbugsXml.xml", ReportParsers.spotbugsXml(), 1,
+                "[ERROR] Failed to execute goal");
+
+        List<Violation> violations = analyzer.analyze(List.of(), tempDir);
+
+        assertThat(violations).hasSize(1);
+        assertThat(violations.get(0).message()).contains("target/habit-hooks-logs/spotbugs.log");
+        assertThat(Files.readString(tempDir.resolve("target/habit-hooks-logs/spotbugs.log")))
+            .contains("Failed to execute goal");
+    }
+
+    @Test
     void capturedOutputCanBeParsedAsFormatterFeedback() {
         MavenGoalAnalyzer analyzer = new CapturingAnalyzer("spring-javaformat", "target/habit-hooks/format.log",
                 ReportParsers.springJavaFormatText(), 1, "Formatting violation in Example.java");

@@ -5,6 +5,7 @@ import com.patbaumgartner.habithooks.analyzer.CapturingMavenGoalAnalyzer;
 import com.patbaumgartner.habithooks.analyzer.CheckstyleAnalyzer;
 import com.patbaumgartner.habithooks.analyzer.JSpecifyAnalyzer;
 import com.patbaumgartner.habithooks.analyzer.MavenGoalAnalyzer;
+import com.patbaumgartner.habithooks.analyzer.MavenPmdAnalyzer;
 import com.patbaumgartner.habithooks.analyzer.PmdAnalyzer;
 import com.patbaumgartner.habithooks.analyzer.ReportParsers;
 import com.patbaumgartner.habithooks.analyzer.TaikaiAnalyzer;
@@ -65,7 +66,13 @@ final class AnalyzerFactory {
 
     private static void addPmd(List<Analyzer> analyzers, Map<String, AnalyzerConfig> analyzerConfig) {
         AnalyzerConfig pmd = analyzerConfig.getOrDefault("pmd", new AnalyzerConfig());
-        if (pmd.isEnabled() && !isNativeImage()) {
+        if (!pmd.isEnabled()) {
+            return;
+        }
+        if (isNativeImage()) {
+            analyzers.add(new MavenPmdAnalyzer(pmd.getRulesets()));
+        }
+        else {
             analyzers.add(new PmdAnalyzer(pmd.getRulesets()));
         }
     }
