@@ -9,11 +9,10 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+## [0.1.15] - 2026-06-22
+
 ### Added
 
-- `habit-hooks init` now scaffolds `AGENTS.md` when absent so coding agents get the local quality loop automatically
-- `habit-hooks init --spring-boot` now writes Spring Boot analyzer defaults, agent instructions, Maven snippets, and Taikai support files
-- Generated agent guides now instruct agents to use Conventional Commits for commit messages
 - `habit-hooks explain <ruleId>` prints the coaching guidance for a rule on demand, without needing a live violation
 - `habit-hooks init --agents` scaffolds only `AGENTS.md`, leaving existing configuration untouched
 - Coaching for duplicated code via an opt-in CPD analyzer (`pmd:cpd`) that surfaces `pmd:CopyPaste` findings
@@ -23,11 +22,29 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Changed
 
+- SARIF rule metadata now includes human-readable titles and a `helpUri` to the coached-rules reference
+- Startup benchmark CI now persists JVM and native startup trend records as build artifacts
+
+## [0.1.14] - 2026-06-21
+
+### Added
+
+- `habit-hooks init` now scaffolds `AGENTS.md` when absent so coding agents get the local quality loop automatically
+- `habit-hooks init --spring-boot` now writes Spring Boot analyzer defaults, agent instructions, Maven snippets, and Taikai support files
+- Generated agent guides now instruct agents to use Conventional Commits for commit messages
+
+### Changed
+
 - Generated analyzer config now references the Maven profiles emitted by the snippet template for SpotBugs, CycloneDX, Error Prone, and OWASP Dependency Check
 - Spring Petclinic and agent-integration docs now use the first-class Spring Boot initialization workflow
 - CI now smoke-tests the packaged launcher against `init --spring-boot --dry-run`
-- SARIF rule metadata now includes human-readable titles and a `helpUri` to the coached-rules reference
-- Startup benchmark CI now persists JVM and native startup trend records as build artifacts
+
+## [0.1.13] - 2026-06-21
+
+### Changed
+
+- Strengthened self-lint quality gates and cleaned up the codebase
+- Improved the Spring Petclinic native validation playbook
 
 ## [0.1.12] - 2026-06-21
 
@@ -174,7 +191,10 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - `--config <path>` relative paths now resolve from the current working directory
 - Documentation refresh across README, ARCHITECTURE, AGENTS, and CLAUDE for concise defaults-first guidance
 
-[Unreleased]: https://github.com/patbaumgartner/habit-hooks/compare/v0.1.12...HEAD
+[Unreleased]: https://github.com/patbaumgartner/habit-hooks/compare/v0.1.15...HEAD
+[0.1.15]: https://github.com/patbaumgartner/habit-hooks/releases/tag/v0.1.15
+[0.1.14]: https://github.com/patbaumgartner/habit-hooks/releases/tag/v0.1.14
+[0.1.13]: https://github.com/patbaumgartner/habit-hooks/releases/tag/v0.1.13
 [0.1.12]: https://github.com/patbaumgartner/habit-hooks/releases/tag/v0.1.12
 [0.1.10]: https://github.com/patbaumgartner/habit-hooks/releases/tag/v0.1.10
 [0.1.9]: https://github.com/patbaumgartner/habit-hooks/releases/tag/v0.1.9
