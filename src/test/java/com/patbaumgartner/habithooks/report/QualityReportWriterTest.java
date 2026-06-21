@@ -5,6 +5,8 @@ import com.patbaumgartner.habithooks.model.Violation;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -45,12 +47,24 @@ class QualityReportWriterTest {
     void writesTrendDetailsWhenPreviousSnapshotExists() throws Exception {
         QualityReport current = new QualityReportBuilder()
             .build(new AnalysisResult(List.of(new Violation("pmd:GodClass", "Big.java", 7, "Too big")), 1), true);
-        TrendStore.Snapshot previous = new TrendStore.Snapshot("2026-06-20T00:00:00Z", 3, java.util.Map.of());
+        TrendStore.Snapshot previous = new TrendStore.Snapshot("2026-06-21T00:00:00Z", 3,
+                Map.of("maintainability", 3L, "supply-chain", 1L));
 
-        Path output = new QualityReportWriter().write(current, tempDir, ReportFormat.MARKDOWN,
-                java.util.Optional.of(previous));
+        Path output = new QualityReportWriter().write(current, tempDir, ReportFormat.MARKDOWN, Optional.of(previous));
 
-        assertThat(Files.readString(output)).contains("## Trend", "Previous findings: 3", "Delta: -2");
+        assertThat(Files.readString(output)).contains("## Trend", "Previous findings: 3", "Delta: -2",
+                "maintainability: -2", "supply-chain: -1");
+    }
+
+    @Test
+    void writesHtmlTrendDetailsWhenPreviousSnapshotExists() throws Exception {
+        QualityReport current = new QualityReportBuilder()
+            .build(new AnalysisResult(List.of(new Violation("owasp:CveHigh", "pom.xml", 1, "cve")), 1), true);
+        TrendStore.Snapshot previous = new TrendStore.Snapshot("2026-06-21T00:00:00Z", 0, Map.of());
+
+        Path output = new QualityReportWriter().write(current, tempDir, ReportFormat.HTML, Optional.of(previous));
+
+        assertThat(Files.readString(output)).contains("<h2>Trend</h2>", "supply-chain: +1");
     }
 
     @Test

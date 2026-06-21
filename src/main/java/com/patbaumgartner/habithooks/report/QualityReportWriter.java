@@ -41,7 +41,7 @@ public final class QualityReportWriter {
     private static String markdown(QualityReport report, Optional<TrendStore.Snapshot> previous) {
         StringBuilder output = new StringBuilder("# habit-hooks local quality report\n\n");
         appendSummary(output, report);
-        appendTrend(output, report, previous);
+        output.append(TrendRenderer.markdown(report, previous));
         appendMap(output, "By dimension", report.byDimension());
         appendMap(output, "By tool", report.byTool());
         appendFindings(output, report.findings());
@@ -53,25 +53,6 @@ public final class QualityReportWriter {
         output.append("- Files checked: ").append(report.filesChecked()).append('\n');
         output.append("- Findings: ").append(report.totalFindings()).append('\n');
         output.append("- Gate: ").append(report.failing() ? "failing" : "passing").append("\n\n");
-    }
-
-    private static void appendTrend(StringBuilder output, QualityReport report,
-            Optional<TrendStore.Snapshot> previous) {
-        output.append("## Trend\n\n");
-        if (previous.isEmpty()) {
-            output.append("No previous local report snapshot.\n\n");
-            return;
-        }
-        TrendStore.Snapshot snapshot = previous.get();
-        output.append("- Previous findings: ")
-            .append(snapshot.totalFindings())
-            .append(" (generated ")
-            .append(snapshot.generatedAt())
-            .append(")\n");
-        output.append("- Current findings: ").append(report.totalFindings()).append('\n');
-        output.append("- Delta: ")
-            .append(formatDelta(report.totalFindings() - snapshot.totalFindings()))
-            .append("\n\n");
     }
 
     private static void appendMap(StringBuilder output, String heading, Map<String, Long> counts) {
@@ -118,7 +99,7 @@ public final class QualityReportWriter {
             .append(". Gate: ")
             .append(report.failing() ? "failing" : "passing")
             .append(".</p>")
-            .append(htmlTrend(report, previous))
+            .append(TrendRenderer.html(report, previous))
             .append("<ul>");
         report.findings()
             .stream()
@@ -133,25 +114,12 @@ public final class QualityReportWriter {
         return body.append("</ul>").toString();
     }
 
-    private static String htmlTrend(QualityReport report, Optional<TrendStore.Snapshot> previous) {
-        if (previous.isEmpty()) {
-            return "<p>Trend: no previous local report snapshot.</p>";
-        }
-        int delta = report.totalFindings() - previous.get().totalFindings();
-        return "<p>Trend: " + escape(formatDelta(delta)) + " findings since " + escape(previous.get().generatedAt())
-                + ".</p>";
-    }
-
     private static String location(ReportFinding finding) {
         return finding.line() > 0 ? finding.file() + ":" + finding.line() : finding.file();
     }
 
     private static String escape(String value) {
         return value.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
-    }
-
-    private static String formatDelta(int delta) {
-        return delta > 0 ? "+" + delta : Integer.toString(delta);
     }
 
 }

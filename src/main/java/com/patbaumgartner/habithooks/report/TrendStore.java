@@ -5,8 +5,10 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
+import java.util.TreeMap;
 
 /** Stores tiny local quality snapshots for trend-aware reports. */
 public final class TrendStore {
@@ -40,7 +42,7 @@ public final class TrendStore {
         }
 
         public Snapshot {
-            byDimension = Map.copyOf(byDimension);
+            byDimension = Collections.unmodifiableMap(new TreeMap<>(byDimension));
         }
 
     }

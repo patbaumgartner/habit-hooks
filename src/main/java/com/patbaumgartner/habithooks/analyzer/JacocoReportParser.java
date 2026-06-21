@@ -1,6 +1,7 @@
 package com.patbaumgartner.habithooks.analyzer;
 
 import com.patbaumgartner.habithooks.model.Violation;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
@@ -9,7 +10,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-import java.io.IOException;
 
 /** Parses JaCoCo XML reports. */
 final class JacocoReportParser {

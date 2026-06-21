@@ -161,64 +161,64 @@ and *how to fix it*.
 
 ### Coached rules
 
-| Tool       | Rule ID                                      | Description                      |
-|------------|----------------------------------------------|----------------------------------|
-| checkstyle | `checkstyle:MethodLength`                    | Oversized method                 |
-| checkstyle | `checkstyle:ParameterNumber`                 | Too many parameters              |
-| checkstyle | `checkstyle:CyclomaticComplexity`            | High complexity                  |
-| checkstyle | `checkstyle:VisibilityModifier`              | Weak encapsulation               |
-| checkstyle | `checkstyle:MagicNumber`                     | Magic numbers                    |
-| checkstyle | `checkstyle:NestedIfDepth`                   | Deeply nested conditions         |
-| checkstyle | `checkstyle:NestedTryDepth`                  | Deeply nested try blocks         |
-| checkstyle | `checkstyle:BooleanExpressionComplexity`     | Complex boolean expression       |
-| pmd        | `pmd:NcssCount`                              | Oversized method or class (PMD)  |
-| pmd        | `pmd:GodClass`                               | Class doing too much             |
-| pmd        | `pmd:UnusedPrivateField`                     | Unused field                     |
-| pmd        | `pmd:UnusedLocalVariable`                    | Unused variable                  |
-| pmd        | `pmd:EmptyCatchBlock`                        | Silent exception swallowing      |
-| pmd        | `pmd:LiteralsFirstInComparisons`             | Null-unsafe string comparison    |
-| pmd        | `pmd:ReturnEmptyCollectionRatherThanNull`    | Null instead of empty collection |
-| pmd        | `pmd:UseCollectionIsEmpty`                   | `size() == 0` -> `isEmpty()`     |
-| pmd        | `pmd:UseEqualsToCompareStrings`              | String compared with `==`        |
-| pmd        | `pmd:OverrideBothEqualsAndHashcode`          | `equals()` without `hashCode()`  |
-| pmd        | `pmd:AvoidReassigningParameters`             | Reassigned parameter             |
-| pmd        | `pmd:LooseCoupling`                          | Concrete type in API             |
-| pmd        | `pmd:ArrayIsStoredDirectly`                  | Array stored without copying     |
-| pmd        | `pmd:PreserveStackTrace`                     | Lost stack trace on rethrow      |
-| spotbugs   | `spotbugs:goal-failed`                       | SpotBugs goal failed             |
-| spotbugs   | `spotbugs:report-missing`                    | SpotBugs report missing          |
-| spotbugs   | `spotbugs:report-unreadable`                 | SpotBugs report unreadable       |
-| jacoco     | `jacoco:LineCoverage`                        | Line coverage gap                |
-| jacoco     | `jacoco:goal-failed`                         | JaCoCo goal failed               |
-| jacoco     | `jacoco:report-missing`                      | JaCoCo report missing            |
-| jacoco     | `jacoco:report-unreadable`                   | JaCoCo report unreadable         |
-| cyclonedx  | `cyclonedx:InvalidBom`                       | Invalid SBOM                     |
-| cyclonedx  | `cyclonedx:MissingComponents`                | SBOM missing components          |
-| cyclonedx  | `cyclonedx:goal-failed`                      | CycloneDX goal failed            |
-| cyclonedx  | `cyclonedx:report-missing`                   | CycloneDX report missing         |
-| cyclonedx  | `cyclonedx:report-unreadable`                | CycloneDX report unreadable      |
-| pitest     | `pitest:SURVIVED`                            | Surviving mutation               |
-| pitest     | `pitest:NO_COVERAGE`                         | Mutation without coverage        |
-| pitest     | `pitest:goal-failed`                         | PIT goal failed                  |
-| pitest     | `pitest:report-missing`                      | PIT report missing               |
-| pitest     | `pitest:report-unreadable`                   | PIT report unreadable            |
-| spring-javaformat | `spring-javaformat:Formatting`        | Formatting drift                 |
-| spring-javaformat | `spring-javaformat:goal-failed`       | Formatter goal failed            |
-| spring-javaformat | `spring-javaformat:report-missing`    | Formatter output missing         |
-| spring-javaformat | `spring-javaformat:report-unreadable` | Formatter output unreadable      |
-| errorprone | `errorprone:goal-failed`                     | Error Prone compile failed       |
-| errorprone | `errorprone:report-missing`                  | Error Prone output missing       |
-| errorprone | `errorprone:report-unreadable`               | Error Prone output unreadable    |
-| owasp      | `owasp:CveCritical`                          | Critical CVE                     |
-| owasp      | `owasp:CveHigh`                              | High CVE                         |
-| owasp      | `owasp:CveMedium`                            | Medium CVE                       |
-| owasp      | `owasp:CveLow`                               | Low CVE                          |
-| owasp      | `owasp:SuppressedVulnerability`              | Suppressed vulnerability         |
-| owasp      | `owasp:goal-failed`                          | OWASP scan failed                |
-| owasp      | `owasp:report-missing`                       | OWASP report missing             |
-| owasp      | `owasp:report-unreadable`                    | OWASP report unreadable          |
-| jspecify   | `jspecify:DependencyMissing`                 | JSpecify dependency missing      |
-| jspecify   | `jspecify:NotAdopted`                        | JSpecify not adopted             |
+| Tool              | Rule ID                                      | Description                      |
+|-------------------|----------------------------------------------|----------------------------------|
+| checkstyle        | `checkstyle:MethodLength`                    | Oversized method                 |
+| checkstyle        | `checkstyle:ParameterNumber`                 | Too many parameters              |
+| checkstyle        | `checkstyle:CyclomaticComplexity`            | High complexity                  |
+| checkstyle        | `checkstyle:VisibilityModifier`              | Weak encapsulation               |
+| checkstyle        | `checkstyle:MagicNumber`                     | Magic numbers                    |
+| checkstyle        | `checkstyle:NestedIfDepth`                   | Deeply nested conditions         |
+| checkstyle        | `checkstyle:NestedTryDepth`                  | Deeply nested try blocks         |
+| checkstyle        | `checkstyle:BooleanExpressionComplexity`     | Complex boolean expression       |
+| pmd               | `pmd:NcssCount`                              | Oversized method or class (PMD)  |
+| pmd               | `pmd:GodClass`                               | Class doing too much             |
+| pmd               | `pmd:UnusedPrivateField`                     | Unused field                     |
+| pmd               | `pmd:UnusedLocalVariable`                    | Unused variable                  |
+| pmd               | `pmd:EmptyCatchBlock`                        | Silent exception swallowing      |
+| pmd               | `pmd:LiteralsFirstInComparisons`             | Null-unsafe string comparison    |
+| pmd               | `pmd:ReturnEmptyCollectionRatherThanNull`    | Null instead of empty collection |
+| pmd               | `pmd:UseCollectionIsEmpty`                   | `size() == 0` -> `isEmpty()`     |
+| pmd               | `pmd:UseEqualsToCompareStrings`              | String compared with `==`        |
+| pmd               | `pmd:OverrideBothEqualsAndHashcode`          | `equals()` without `hashCode()`  |
+| pmd               | `pmd:AvoidReassigningParameters`             | Reassigned parameter             |
+| pmd               | `pmd:LooseCoupling`                          | Concrete type in API             |
+| pmd               | `pmd:ArrayIsStoredDirectly`                  | Array stored without copying     |
+| pmd               | `pmd:PreserveStackTrace`                     | Lost stack trace on rethrow      |
+| spotbugs          | `spotbugs:goal-failed`                       | SpotBugs goal failed             |
+| spotbugs          | `spotbugs:report-missing`                    | SpotBugs report missing          |
+| spotbugs          | `spotbugs:report-unreadable`                 | SpotBugs report unreadable       |
+| jacoco            | `jacoco:LineCoverage`                        | Line coverage gap                |
+| jacoco            | `jacoco:goal-failed`                         | JaCoCo goal failed               |
+| jacoco            | `jacoco:report-missing`                      | JaCoCo report missing            |
+| jacoco            | `jacoco:report-unreadable`                   | JaCoCo report unreadable         |
+| cyclonedx         | `cyclonedx:InvalidBom`                       | Invalid SBOM                     |
+| cyclonedx         | `cyclonedx:MissingComponents`                | SBOM missing components          |
+| cyclonedx         | `cyclonedx:goal-failed`                      | CycloneDX goal failed            |
+| cyclonedx         | `cyclonedx:report-missing`                   | CycloneDX report missing         |
+| cyclonedx         | `cyclonedx:report-unreadable`                | CycloneDX report unreadable      |
+| pitest            | `pitest:SURVIVED`                            | Surviving mutation               |
+| pitest            | `pitest:NO_COVERAGE`                         | Mutation without coverage        |
+| pitest            | `pitest:goal-failed`                         | PIT goal failed                  |
+| pitest            | `pitest:report-missing`                      | PIT report missing               |
+| pitest            | `pitest:report-unreadable`                   | PIT report unreadable            |
+| spring-javaformat | `spring-javaformat:Formatting`               | Formatting drift                 |
+| spring-javaformat | `spring-javaformat:goal-failed`              | Formatter goal failed            |
+| spring-javaformat | `spring-javaformat:report-missing`           | Formatter output missing         |
+| spring-javaformat | `spring-javaformat:report-unreadable`        | Formatter output unreadable      |
+| errorprone        | `errorprone:goal-failed`                     | Error Prone compile failed       |
+| errorprone        | `errorprone:report-missing`                  | Error Prone output missing       |
+| errorprone        | `errorprone:report-unreadable`               | Error Prone output unreadable    |
+| owasp             | `owasp:CveCritical`                          | Critical CVE                     |
+| owasp             | `owasp:CveHigh`                              | High CVE                         |
+| owasp             | `owasp:CveMedium`                            | Medium CVE                       |
+| owasp             | `owasp:CveLow`                               | Low CVE                          |
+| owasp             | `owasp:SuppressedVulnerability`              | Suppressed vulnerability         |
+| owasp             | `owasp:goal-failed`                          | OWASP scan failed                |
+| owasp             | `owasp:report-missing`                       | OWASP report missing             |
+| owasp             | `owasp:report-unreadable`                    | OWASP report unreadable          |
+| jspecify          | `jspecify:DependencyMissing`                 | JSpecify dependency missing      |
+| jspecify          | `jspecify:NotAdopted`                        | JSpecify not adopted             |
 
 ### Uncoached rules
 
@@ -554,6 +554,12 @@ startup benchmark job tracks native binary startup as well.
 ---
 
 ## Architecture decisions
+
+Additional documentation lives in [docs](docs/README.md):
+
+- [Agent integration](docs/agent-integration.md)
+- [Artifact contracts](docs/artifacts.md)
+- [Release smoke checklist](docs/release-smoke.md)
 
 Project-level decisions are documented as ADRs in [docs/adr](docs/adr/README.md):
 

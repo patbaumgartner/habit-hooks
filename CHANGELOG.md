@@ -1,5 +1,7 @@
 # Changelog
 
+<!-- markdownlint-disable MD024 -->
+
 All notable changes to this project will be documented in this file.
 
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
@@ -17,6 +19,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Analyzer prerequisite checks via `habit-hooks doctor`
 - Maven dependency and plugin update reporting via `habit-hooks dependencies`
 - Optional Maven plugin/dependency snippet scaffolding via `habit-hooks init --maven-snippets`
+- Agent integration, artifact contract, and release smoke documentation under `docs/`
 
 ### Changed
 
@@ -26,9 +29,10 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Artifact command help and README examples now document `--output`, `--no-fail`, and dependency update safety flags consistently
 - Report summary maps now render in deterministic key order for stable human and agent artifacts
 - Markdown/HTML reports now surface local trend deltas when a previous snapshot exists
+- Markdown/HTML trend reports now include per-dimension deltas
 - `habit-hooks init` now points users to the installed `habit-hooks --all` command after scaffolding
 
-## [0.1.0] - 2026-06-20
+## [0.1.0] - 2026-06-21
 
 ### Added
 

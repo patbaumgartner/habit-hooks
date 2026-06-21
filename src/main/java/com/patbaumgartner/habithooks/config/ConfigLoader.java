@@ -65,7 +65,7 @@ public final class ConfigLoader {
             return Optional.of(config);
         }
         catch (IOException ex) {
-            LOGGER.warn("Failed to parse config file {}: {}. Using defaults.", path, ex.getMessage());
+            LOGGER.error("Failed to parse config file {}: {}. Using defaults.", path, ex.getMessage(), ex);
             return Optional.empty();
         }
     }

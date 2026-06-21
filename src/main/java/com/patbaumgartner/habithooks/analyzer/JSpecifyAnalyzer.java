@@ -56,7 +56,7 @@ public final class JSpecifyAnalyzer implements Analyzer {
             return pom.contains("org.jspecify") && pom.contains("jspecify");
         }
         catch (IOException ex) {
-            LOGGER.warn("Could not read {}: {}", POM, ex.getMessage(), ex);
+            LOGGER.error("Could not read {}: {}", POM, ex.getMessage(), ex);
             return false;
         }
     }
@@ -70,7 +70,7 @@ public final class JSpecifyAnalyzer implements Analyzer {
             return sources.filter(path -> path.toString().endsWith(".java")).anyMatch(JSpecifyAnalyzer::containsMarker);
         }
         catch (IOException ex) {
-            LOGGER.warn("Could not inspect JSpecify source usage: {}", ex.getMessage(), ex);
+            LOGGER.error("Could not inspect JSpecify source usage: {}", ex.getMessage(), ex);
             return false;
         }
     }
@@ -82,7 +82,7 @@ public final class JSpecifyAnalyzer implements Analyzer {
                     || content.contains("@Nullable") || content.contains("@NonNull");
         }
         catch (IOException ex) {
-            LOGGER.warn("Could not read {}: {}", source, ex.getMessage(), ex);
+            LOGGER.error("Could not read {}: {}", source, ex.getMessage(), ex);
             return false;
         }
     }

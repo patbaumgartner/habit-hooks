@@ -26,6 +26,7 @@ flowchart LR
     L --> M[Console output + exit code]
     H --> P[QualityReportBuilder]
     P --> Q[Markdown/JSON/HTML/SARIF]
+    Q --> T[TrendRenderer]
     Q --> S[TrendStore]
     P --> R[Prioritized agent task export]
 ```
@@ -67,11 +68,15 @@ Configuration loading behavior:
 
 - `report` builds a stable `QualityReport`, writes `report.md`, `report.json`,
     `report.html`, or `report.sarif`, and records the latest local trend snapshot.
+    Markdown and HTML reports render total and per-dimension deltas when a previous
+    snapshot exists.
 - `tasks` turns findings into prioritized, rule-grouped work items with locations,
     acceptance criteria, and a verification command for AI agents.
 - `doctor` checks analyzer availability before a full run spends time on a broken setup.
 - `dependencies` wraps the Maven Versions Plugin for repeatable dependency and
     plugin update reports, with an explicit `--apply` mode for parent/property updates.
+- `report.json` and `tasks.json` are treated as agent-facing contracts and are
+    covered by JSON shape tests.
 
 ## Design constraints
 

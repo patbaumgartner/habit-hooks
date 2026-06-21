@@ -116,7 +116,7 @@ public non-sealed class MavenGoalAnalyzer implements Analyzer {
             Files.writeString(reportPath, output, StandardCharsets.UTF_8);
         }
         catch (IOException ex) {
-            LOGGER.warn("Could not write {} output report {}: {}", toolPrefix, reportPath, ex.getMessage(), ex);
+            LOGGER.error("Could not write {} output report {}: {}", toolPrefix, reportPath, ex.getMessage(), ex);
         }
     }
 
