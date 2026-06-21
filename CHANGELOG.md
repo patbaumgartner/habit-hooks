@@ -9,6 +9,13 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+## [0.1.8] - 2026-06-21
+
+### Fixed
+
+- Native Checkstyle analysis now registers token constants and every generated Checkstyle module used by `habit-hooks init`
+- Contained analyzer failures now log concise warnings without stack traces during CLI, report, and task runs
+
 ## [0.1.7] - 2026-06-21
 
 ### Fixed
@@ -120,7 +127,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - `--config <path>` relative paths now resolve from the current working directory
 - Documentation refresh across README, ARCHITECTURE, AGENTS, and CLAUDE for concise defaults-first guidance
 
-[Unreleased]: https://github.com/patbaumgartner/habbit-hooks/compare/v0.1.7...HEAD
+[Unreleased]: https://github.com/patbaumgartner/habbit-hooks/compare/v0.1.8...HEAD
+[0.1.8]: https://github.com/patbaumgartner/habbit-hooks/releases/tag/v0.1.8
 [0.1.7]: https://github.com/patbaumgartner/habbit-hooks/releases/tag/v0.1.7
 [0.1.6]: https://github.com/patbaumgartner/habbit-hooks/releases/tag/v0.1.6
 [0.1.5]: https://github.com/patbaumgartner/habbit-hooks/releases/tag/v0.1.5

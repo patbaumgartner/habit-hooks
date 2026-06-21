@@ -83,8 +83,8 @@ class NativeImageMetadataTest {
     void registersConfiguredCheckstyleModulesForNativeReflection() throws Exception {
         String metadata = Files.readString(REFLECT_CONFIG);
 
-        assertThat(metadata).contains("com.puppycrawl.tools.checkstyle.Checker",
-                "com.puppycrawl.tools.checkstyle.TreeWalker",
+        assertThat(metadata).contains("com.puppycrawl.tools.checkstyle.api.TokenTypes", "\"allPublicFields\": true",
+                "com.puppycrawl.tools.checkstyle.Checker", "com.puppycrawl.tools.checkstyle.TreeWalker",
                 "com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck",
                 "com.puppycrawl.tools.checkstyle.checks.NewlineAtEndOfFileCheck",
                 "com.puppycrawl.tools.checkstyle.checks.sizes.FileLengthCheck",
@@ -112,7 +112,22 @@ class NativeImageMetadataTest {
                 "com.puppycrawl.tools.checkstyle.checks.coding.SimplifyBooleanReturnCheck",
                 "com.puppycrawl.tools.checkstyle.checks.coding.StringLiteralEqualityCheck",
                 "com.puppycrawl.tools.checkstyle.checks.coding.NestedIfDepthCheck",
-                "com.puppycrawl.tools.checkstyle.checks.coding.NestedTryDepthCheck");
+                "com.puppycrawl.tools.checkstyle.checks.coding.NestedTryDepthCheck",
+                "com.puppycrawl.tools.checkstyle.checks.coding.MultipleVariableDeclarationsCheck",
+                "com.puppycrawl.tools.checkstyle.checks.coding.OneStatementPerLineCheck",
+                "com.puppycrawl.tools.checkstyle.checks.coding.FallThroughCheck",
+                "com.puppycrawl.tools.checkstyle.checks.coding.UnnecessaryParenthesesCheck",
+                "com.puppycrawl.tools.checkstyle.checks.coding.NoFinalizerCheck",
+                "com.puppycrawl.tools.checkstyle.checks.imports.AvoidStarImportCheck",
+                "com.puppycrawl.tools.checkstyle.checks.imports.RedundantImportCheck",
+                "com.puppycrawl.tools.checkstyle.checks.imports.UnusedImportsCheck",
+                "com.puppycrawl.tools.checkstyle.checks.imports.IllegalImportCheck",
+                "com.puppycrawl.tools.checkstyle.checks.blocks.EmptyBlockCheck",
+                "com.puppycrawl.tools.checkstyle.checks.blocks.NeedBracesCheck",
+                "com.puppycrawl.tools.checkstyle.checks.blocks.LeftCurlyCheck",
+                "com.puppycrawl.tools.checkstyle.checks.TodoCommentCheck",
+                "com.puppycrawl.tools.checkstyle.checks.UpperEllCheck",
+                "com.puppycrawl.tools.checkstyle.checks.ArrayTypeStyleCheck");
     }
 
     private static List<Class<?>> jacksonTypes() {

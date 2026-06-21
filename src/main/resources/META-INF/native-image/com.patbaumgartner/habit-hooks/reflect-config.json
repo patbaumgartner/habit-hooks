@@ -243,6 +243,11 @@
     "allDeclaredMethods": true
   },
   {
+    "name": "com.puppycrawl.tools.checkstyle.api.TokenTypes",
+    "allPublicFields": true,
+    "allDeclaredFields": true
+  },
+  {
     "name": "com.puppycrawl.tools.checkstyle.Checker",
     "allDeclaredConstructors": true,
     "allPublicMethods": true,
@@ -418,6 +423,96 @@
   },
   {
     "name": "com.puppycrawl.tools.checkstyle.checks.coding.NestedTryDepthCheck",
+    "allDeclaredConstructors": true,
+    "allPublicMethods": true,
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "com.puppycrawl.tools.checkstyle.checks.coding.MultipleVariableDeclarationsCheck",
+    "allDeclaredConstructors": true,
+    "allPublicMethods": true,
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "com.puppycrawl.tools.checkstyle.checks.coding.OneStatementPerLineCheck",
+    "allDeclaredConstructors": true,
+    "allPublicMethods": true,
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "com.puppycrawl.tools.checkstyle.checks.coding.FallThroughCheck",
+    "allDeclaredConstructors": true,
+    "allPublicMethods": true,
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "com.puppycrawl.tools.checkstyle.checks.coding.UnnecessaryParenthesesCheck",
+    "allDeclaredConstructors": true,
+    "allPublicMethods": true,
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "com.puppycrawl.tools.checkstyle.checks.coding.NoFinalizerCheck",
+    "allDeclaredConstructors": true,
+    "allPublicMethods": true,
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "com.puppycrawl.tools.checkstyle.checks.imports.AvoidStarImportCheck",
+    "allDeclaredConstructors": true,
+    "allPublicMethods": true,
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "com.puppycrawl.tools.checkstyle.checks.imports.RedundantImportCheck",
+    "allDeclaredConstructors": true,
+    "allPublicMethods": true,
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "com.puppycrawl.tools.checkstyle.checks.imports.UnusedImportsCheck",
+    "allDeclaredConstructors": true,
+    "allPublicMethods": true,
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "com.puppycrawl.tools.checkstyle.checks.imports.IllegalImportCheck",
+    "allDeclaredConstructors": true,
+    "allPublicMethods": true,
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "com.puppycrawl.tools.checkstyle.checks.blocks.EmptyBlockCheck",
+    "allDeclaredConstructors": true,
+    "allPublicMethods": true,
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "com.puppycrawl.tools.checkstyle.checks.blocks.NeedBracesCheck",
+    "allDeclaredConstructors": true,
+    "allPublicMethods": true,
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "com.puppycrawl.tools.checkstyle.checks.blocks.LeftCurlyCheck",
+    "allDeclaredConstructors": true,
+    "allPublicMethods": true,
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "com.puppycrawl.tools.checkstyle.checks.TodoCommentCheck",
+    "allDeclaredConstructors": true,
+    "allPublicMethods": true,
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "com.puppycrawl.tools.checkstyle.checks.UpperEllCheck",
+    "allDeclaredConstructors": true,
+    "allPublicMethods": true,
+    "allDeclaredMethods": true
+  },
+  {
+    "name": "com.puppycrawl.tools.checkstyle.checks.ArrayTypeStyleCheck",
     "allDeclaredConstructors": true,
     "allPublicMethods": true,
     "allDeclaredMethods": true
