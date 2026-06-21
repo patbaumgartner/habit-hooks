@@ -9,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import javax.xml.parsers.ParserConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,15 +66,15 @@ public non-sealed class MavenGoalAnalyzer implements Analyzer {
     @Override
     public List<Violation> analyze(List<Path> files, Path workingDir) {
         ExecutionResult execution = runMaven(workingDir);
-        writeCapturedOutput(workingDir, execution.output());
+        Optional<Path> outputLog = writeCapturedOutput(workingDir, execution.output());
         if (capturesOutput() && execution.exitCode() == 0) {
             return List.of();
         }
         Path reportPath = workingDir.resolve(reportFile);
         if (!Files.isRegularFile(reportPath)) {
-            return missingReportViolation(execution.exitCode());
+            return missingReportViolation(execution, workingDir, outputLog);
         }
-        return parseReport(reportPath, workingDir, execution.exitCode());
+        return parseReport(reportPath, workingDir, execution, outputLog);
     }
 
     ExecutionResult runMaven(Path workingDir) {
@@ -106,17 +107,20 @@ public non-sealed class MavenGoalAnalyzer implements Analyzer {
         }
     }
 
-    private void writeCapturedOutput(Path workingDir, String output) {
-        if (!capturesOutput()) {
-            return;
+    private Optional<Path> writeCapturedOutput(Path workingDir, String output) {
+        if (!capturesOutput() && output.isBlank()) {
+            return Optional.empty();
         }
-        Path reportPath = workingDir.resolve(reportFile);
+        Path reportPath = capturesOutput() ? workingDir.resolve(reportFile)
+                : workingDir.resolve("target/habit-hooks/" + toolPrefix + ".log");
         try {
             Files.createDirectories(reportPath.getParent());
             Files.writeString(reportPath, output, StandardCharsets.UTF_8);
+            return Optional.of(reportPath);
         }
         catch (IOException ex) {
             LOGGER.error("Could not write {} output report {}: {}", toolPrefix, reportPath, ex.getMessage(), ex);
+            return Optional.empty();
         }
     }
 
@@ -134,12 +138,13 @@ public non-sealed class MavenGoalAnalyzer implements Analyzer {
         return List.copyOf(command);
     }
 
-    private List<Violation> parseReport(Path reportPath, Path workingDir, int exitCode) {
+    private List<Violation> parseReport(Path reportPath, Path workingDir, ExecutionResult execution,
+            Optional<Path> outputLog) {
         try {
             List<Violation> violations = reportParser.parse(reportPath, workingDir, toolPrefix);
-            if (exitCode != 0 && violations.isEmpty()) {
+            if (execution.exitCode() != 0 && violations.isEmpty()) {
                 return List.of(buildViolation("goal-failed", reportFile, 1,
-                        "Maven goal '" + goal + "' failed but the report contained no parseable findings."));
+                        goalFailedMessage(execution.output(), workingDir, outputLog)));
             }
             return violations;
         }
@@ -150,12 +155,36 @@ public non-sealed class MavenGoalAnalyzer implements Analyzer {
         }
     }
 
-    private List<Violation> missingReportViolation(int exitCode) {
-        if (exitCode == 0) {
+    private List<Violation> missingReportViolation(ExecutionResult execution, Path workingDir,
+            Optional<Path> outputLog) {
+        if (execution.exitCode() == 0) {
             return List.of();
         }
-        return List.of(buildViolation("report-missing", reportFile, 1,
-                "Maven goal '" + goal + "' failed and did not produce " + reportFile + "."));
+        return List
+            .of(buildViolation("report-missing", reportFile, 1, "Maven goal '" + goal + "' failed and did not produce "
+                    + reportFile + "." + outputSummary(execution.output(), workingDir, outputLog)));
+    }
+
+    private String goalFailedMessage(String output, Path workingDir, Optional<Path> outputLog) {
+        return "Maven goal '" + goal + "' failed but the report contained no parseable findings."
+                + outputSummary(output, workingDir, outputLog);
+    }
+
+    private static String outputSummary(String output, Path workingDir, Optional<Path> outputLog) {
+        String summary = output.lines()
+            .map(String::strip)
+            .filter(MavenGoalAnalyzer::isUsefulOutputLine)
+            .reduce((previous, current) -> current)
+            .orElse("");
+        String logMessage = outputLog.map(path -> " See " + ReportSupport.relativize(path, workingDir) + ".")
+            .orElse("");
+        return summary.isBlank() ? logMessage : " Last Maven output: " + summary + logMessage;
+    }
+
+    private static boolean isUsefulOutputLine(String line) {
+        return !line.isBlank() && !line.contains("[Help ")
+                && !line.contains("cwiki.apache.org/confluence/display/MAVEN")
+                && !line.contains("To see the full stack trace") && !line.contains("Re-run Maven using the -X switch");
     }
 
     private Violation buildViolation(String rule, String file, int line, String message) {

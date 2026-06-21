@@ -89,7 +89,8 @@ for the missing ones, writes `.habit-hooks.yaml`, and creates an empty baseline.
 Run with `--dry-run` to preview every write. Add `--maven-snippets` when you want
 a reference file with optional Maven plugin/dependency fragments for the
 project-scoped analyzers. Add `--taikai` when you want a starter architecture
-test in `src/test/java`.
+test in `src/test/java`; copy the Taikai dependency from the Maven snippets
+before running Maven test-based analyzers.
 
 Then:
 
@@ -168,10 +169,14 @@ and *how to fix it*.
 | checkstyle        | `checkstyle:CyclomaticComplexity`            | High complexity                  |
 | checkstyle        | `checkstyle:VisibilityModifier`              | Weak encapsulation               |
 | checkstyle        | `checkstyle:MagicNumber`                     | Magic numbers                    |
+| checkstyle        | `checkstyle:EmptyLineSeparator`              | Missing separation               |
+| checkstyle        | `checkstyle:FileTabCharacter`                | Tab character                    |
 | checkstyle        | `checkstyle:NestedIfDepth`                   | Deeply nested conditions         |
 | checkstyle        | `checkstyle:NestedTryDepth`                  | Deeply nested try blocks         |
 | checkstyle        | `checkstyle:BooleanExpressionComplexity`     | Complex boolean expression       |
 | pmd               | `pmd:NcssCount`                              | Oversized method or class (PMD)  |
+| pmd               | `pmd:ExcessiveParameterList`                 | Too many parameters              |
+| pmd               | `pmd:CollapsibleIfStatements`                | Collapsible if statements        |
 | pmd               | `pmd:GodClass`                               | Class doing too much             |
 | pmd               | `pmd:UnusedPrivateField`                     | Unused field                     |
 | pmd               | `pmd:UnusedLocalVariable`                    | Unused variable                  |
@@ -253,11 +258,11 @@ habit-hooks init --maven-snippets scaffold optional Maven plugin snippets
 habit-hooks report                write target/habit-hooks/report.md
 habit-hooks report --format html  write a static local quality dashboard
 habit-hooks report --format sarif write SARIF for code-scanning consumers
-habit-hooks report --output <dir> write report artifacts to a custom directory
+habit-hooks report --output <path> write report artifacts to a custom directory or file
 habit-hooks report --no-fail      write the report and always exit zero
 habit-hooks tasks                 write target/habit-hooks/tasks.md
 habit-hooks tasks --format json   export grouped agent task batches as JSON
-habit-hooks tasks --output <dir>  write task artifacts to a custom directory
+habit-hooks tasks --output <path> write task artifacts to a custom directory or file
 habit-hooks tasks --no-fail       write task export and always exit zero
 habit-hooks doctor                check analyzer prerequisites
 habit-hooks dependencies          report Maven dependency/plugin updates
@@ -277,6 +282,8 @@ with a usage error instead of silently writing the wrong artifact.
 Relative `--output` paths for `report`, `tasks`, and `dependencies` resolve from
 the analyzed project root, which keeps agent runs deterministic even when launched
 from another process directory.
+For `report` and `tasks`, a path ending in the selected format extension is used
+as the exact artifact file; otherwise the path is treated as an output directory.
 
 ---
 
@@ -428,8 +435,9 @@ analyzers:
 When enabled, habit-hooks runs the named test class via `./mvnw test` and
 reports each test failure as an uncoached violation with rule ID
 `taikai:<methodName>`. The analyzer is skipped automatically when `mvnw` is
-absent or the test class does not exist, so enabling it in a project that has
-not yet adopted Taikai is safe.
+absent, the test class does not exist, or a generated Taikai test is present but
+the build does not declare the Taikai dependency. Run `habit-hooks doctor` after
+copying snippets to confirm the analyzer is ready.
 
 `habit-hooks init --taikai` scaffolds a `ArchitectureTest.java`:
 

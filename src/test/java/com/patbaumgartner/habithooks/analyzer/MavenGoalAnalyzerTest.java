@@ -36,14 +36,36 @@ class MavenGoalAnalyzerTest {
     }
 
     @Test
-    void missingReportAfterFailedGoalBecomesViolation() {
+    void missingReportAfterFailedGoalBecomesViolation() throws IOException {
         MavenGoalAnalyzer analyzer = analyzer("spotbugs", "target/spotbugsXml.xml", ReportParsers.spotbugsXml(), 1,
-                "failed");
+                "[ERROR] Compilation failure");
 
         List<Violation> violations = analyzer.analyze(List.of(), tempDir);
 
         assertThat(violations).hasSize(1);
         assertThat(violations.get(0).ruleId()).isEqualTo("spotbugs:report-missing");
+        assertThat(violations.get(0).message()).contains("Last Maven output: [ERROR] Compilation failure");
+        assertThat(violations.get(0).message()).contains("target/habit-hooks/spotbugs.log");
+        assertThat(Files.readString(tempDir.resolve("target/habit-hooks/spotbugs.log")))
+            .contains("Compilation failure");
+    }
+
+    @Test
+    void failedGoalWithEmptyParsedReportIncludesMavenOutput() throws IOException {
+        writeJacocoReport(0, 10);
+        MavenGoalAnalyzer analyzer = analyzer("jacoco", "target/site/jacoco/jacoco.xml", ReportParsers.jacocoXml(), 1,
+                """
+                        [ERROR] Failed to compile ArchitectureTest.java
+                        [ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException
+                        """);
+
+        List<Violation> violations = analyzer.analyze(List.of(), tempDir);
+
+        assertThat(violations).hasSize(1);
+        assertThat(violations.get(0).ruleId()).isEqualTo("jacoco:goal-failed");
+        assertThat(violations.get(0).message()).contains("ArchitectureTest.java");
+        assertThat(violations.get(0).message()).contains("target/habit-hooks/jacoco.log");
+        assertThat(violations.get(0).message()).doesNotContain("cwiki.apache.org");
     }
 
     @Test
@@ -68,14 +90,18 @@ class MavenGoalAnalyzerTest {
     }
 
     private void writeJacocoReport() throws IOException {
+        writeJacocoReport(3, 7);
+    }
+
+    private void writeJacocoReport(int missed, int covered) throws IOException {
         Path report = tempDir.resolve("target/site/jacoco/jacoco.xml");
         Files.createDirectories(report.getParent());
         Files.writeString(report, """
                 <?xml version="1.0" encoding="UTF-8"?>
                 <report name="habit-hooks">
-                  <counter type="LINE" missed="3" covered="7"/>
+                                    <counter type="LINE" missed="%d" covered="%d"/>
                 </report>
-                """);
+                                """.formatted(missed, covered));
     }
 
     private static MavenGoalAnalyzer analyzer(String toolPrefix, String reportFile,

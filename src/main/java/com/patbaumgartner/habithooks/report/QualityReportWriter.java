@@ -20,15 +20,16 @@ public final class QualityReportWriter {
     private static final ObjectMapper MAPPER = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
 
     /** Writes the report and returns the generated artifact path. */
-    public Path write(QualityReport report, Path outputDir, String format) throws IOException {
-        return write(report, outputDir, ReportFormat.parse(format), Optional.empty());
+    public Path write(QualityReport report, Path outputPath, String format) throws IOException {
+        return write(report, outputPath, ReportFormat.parse(format), Optional.empty());
     }
 
     /** Writes the report and returns the generated artifact path. */
-    public Path write(QualityReport report, Path outputDir, ReportFormat format, Optional<TrendStore.Snapshot> previous)
-            throws IOException {
-        Files.createDirectories(outputDir);
-        Path output = outputDir.resolve("report." + format.extension());
+    public Path write(QualityReport report, Path outputPath, ReportFormat format,
+            Optional<TrendStore.Snapshot> previous) throws IOException {
+        String defaultFileName = "report." + format.extension();
+        Path output = isFileOutput(outputPath, defaultFileName) ? outputPath : outputPath.resolve(defaultFileName);
+        Files.createDirectories(artifactDirectory(outputPath, format));
         switch (format) {
             case JSON -> MAPPER.writeValue(output.toFile(), report);
             case HTML -> Files.writeString(output, html(report, previous), StandardCharsets.UTF_8);
@@ -36,6 +37,23 @@ public final class QualityReportWriter {
             case MARKDOWN -> Files.writeString(output, markdown(report, previous), StandardCharsets.UTF_8);
         }
         return output;
+    }
+
+    /**
+     * Returns the directory where generated report sidecars, such as history, belong.
+     */
+    public Path artifactDirectory(Path outputPath, ReportFormat format) {
+        if (!isFileOutput(outputPath, "report." + format.extension())) {
+            return outputPath;
+        }
+        Path parent = outputPath.getParent();
+        return parent == null ? Path.of(".") : parent;
+    }
+
+    private static boolean isFileOutput(Path outputPath, String defaultFileName) {
+        Path fileName = outputPath.getFileName();
+        String extension = defaultFileName.substring(defaultFileName.lastIndexOf('.'));
+        return fileName != null && fileName.toString().endsWith(extension);
     }
 
     private static String markdown(QualityReport report, Optional<TrendStore.Snapshot> previous) {

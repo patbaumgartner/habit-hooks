@@ -11,9 +11,6 @@
     <property name="fileExtensions" value="java" />
 
     <!-- File-level checks -->
-    <module name="FileTabCharacter">
-        <property name="eachLine" value="true" />
-    </module>
     <module name="NewlineAtEndOfFile" />
     <module name="FileLength">
         <property name="max" value="400" />
@@ -94,11 +91,6 @@
         <module name="UnusedImports" />
         <module name="IllegalImport">
             <property name="illegalPkgs" value="sun, com.sun" />
-        </module>
-
-        <!-- ===== Whitespace ===== -->
-        <module name="EmptyLineSeparator">
-            <property name="allowNoEmptyLineBetweenFields" value="true" />
         </module>
 
         <!-- ===== Blocks ===== -->

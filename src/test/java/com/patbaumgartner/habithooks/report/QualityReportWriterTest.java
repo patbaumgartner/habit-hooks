@@ -40,7 +40,21 @@ class QualityReportWriterTest {
 
         assertThat(Files.readString(json)).contains("pmd:GodClass");
         assertThat(Files.readString(html)).contains("habit-hooks local quality report");
-        assertThat(Files.readString(sarif)).contains("\"version\"", "Big.java");
+        assertThat(Files.readString(sarif)).contains("\"version\"", "Big.java", "\"rules\"",
+                "\"id\" : \"pmd:GodClass\"");
+    }
+
+    @Test
+    void writesToExactReportFileWhenOutputHasFormatExtension() throws Exception {
+        AnalysisResult result = new AnalysisResult(List.of(new Violation("pmd:GodClass", "Big.java", 7, "Too big")), 1);
+        QualityReport report = new QualityReportBuilder().build(result, true);
+        Path requestedOutput = tempDir.resolve("agent/petclinic-report.md");
+
+        Path output = new QualityReportWriter().write(report, requestedOutput, "markdown");
+
+        assertThat(output).isEqualTo(requestedOutput);
+        assertThat(Files.exists(requestedOutput)).isTrue();
+        assertThat(Files.isDirectory(requestedOutput)).isFalse();
     }
 
     @Test

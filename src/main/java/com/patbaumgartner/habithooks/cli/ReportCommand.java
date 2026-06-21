@@ -24,8 +24,8 @@ final class ReportCommand implements Callable<Integer> {
             paramLabel = "<format>")
     private String format;
 
-    @Option(names = { "--output" }, description = "Output directory, relative to the project root",
-            defaultValue = "target/habit-hooks", paramLabel = "<dir>")
+    @Option(names = { "--output" }, description = "Output directory or report file, relative to the project root",
+            defaultValue = "target/habit-hooks", paramLabel = "<path>")
     private Path outputDir;
 
     @Option(names = { "--no-fail" }, description = "Always exit 0 after writing the report")
@@ -38,15 +38,17 @@ final class ReportCommand implements Callable<Integer> {
             return 2;
         }
         Path workingDir = parent.workingDir();
-        Path resolvedOutputDir = resolveOutputDir(workingDir);
+        Path resolvedOutput = resolveOutputDir(workingDir);
         AnalysisRun run = parent.analyzeConfigured(workingDir);
         if (run.skipped()) {
             System.out.println(run.skipMessage());
             return 0;
         }
         QualityReport report = new QualityReportBuilder().build(run.result(), run.hasFailures());
-        Optional<TrendStore.Snapshot> previous = new TrendStore().record(resolvedOutputDir.resolve("history"), report);
-        Path output = new QualityReportWriter().write(report, resolvedOutputDir, normalizedFormat, previous);
+        QualityReportWriter writer = new QualityReportWriter();
+        Path artifactDirectory = writer.artifactDirectory(resolvedOutput, normalizedFormat);
+        Optional<TrendStore.Snapshot> previous = new TrendStore().record(artifactDirectory.resolve("history"), report);
+        Path output = writer.write(report, resolvedOutput, normalizedFormat, previous);
         System.out.println("Wrote " + output);
         previous.ifPresent(snapshot -> System.out.println(trendLine(report, snapshot)));
         return noFail || !run.hasFailures() ? 0 : 1;

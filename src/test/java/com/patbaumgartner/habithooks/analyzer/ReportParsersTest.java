@@ -65,6 +65,23 @@ class ReportParsersTest {
     }
 
     @Test
+    void parsesJacocoReportWithDoctype() throws Exception {
+        Path report = write("target/site/jacoco/jacoco.xml", """
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <!DOCTYPE report PUBLIC "-//JACOCO//DTD Report 1.1//EN" "report.dtd">
+                <report name="example">
+                  <counter type="LINE" missed="3" covered="7"/>
+                </report>
+                """);
+
+        List<Violation> violations = ReportParsers.jacocoXml().parse(report, tempDir, "jacoco");
+
+        assertThat(violations).hasSize(1);
+        assertThat(violations.get(0).ruleId()).isEqualTo("jacoco:LineCoverage");
+        assertThat(violations.get(0).message()).contains("70%", "7/10");
+    }
+
+    @Test
     void parsesErrorProneCompilerOutput() throws Exception {
         Path report = write("target/habit-hooks/errorprone.log", """
                 [ERROR] Example.java:[12,8] [ReturnValueIgnored] Return value ignored

@@ -19,8 +19,8 @@ final class TasksCommand implements Callable<Integer> {
             paramLabel = "<format>")
     private String format;
 
-    @Option(names = { "--output" }, description = "Output directory, relative to the project root",
-            defaultValue = "target/habit-hooks", paramLabel = "<dir>")
+    @Option(names = { "--output" }, description = "Output directory or task file, relative to the project root",
+            defaultValue = "target/habit-hooks", paramLabel = "<path>")
     private Path outputDir;
 
     @Option(names = { "--no-fail" }, description = "Always exit 0 after writing the task export")

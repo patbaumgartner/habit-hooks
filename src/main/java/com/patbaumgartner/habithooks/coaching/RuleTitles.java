@@ -21,6 +21,8 @@ public final class RuleTitles {
             Map.entry("checkstyle:JavaNCSS", "High Non-Commenting Source Lines"),
             Map.entry("checkstyle:VisibilityModifier", "Weak Encapsulation"),
             Map.entry("checkstyle:MagicNumber", "Magic Number"),
+            Map.entry("checkstyle:EmptyLineSeparator", "Missing Separation"),
+            Map.entry("checkstyle:FileTabCharacter", "Tab Character"),
             Map.entry("checkstyle:NestedIfDepth", "Deeply Nested Conditions"),
             Map.entry("checkstyle:NestedTryDepth", "Deeply Nested Try Blocks"),
             Map.entry("checkstyle:BooleanExpressionComplexity", "Complex Boolean Expression"),

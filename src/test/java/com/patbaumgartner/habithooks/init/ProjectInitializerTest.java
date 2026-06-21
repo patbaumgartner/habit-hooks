@@ -37,6 +37,8 @@ class ProjectInitializerTest {
         assertThat(Files.exists(tempDir.resolve(".habit-hooks-baseline.json"))).isTrue();
         assertThat(Files.exists(tempDir.resolve("habit-hooks-maven-snippets.xml"))).isFalse();
         assertThat(Files.readString(tempDir.resolve(".habit-hooks.yaml"))).contains("spotbugs:", "spring-javaformat:");
+        assertThat(Files.readString(tempDir.resolve("checkstyle.xml"))).doesNotContain("FileTabCharacter",
+                "EmptyLineSeparator");
     }
 
     @Test
@@ -66,9 +68,13 @@ class ProjectInitializerTest {
     void taikaiScaffoldsArchitectureTestWhenTestDirExists() throws IOException {
         Files.createDirectories(tempDir.resolve("src/test/java"));
 
-        run(false, true);
+        Output output = run(false, true);
+        String architectureTest = Files.readString(tempDir.resolve("src/test/java/ArchitectureTest.java"));
 
+        assertThat(output.text()).contains("Taikai tests require the com.enofex:taikai test dependency");
         assertThat(Files.exists(tempDir.resolve("src/test/java/ArchitectureTest.java"))).isTrue();
+        assertThat(architectureTest).contains("\tprivate static final String NAMESPACE");
+        assertThat(architectureTest).contains("// change this").doesNotContain("←");
     }
 
     @Test

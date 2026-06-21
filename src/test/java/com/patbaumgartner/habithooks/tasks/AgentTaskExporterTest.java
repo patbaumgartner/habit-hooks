@@ -45,6 +45,18 @@ class AgentTaskExporterTest {
     }
 
     @Test
+    void writesToExactTaskFileWhenOutputHasFormatExtension() throws Exception {
+        AnalysisResult result = new AnalysisResult(List.of(new Violation("pmd:GodClass", "A.java", 1, "big")), 1);
+        Path requestedOutput = tempDir.resolve("agent/petclinic-tasks.md");
+
+        Path output = new AgentTaskExporter().write(result, requestedOutput, "markdown");
+
+        assertThat(output).isEqualTo(requestedOutput);
+        assertThat(Files.exists(requestedOutput)).isTrue();
+        assertThat(Files.isDirectory(requestedOutput)).isFalse();
+    }
+
+    @Test
     void rejectsUnknownTaskFormat() {
         assertThatThrownBy(() -> AgentTaskExporter.Format.parse("xml")).isInstanceOf(IllegalArgumentException.class)
             .hasMessageContaining("Unsupported task format");

@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -75,17 +76,47 @@ public non-sealed class TaikaiAnalyzer implements Analyzer {
         if (!hasMaven) {
             return false;
         }
+        return findTestClass(workingDir).map(testFile -> hasRequiredTaikaiDependency(workingDir, testFile))
+            .orElse(false);
+    }
+
+    private boolean hasRequiredTaikaiDependency(Path workingDir, Path testFile) {
         try {
-            Path testRoot = workingDir.resolve("src/test/java");
-            if (!Files.isDirectory(testRoot)) {
-                return false;
-            }
-            try (var stream = Files.walk(testRoot)) {
-                return stream.anyMatch(p -> p.getFileName().toString().equals(testClass + ".java"));
-            }
+            String source = Files.readString(testFile);
+            return !source.contains("com.enofex.taikai") || List.of("pom.xml", "build.gradle", "build.gradle.kts")
+                .stream()
+                .map(workingDir::resolve)
+                .anyMatch(buildFile -> buildFileContains(buildFile, "taikai"));
+        }
+        catch (IOException e) {
+            LOGGER.error("Could not read {}: {}", testFile, e.getMessage(), e);
+            return false;
+        }
+    }
+
+    private Optional<Path> findTestClass(Path workingDir) {
+        Path testRoot = workingDir.resolve("src/test/java");
+        if (!Files.isDirectory(testRoot)) {
+            return Optional.empty();
+        }
+        try (var stream = Files.walk(testRoot)) {
+            return stream.filter(path -> path.getFileName().toString().equals(testClass + ".java")).findFirst();
         }
         catch (IOException e) {
             LOGGER.error("Could not search for {}: {}", testClass, e.getMessage(), e);
+            return Optional.empty();
+        }
+    }
+
+    private static boolean buildFileContains(Path buildFile, String text) {
+        if (!Files.isRegularFile(buildFile)) {
+            return false;
+        }
+        try {
+            return Files.readString(buildFile).contains(text);
+        }
+        catch (IOException e) {
+            LOGGER.error("Could not read {}: {}", buildFile, e.getMessage(), e);
             return false;
         }
     }
@@ -97,7 +128,9 @@ public non-sealed class TaikaiAnalyzer implements Analyzer {
     @Override
     public List<Violation> analyze(List<Path> files, Path workingDir) {
         int exitCode = runMaven(workingDir);
-        String testFile = resolveTestFile(workingDir);
+        String testFile = findTestClass(workingDir).map(workingDir::relativize)
+            .map(Path::toString)
+            .orElse(testClass + ".java");
         List<Violation> violations = parseSurefireReports(workingDir, testFile);
         if (exitCode != 0 && violations.isEmpty()) {
             LOGGER.atWarn()
@@ -231,29 +264,11 @@ public non-sealed class TaikaiAnalyzer implements Analyzer {
         return new Violation(ruleId, testFile, 1, firstLine);
     }
 
-    private String resolveTestFile(Path workingDir) {
-        try {
-            Path testRoot = workingDir.resolve("src/test/java");
-            try (var stream = Files.walk(testRoot)) {
-                return stream.filter(p -> p.getFileName().toString().equals(testClass + ".java"))
-                    .findFirst()
-                    .map(workingDir::relativize)
-                    .map(Path::toString)
-                    .orElse(testClass + ".java");
-            }
-        }
-        catch (IOException e) {
-            return testClass + ".java";
-        }
-    }
-
     private static boolean commandExists(String command) {
         try {
-            Process p = new ProcessBuilder(command, "--version").redirectErrorStream(true).start();
-            try (InputStream out = p.getInputStream()) {
-                out.transferTo(OutputStream.nullOutputStream());
-            }
-            return p.waitFor() == 0;
+            Process process = new ProcessBuilder(command, "--version").redirectErrorStream(true).start();
+            process.getInputStream().transferTo(OutputStream.nullOutputStream());
+            return process.waitFor() == 0;
         }
         catch (IOException | InterruptedException e) {
             if (e instanceof InterruptedException) {

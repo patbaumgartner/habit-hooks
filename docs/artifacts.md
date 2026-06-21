@@ -4,6 +4,10 @@ habit-hooks writes local artifacts under `target/habit-hooks` by default. Relati
 `--output` paths resolve from the analyzed project root so agents get deterministic
 paths even when launched from another process directory.
 
+For `report` and `tasks`, `--output` may be either a directory or an exact file
+path with the selected format extension. For example, `--output target/hh.md`
+writes `target/hh.md`; `--output target/hh` writes `target/hh/report.md`.
+
 ## Report artifacts
 
 Command:

@@ -20,17 +20,28 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Maven dependency and plugin update reporting via `habit-hooks dependencies`
 - Optional Maven plugin/dependency snippet scaffolding via `habit-hooks init --maven-snippets`
 - Agent integration, artifact contract, and release smoke documentation under `docs/`
+- Coaching prompts for scaffolded whitespace and PMD design rules surfaced by Spring Petclinic dogfooding
 
 ### Changed
 
 - README now documents the expanded analyzer configuration, coached prompt coverage, rule severity semantics, and Maven snippet workflow
 - Report and task format flags now fail fast on unknown values and use `.md` for Markdown artifacts
+- Report and task output paths now accept either a custom directory or exact artifact file
 - Report, task, and dependency output paths now resolve relative to the analyzed project root
 - Artifact command help and README examples now document `--output`, `--no-fail`, and dependency update safety flags consistently
 - Report summary maps now render in deterministic key order for stable human and agent artifacts
 - Markdown/HTML reports now surface local trend deltas when a previous snapshot exists
 - Markdown/HTML trend reports now include per-dimension deltas
 - `habit-hooks init` now points users to the installed `habit-hooks --all` command after scaffolding
+
+### Fixed
+
+- JaCoCo XML reports with a standard DOCTYPE now parse without allowing external entity resolution
+- `habit-hooks doctor` now marks Taikai unavailable when a generated Taikai test exists but the build does not declare the Taikai dependency
+- Analyzer skip warnings now direct users to `habit-hooks doctor` instead of assuming a missing config file
+- Generated Taikai architecture tests now follow Spring Java Format out of the box
+- Generated Checkstyle starter configs no longer enable formatting-only tab and separator rules that conflict with Spring Java Format projects
+- SARIF reports now include `tool.driver.rules` metadata for code-scanning consumers
 
 ## [0.1.0] - 2026-06-21
 

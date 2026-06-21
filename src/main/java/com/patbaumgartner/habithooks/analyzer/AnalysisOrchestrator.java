@@ -46,7 +46,7 @@ public final class AnalysisOrchestrator {
             LOGGER.atWarn()
                 .addArgument(() -> analyzerName)
                 .addArgument(workingDir)
-                .log("Analyzer '{}' config not found in {}; skipping. Run 'habit-hooks init' to scaffold missing files.");
+                .log("Analyzer '{}' is not ready in {}; skipping. Run 'habit-hooks doctor' for setup details.");
             return List.of();
         }
         if (files.isEmpty() && analyzer.requiresFiles()) {

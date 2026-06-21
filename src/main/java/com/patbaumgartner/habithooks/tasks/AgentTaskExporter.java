@@ -25,15 +25,15 @@ public final class AgentTaskExporter {
     private static final ObjectMapper MAPPER = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
 
     /** Writes agent tasks and returns the generated path. */
-    public Path write(AnalysisResult result, Path outputDir, String format) throws IOException {
-        return write(result, outputDir, Format.parse(format));
+    public Path write(AnalysisResult result, Path outputPath, String format) throws IOException {
+        return write(result, outputPath, Format.parse(format));
     }
 
     /** Writes agent tasks and returns the generated path. */
-    public Path write(AnalysisResult result, Path outputDir, Format format) throws IOException {
-        Files.createDirectories(outputDir);
+    public Path write(AnalysisResult result, Path outputPath, Format format) throws IOException {
         List<AgentTask> tasks = tasks(result);
-        Path output = outputDir.resolve("tasks." + format.extension());
+        Path output = resolveOutput(outputPath, "tasks." + format.extension());
+        createDirectories(output);
         if (format == Format.JSON) {
             MAPPER.writeValue(output.toFile(), tasks);
         }
@@ -41,6 +41,20 @@ public final class AgentTaskExporter {
             Files.writeString(output, markdown(tasks), StandardCharsets.UTF_8);
         }
         return output;
+    }
+
+    private static Path resolveOutput(Path outputPath, String defaultFileName) {
+        Path fileName = outputPath.getFileName();
+        String extension = defaultFileName.substring(defaultFileName.lastIndexOf('.'));
+        if (fileName != null && fileName.toString().endsWith(extension)) {
+            return outputPath;
+        }
+        return outputPath.resolve(defaultFileName);
+    }
+
+    private static void createDirectories(Path output) throws IOException {
+        Path parent = output.getParent();
+        Files.createDirectories(parent == null ? Path.of(".") : parent);
     }
 
     /** Builds agent-sized tasks grouped by normalized rule ID. */

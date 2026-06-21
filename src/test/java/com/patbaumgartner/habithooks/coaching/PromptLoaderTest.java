@@ -12,14 +12,15 @@ class PromptLoaderTest {
 
     private static final List<String> CHECKSTYLE_RULES = List.of("checkstyle:MethodLength",
             "checkstyle:ParameterNumber", "checkstyle:CyclomaticComplexity", "checkstyle:VisibilityModifier",
-            "checkstyle:MagicNumber", "checkstyle:NestedIfDepth", "checkstyle:NestedTryDepth",
-            "checkstyle:BooleanExpressionComplexity");
+            "checkstyle:MagicNumber", "checkstyle:EmptyLineSeparator", "checkstyle:FileTabCharacter",
+            "checkstyle:NestedIfDepth", "checkstyle:NestedTryDepth", "checkstyle:BooleanExpressionComplexity");
 
     private static final List<String> PMD_RULES = List.of("pmd:NcssCount", "pmd:GodClass", "pmd:UnusedPrivateField",
             "pmd:UnusedLocalVariable", "pmd:EmptyCatchBlock", "pmd:LiteralsFirstInComparisons",
             "pmd:ReturnEmptyCollectionRatherThanNull", "pmd:UseCollectionIsEmpty", "pmd:UseEqualsToCompareStrings",
             "pmd:OverrideBothEqualsAndHashcode", "pmd:AvoidReassigningParameters", "pmd:LooseCoupling",
-            "pmd:ArrayIsStoredDirectly", "pmd:PreserveStackTrace");
+            "pmd:ArrayIsStoredDirectly", "pmd:PreserveStackTrace", "pmd:CollapsibleIfStatements",
+            "pmd:ExcessiveParameterList");
 
     private static final List<String> MAVEN_RULES = mavenRules();
 

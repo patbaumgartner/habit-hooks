@@ -59,6 +59,10 @@ public final class ProjectInitializer {
             writeIfAbsent("habit-hooks-maven-snippets.xml", "maven-quality-pom-snippets.xml");
         }
         if (!options.dryRun()) {
+            if (options.taikai()) {
+                out.println("ℹ️  Taikai tests require the com.enofex:taikai test dependency."
+                        + " Copy it from habit-hooks-maven-snippets.xml before running Maven tests.");
+            }
             out.println("✅ habit-hooks initialized. Run: habit-hooks --all");
         }
     }
@@ -88,7 +92,7 @@ public final class ProjectInitializer {
             out.printf("  skip  ArchitectureTest.java (no src/test/java found)%n");
             return;
         }
-        writeIfAbsent("src/test/java/ArchitectureTest.java", "ArchitectureTest.java");
+        writeIfAbsent("src/test/java/ArchitectureTest.java", "ArchitectureTest.java.template");
     }
 
     private Optional<String> loadTemplate(String resource) {

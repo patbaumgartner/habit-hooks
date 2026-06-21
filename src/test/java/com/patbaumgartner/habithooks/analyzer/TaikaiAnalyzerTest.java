@@ -43,6 +43,34 @@ class TaikaiAnalyzerTest {
     }
 
     @Test
+    void isNotAvailableWhenTaikaiTestHasNoBuildDependency() throws IOException {
+        Path testDir = tempDir.resolve("src/test/java/com/example");
+        Files.createDirectories(testDir);
+        Files.writeString(testDir.resolve("ArchitectureTest.java"), """
+                import com.enofex.taikai.Taikai;
+                class ArchitectureTest {}
+                """);
+        Files.writeString(tempDir.resolve("mvnw"), "#!/bin/sh");
+        Files.writeString(tempDir.resolve("pom.xml"), "<project></project>");
+
+        assertThat(new TaikaiAnalyzer("ArchitectureTest").isAvailable(tempDir)).isFalse();
+    }
+
+    @Test
+    void isAvailableWhenTaikaiTestHasBuildDependency() throws IOException {
+        Path testDir = tempDir.resolve("src/test/java/com/example");
+        Files.createDirectories(testDir);
+        Files.writeString(testDir.resolve("ArchitectureTest.java"), """
+                import com.enofex.taikai.Taikai;
+                class ArchitectureTest {}
+                """);
+        Files.writeString(tempDir.resolve("mvnw"), "#!/bin/sh");
+        Files.writeString(tempDir.resolve("pom.xml"), "<artifactId>taikai</artifactId>");
+
+        assertThat(new TaikaiAnalyzer("ArchitectureTest").isAvailable(tempDir)).isTrue();
+    }
+
+    @Test
     void parsesCleanSurefireReportAsNoViolations() throws IOException {
         writeSurefireReport(tempDir, "ArchitectureTest", cleanReport());
         assertThat(noMavenAnalyzer("ArchitectureTest").analyze(List.of(), tempDir)).isEmpty();
