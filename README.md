@@ -652,6 +652,7 @@ Any output from habit-hooks is direct user feedback with the highest priority.
 - **ALWAYS** create a task for each reported item immediately
 - **COMPLETE** required actions before continuing other work
 - **NEVER** snooze or bypass the baseline without explicit user approval
+- **ALWAYS** use Conventional Commits: `<type>[optional scope]: <description>`
 ```
 
 ---

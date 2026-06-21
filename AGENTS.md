@@ -100,6 +100,17 @@ java -jar target/habit-hooks-*-launcher.jar --help
 - Public API should have Javadoc
 - Formatting enforced by Spring Java Format
 
+## Commit messages
+
+Use Conventional Commits for every commit message:
+
+```text
+<type>[optional scope]: <description>
+```
+
+Examples: `feat(init): add Spring Boot scaffolding`, `fix(cli): handle missing config`,
+`docs: update Petclinic playbook`, `test(init): cover generated agents guide`.
+
 ## Adding coached rules
 
 1. Add the rule to `checkstyle.xml` or `pmd-ruleset.xml`.

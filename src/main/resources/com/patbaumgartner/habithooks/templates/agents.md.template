@@ -43,6 +43,17 @@ habit-hooks tasks --no-fail
 - Do not snooze baseline entries without explicit maintainer approval.
 - Do not disable Checkstyle or PMD rules just to quiet a finding.
 
+## Commit Messages
+
+Use Conventional Commits for every commit message:
+
+```text
+<type>[optional scope]: <description>
+```
+
+Examples: `feat: add owner search`, `fix(api): handle missing request body`,
+`docs: update setup notes`, `test: cover validation failure`.
+
 ## Output Interpretation
 
 Coached sections describe the smell, the remediation guidance, and the affected

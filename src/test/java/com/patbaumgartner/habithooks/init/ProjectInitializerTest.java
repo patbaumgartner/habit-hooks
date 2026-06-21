@@ -40,7 +40,7 @@ class ProjectInitializerTest {
         assertThat(Files.exists(tempDir.resolve("habit-hooks-maven-snippets.xml"))).isFalse();
         assertThat(Files.readString(tempDir.resolve(".habit-hooks.yaml"))).contains("spotbugs:", "spring-javaformat:");
         assertThat(Files.readString(tempDir.resolve("AGENTS.md"))).contains("habit-hooks --all",
-                "habit-hooks tasks --format json --no-fail", "changed-file loop");
+                "habit-hooks tasks --format json --no-fail", "changed-file loop", "Conventional Commits");
         assertThat(Files.readString(tempDir.resolve("checkstyle.xml"))).contains("FileTabCharacter",
                 "EmptyLineSeparator", "value=\"20\"", "value=\"4\"", "value=\"6\"");
     }
@@ -58,7 +58,8 @@ class ProjectInitializerTest {
                 "taikai:\n    enabled: true", "spotbugs:\n    enabled: true", "jspecify:\n    enabled: true",
                 "-Phabit-hooks-analyzers", "-Phabit-hooks-errorprone", "strict validation profile",
                 "-DautoUpdate=false");
-        assertThat(agents).contains("Spring Boot Agent Guide", "Expected Analyzer Surface", "tight local loop");
+        assertThat(agents).contains("Spring Boot Agent Guide", "Expected Analyzer Surface", "tight local loop",
+                "Conventional Commits");
         assertThat(Files.exists(tempDir.resolve("habit-hooks-maven-snippets.xml"))).isTrue();
         assertThat(Files.exists(tempDir.resolve("src/test/java/ArchitectureTest.java"))).isTrue();
     }

@@ -13,6 +13,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 - `habit-hooks init` now scaffolds `AGENTS.md` when absent so coding agents get the local quality loop automatically
 - `habit-hooks init --spring-boot` now writes Spring Boot analyzer defaults, agent instructions, Maven snippets, and Taikai support files
+- Generated agent guides now instruct agents to use Conventional Commits for commit messages
 
 ### Changed
 

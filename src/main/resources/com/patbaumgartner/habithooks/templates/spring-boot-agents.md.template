@@ -56,6 +56,17 @@ habit-hooks doctor
 - Do not disable Checkstyle, PMD, Taikai, or Maven-backed analyzers just to quiet findings.
 - Keep Spring controllers thin, services focused, repositories persistence-only, and transactions out of controllers.
 
+## Commit Messages
+
+Use Conventional Commits for every commit message:
+
+```text
+<type>[optional scope]: <description>
+```
+
+Examples: `feat(web): add owner search`, `fix(service): preserve transaction boundary`,
+`docs: update deployment notes`, `test(repository): cover missing entity`.
+
 ## Expected Analyzer Surface
 
 Spring Boot projects should normally keep these analyzers ready: Checkstyle, PMD,
