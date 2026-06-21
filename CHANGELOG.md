@@ -9,6 +9,15 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+## [0.1.3] - 2026-06-21
+
+### Fixed
+
+- Native binaries now deserialize generated `.habit-hooks.yaml` config files after `habit-hooks init`
+- Config parse failures now log concise warnings instead of stack traces before falling back to defaults
+
+## [0.1.2] - 2026-06-21
+
 ### Added
 
 - Maven-backed project analyzers for SpotBugs, JaCoCo, CycloneDX, OWASP Dependency Check, PIT, Spring Java Format, and Error Prone
@@ -83,5 +92,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - `--config <path>` relative paths now resolve from the current working directory
 - Documentation refresh across README, ARCHITECTURE, AGENTS, and CLAUDE for concise defaults-first guidance
 
-[Unreleased]: https://github.com/patbaumgartner/habbit-hooks/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/patbaumgartner/habbit-hooks/compare/v0.1.3...HEAD
+[0.1.3]: https://github.com/patbaumgartner/habbit-hooks/releases/tag/v0.1.3
+[0.1.2]: https://github.com/patbaumgartner/habbit-hooks/releases/tag/v0.1.2
 [0.1.0]: https://github.com/patbaumgartner/habbit-hooks/releases/tag/v0.1.0

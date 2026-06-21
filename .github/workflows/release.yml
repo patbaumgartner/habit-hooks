@@ -157,6 +157,12 @@ jobs:
         run: |
           test -x "target/${{ matrix.asset }}"
           "./target/${{ matrix.asset }}" --version
+          smoke_dir="$(mktemp -d)"
+          pushd "$smoke_dir"
+          git init -q
+          "${{ github.workspace }}/target/${{ matrix.asset }}" init
+          "${{ github.workspace }}/target/${{ matrix.asset }}" doctor
+          popd
 
       - name: Generate SLSA provenance attestation
         uses: actions/attest-build-provenance@e8998f949152b193b063cb0ec769d69d929409be # v2
