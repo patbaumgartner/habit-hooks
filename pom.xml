@@ -598,6 +598,19 @@
             <configuration>
               <imageName>habit-hooks</imageName>
               <mainClass>com.patbaumgartner.habithooks.HabitHooks</mainClass>
+              <!--
+                Disable the GraalVM reachability-metadata repository (enabled by
+                default since native-maven-plugin 1.x). It ships stale metadata for
+                org.codehaus.plexus:plexus-container-default:1.0-alpha-10 that
+                registers the removed class DefaultComponentDiscoverer, which makes
+                native-image fail with "Type not found during analysis" against the
+                plexus-container-default 2.x on the classpath (via checkstyle/pmd).
+                Reflection config is provided by picocli-codegen and the hand-
+                maintained META-INF/native-image configs instead.
+              -->
+              <metadataRepository>
+                <enabled>false</enabled>
+              </metadataRepository>
               <buildArgs>
                 <buildArg>--no-fallback</buildArg>
                 <buildArg>-H:+ReportExceptionStackTraces</buildArg>
