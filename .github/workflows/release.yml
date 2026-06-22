@@ -64,7 +64,7 @@ jobs:
           mv target/habit-hooks-${VERSION}-launcher.jar target/habit-hooks-launcher.jar
 
       - name: Generate SLSA provenance attestation
-        uses: actions/attest-build-provenance@e8998f949152b193b063cb0ec769d69d929409be # v2
+        uses: actions/attest-build-provenance@a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32 # v4.1.0
         with:
           subject-path: target/habit-hooks-launcher.jar
 
@@ -169,7 +169,7 @@ jobs:
           popd
 
       - name: Generate SLSA provenance attestation
-        uses: actions/attest-build-provenance@e8998f949152b193b063cb0ec769d69d929409be # v2
+        uses: actions/attest-build-provenance@a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32 # v4.1.0
         with:
           subject-path: target/${{ matrix.asset }}
 
