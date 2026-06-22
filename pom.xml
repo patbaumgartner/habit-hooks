@@ -50,7 +50,7 @@
     <versions-maven-plugin.version>2.21.0</versions-maven-plugin.version>
     <maven-enforcer-plugin.version>3.6.3</maven-enforcer-plugin.version>
     <cyclonedx-maven-plugin.version>2.9.2</cyclonedx-maven-plugin.version>
-    <native-maven-plugin.version>0.10.4</native-maven-plugin.version>
+    <native-maven-plugin.version>1.1.2</native-maven-plugin.version>
     <spring-javaformat.version>0.0.47</spring-javaformat.version>
     <pitest-maven-plugin.version>1.25.5</pitest-maven-plugin.version>
     <pitest-junit5-plugin.version>1.2.3</pitest-junit5-plugin.version>
