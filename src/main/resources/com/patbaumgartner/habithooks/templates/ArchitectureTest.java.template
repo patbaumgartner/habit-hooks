@@ -127,13 +127,8 @@ class ArchitectureTest {
 
 	private static Customizer<TestConfigurer> testRules() {
 		return test -> test.junit(junit -> junit.classesShouldEndWithTest()
-			.classesShouldBePackagePrivate(".*Test")
 			.classesShouldNotBeAnnotatedWithDisabled()
-			.methodsShouldBePackagePrivate()
-			.methodsShouldNotBeAnnotatedWithDisabled()
-			.methodsShouldBeAnnotatedWithDisplayName()
-			.methodsShouldNotDeclareExceptions()
-			.methodsShouldContainAssertionsOrVerifications());
+			.methodsShouldNotBeAnnotatedWithDisabled());
 	}
 
 }

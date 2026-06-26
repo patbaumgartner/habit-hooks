@@ -103,8 +103,11 @@ class ProjectInitializerTest {
         assertThat(architectureTest).contains("\tprivate static final String NAMESPACE");
         assertThat(architectureTest).contains("private static Customizer<SpringConfigurer> springBootRules()",
                 ".noAutowiredFields()", ".transactional(transactionalRules())",
-                "private static Customizer<TestConfigurer> testRules()",
-                ".methodsShouldContainAssertionsOrVerifications()", "org.slf4j.Logger");
+                "private static Customizer<TestConfigurer> testRules()", ".methodsShouldNotBeAnnotatedWithDisabled()",
+                "org.slf4j.Logger");
+        assertThat(architectureTest).doesNotContain("methodsShouldContainAssertionsOrVerifications()")
+            .doesNotContain("methodsShouldBeAnnotatedWithDisplayName()")
+            .doesNotContain("methodsShouldNotDeclareExceptions()");
         assertThat(architectureTest).doesNotContain("com.enofex.taikai.java.logging");
         assertThat(architectureTest).contains("// change this").doesNotContain("←");
     }
