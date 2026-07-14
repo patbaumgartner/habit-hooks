@@ -42,9 +42,11 @@ final class TaikaiReportParser {
 
     private List<Path> findReports(Path surefireDir) {
         try (var stream = Files.list(surefireDir)) {
-            return stream.filter(p -> p.getFileName().toString().startsWith("TEST-")
-                    && p.getFileName().toString().endsWith(".xml") && p.getFileName().toString().contains(testClass))
-                .toList();
+            return stream.filter(p -> {
+                Path fileName = p.getFileName();
+                return fileName != null && fileName.toString().startsWith("TEST-")
+                        && fileName.toString().endsWith(".xml") && fileName.toString().contains(testClass);
+            }).toList();
         }
         catch (IOException e) {
             LOGGER.error("Could not list Surefire reports: {}", e.getMessage(), e);

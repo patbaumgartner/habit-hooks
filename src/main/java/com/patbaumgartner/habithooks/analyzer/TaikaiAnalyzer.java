@@ -90,7 +90,10 @@ public non-sealed class TaikaiAnalyzer implements Analyzer {
             return Optional.empty();
         }
         try (var stream = Files.walk(testRoot)) {
-            return stream.filter(path -> path.getFileName().toString().equals(testClass + ".java")).findFirst();
+            return stream.filter(path -> {
+                Path fileName = path.getFileName();
+                return fileName != null && fileName.toString().equals(testClass + ".java");
+            }).findFirst();
         }
         catch (IOException e) {
             LOGGER.error("Could not search for {}: {}", testClass, e.getMessage(), e);
