@@ -21,7 +21,8 @@ buildNumber.properties
 .factorypath
 
 # VS Code
-.vscode/
+.vscode/*
+!.vscode/settings.json
 !.vscode/extensions.json
 !.vscode/launch.json
 !.vscode/tasks.json
