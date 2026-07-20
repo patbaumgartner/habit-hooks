@@ -34,7 +34,7 @@ jobs:
           fetch-depth: 0
 
       - name: Set up JDK 25
-        uses: actions/setup-java@0f481fcb613427c0f801b606911222b5b6f3083a # v5.5.0
+        uses: actions/setup-java@03ad4de0992f5dab5e18fcb136590ce7c4a0ac95 # v5.6.0
         with:
           java-version: "25"
           distribution: liberica
@@ -96,7 +96,7 @@ jobs:
             target/bom.json
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@718ea10b132b3b2eba29c1007bb80653f286566b # v3.0.1
+        uses: softprops/action-gh-release@3d0d9888cb7fd7b750713d6e236d1fcb99157228 # v3.0.2
         with:
           tag_name: "v${{ steps.version.outputs.VERSION }}"
           name: "habit-hooks ${{ steps.version.outputs.VERSION }}"
@@ -140,7 +140,7 @@ jobs:
           fetch-depth: 0
 
       - name: Set up GraalVM JDK 25
-        uses: actions/setup-java@0f481fcb613427c0f801b606911222b5b6f3083a # v5.5.0
+        uses: actions/setup-java@03ad4de0992f5dab5e18fcb136590ce7c4a0ac95 # v5.6.0
         with:
           java-version: "25"
           distribution: graalvm
@@ -191,7 +191,7 @@ jobs:
             "target/${{ matrix.asset }}"
 
       - name: Upload native binary to release
-        uses: softprops/action-gh-release@718ea10b132b3b2eba29c1007bb80653f286566b # v3.0.1
+        uses: softprops/action-gh-release@3d0d9888cb7fd7b750713d6e236d1fcb99157228 # v3.0.2
         with:
           tag_name: "v${{ needs.release.outputs.version }}"
           files: |
